@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "currentDir": "${workspaceRoot}\\Out\\Build",
+      "isDefaultConfiguration": true,
+      "name": "Sandbox.exe",
+      "project": "Out\\Build\\Sandbox.exe",
+      "projectTarget": "",
+      "type": "default"
+    }
+  ],
+  "defaults": {},
+  "version": "0.2.1"
+}

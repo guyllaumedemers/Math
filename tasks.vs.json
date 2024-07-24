@@ -1,0 +1,13 @@
+{
+  "tasks": [
+    {
+      "appliesTo": "Build.bat",
+      "command": ".\\Build.bat",
+      "contextType": "custom",
+      "taskLabel": "Build Application",
+      "type": "launch",
+      "workingDirectory": "${workspaceRoot}"
+    }
+  ],
+  "version": "0.0.1"
+}
