@@ -4,7 +4,15 @@
       "appliesTo": "Build.bat",
       "command": ".\\Build.bat",
       "contextType": "custom",
-      "taskLabel": "Build Application",
+      "taskLabel": "Build system",
+      "type": "launch",
+      "workingDirectory": "${workspaceRoot}"
+    },
+    {
+      "appliesTo": "Run.bat",
+      "command": ".\\Run.bat",
+      "contextType": "custom",
+      "taskLabel": "Executable",
       "type": "launch",
       "workingDirectory": "${workspaceRoot}"
     }

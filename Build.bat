@@ -1,3 +1,23 @@
+::Copyright(c) 2024 gdemers
+::
+::Permission is hereby granted, free of charge, to any person obtaining a copy
+::of this software and associated documentation files(the "Software"), to deal
+::in the Software without restriction, including without limitation the rights
+::to use, copy, modify, merge, publish, distribute, sublicense, and /or sell
+::copies of the Software, and to permit persons to whom the Software is
+::furnished to do so, subject to the following conditions :
+::
+::The above copyright notice and this permission notice shall be included in all
+::copies or substantial portions of the Software.
+::
+::THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+::IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+::FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+::AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+::LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+::OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+::SOFTWARE.
+
 @ECHO OFF
 
 SETLOCAL enabledelayedexpansion
@@ -15,11 +35,11 @@ FOR /f usebackq %%i in (`DIR /ad /b %~dp0`) do (
 )
 
 :: build path executable
-SET buildDir=%~dp0Out\Build\Sandbox.exe
+SET buildDir="%~dp0Out\\Build\\"
 
 :: compiler flags
 :: https://learn.microsoft.com/en-us/cpp/build/reference/compiler-options-listed-by-category?view=msvc-170
-SET cflags=/std:c++17 /MT /Od
+SET cflags=/std:c++17 /EHsc /MT /Od /Fe"%buildDir%Sandbox.exe" /Fo"%buildDir%"
 
 :: libraries
 SET languagelibs=libucrt.lib libvcruntime.lib libcmt.lib libcpmt.lib
@@ -50,4 +70,4 @@ SET lflags=/NODEFAULTLIB /MACHINE:X64 /SUBSYSTEM:CONSOLE /LIBPATH:%winkit_um% /L
 :: the right target platform.
 
 :: compiler command
-cl %cflags% %cppFilenames% /link %lflags% %elinkage% /out:%buildDir%
+cl %cflags% %cppFilenames% /link %lflags% %elinkage%
