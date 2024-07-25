@@ -18,10 +18,93 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 
+// system headers
 #include <cstdio>
 
+// vendor headers
+#include "SDL3/SDL.h"
+
+// macro for application process closure
+static constexpr int Error = -1;
+static constexpr int Success = 0;
+
+// extern check
+template<typename T>
+bool IsValid(T* Ptr)
+{
+	return Ptr != nullptr;
+}
+
+// application entry point
 int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 {
-	std::puts("Hello World!");
-	return 0;
+	//	*******
+	//	lib Init
+	//	*******
+
+	SDL_InitFlags InitFlags = SDL_INIT_VIDEO | SDL_INIT_EVENTS;
+	if (SDL_Init(InitFlags) < 0)
+	{
+		SDL_Log("Init failed: %s", SDL_GetError());
+		return Error;
+	}
+
+	//	*******
+	//	window Creation
+	//	*******
+
+	// declare var running application render target
+	const int WindowX = 800;
+	const int WindowY = 600;
+	SDL_WindowFlags WindowFlags = SDL_WINDOW_OPENGL | SDL_WINDOWPOS_CENTERED | SDL_WINDOW_ALWAYS_ON_TOP;
+
+	SDL_Window* Window = SDL_CreateWindow("Title",
+		WindowX,
+		WindowY,
+		WindowFlags);
+
+	if (!IsValid(Window))
+	{
+		SDL_Log("Window creation failed: %s", SDL_GetError());
+		return Error;
+	}
+
+	//	*******
+	//	poll events
+	//	*******
+
+	const auto& PollPlatformEvents = [](bool& bOutRequestExit)
+		{
+			// fetch platform events
+			SDL_Event Event;
+			if (!SDL_PollEvent(&Event))
+			{
+				return;
+			}
+
+			// check for quit event
+			if (Event.quit.type == SDL_EventType::SDL_EVENT_QUIT)
+			{
+				bOutRequestExit = true;
+			}
+		};
+
+	//	*******
+	//	application loop
+	//	*******
+
+	bool bRequestExit = false;
+	while (!bRequestExit)
+	{
+		PollPlatformEvents(bRequestExit);
+	}
+
+	//	*******
+	//	lib clean up
+	//	*******
+
+	SDL_DestroyWindow(Window);
+	SDL_Quit();
+
+	return Success;
 }
