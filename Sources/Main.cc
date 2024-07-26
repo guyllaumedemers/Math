@@ -54,9 +54,9 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 	//	*******
 
 	// declare var running application render target
-	const int WindowX = 800;
-	const int WindowY = 600;
-	SDL_WindowFlags WindowFlags = SDL_WINDOW_OPENGL | SDL_WINDOWPOS_CENTERED | SDL_WINDOW_ALWAYS_ON_TOP;
+	int constexpr WindowX = 800;
+	int constexpr WindowY = 600;
+	SDL_WindowFlags WindowFlags = SDL_WINDOW_OPENGL;
 
 	SDL_Window* Window = SDL_CreateWindow("Title",
 		WindowX,

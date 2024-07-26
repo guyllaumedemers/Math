@@ -25,27 +25,35 @@ SETLOCAL enabledelayedexpansion
 :: retrieve all translation units
 SET cppFilenames=
 FOR /f usebackq %%i in (`DIR /ad /b %~dp0`) do (
-	:: update current directory as FOR /r [drive:path] doesnt support %VAR%
-	PUSHD "%%i"
-	FOR /r %%k in (*.cc) do (
-		SET cppFilenames=!cppFilenames! %%k
-		ECHO %%k
+	:: we only care about our project sources. other requirements should be built aot.
+	IF "%%i"=="Sources" (
+		:: update current directory as FOR /r [drive:path] doesnt support %VAR%
+		PUSHD "%%i"
+		FOR /r %%k in (*.cc) do (
+			SET cppFilenames=!cppFilenames! %%k
+			ECHO %%k
+		)
+		POPD
 	)
-	POPD
 )
 
 :: build path executable
-SET buildDir="%~dp0Out\\Build\\"
+SET vendorDir="%~dp0Out/Vendor"
+SET buildDir="%~dp0Out/Build"
+
+:: vendor include directories
+SET sdl2Dir="%~dp0Vendor/sdl2/include"
+SET imguiDir=
 
 :: compiler flags
 :: https://learn.microsoft.com/en-us/cpp/build/reference/compiler-options-listed-by-category?view=msvc-170
-SET cflags=/std:c++17 /EHsc /MT /Od /Fe"%buildDir%Sandbox.exe" /Fo"%buildDir%"
+SET cflags=/std:c++17 /EHsc /MT /Od /I"%sdl2Dir%" /Fe"%buildDir%/Sandbox.exe" /Fo"%buildDir%/"
 
 :: libraries
 SET languagelibs=libucrt.lib libvcruntime.lib libcmt.lib libcpmt.lib
 SET systemlibs=kernel32.lib
-::SET externallibs=sdl2.lib imgui.lib
-SET externallibs=
+::SET externallibs=SDL3.lib imgui.lib
+SET externallibs=SDL3.lib
 
 :: program linkage with external libs
 SET elinkage=%languagelibs% %systemlibs% %externallibs%
@@ -53,18 +61,20 @@ SET elinkage=%languagelibs% %systemlibs% %externallibs%
 :: Important!! %WinKit_ucrt% %WinKit_um% %VS_cruntime% are custom environment variables defined on my system
 :: which are required to target x64 .lib for the ucrt and vcruntime. https://learn.microsoft.com/en-us/cpp/c-runtime-library/crt-library-features?view=msvc-170
 
-:: library path
+:: system library path
 SET winkit_ucrt="%WinKit_ucrt%"
 SET winkit_um="%WinKit_um%"
 SET vcruntime="%VS_cruntime%"
-SET sdl2=
-SET imgui=
+
+:: vendor library path
+SET sdl2="%vendorDir%/sdl2/Debug"
+::SET imgui=
 
 :: Note /LIBPATH support a single dir per-call https://learn.microsoft.com/en-us/cpp/build/reference/libpath-additional-libpath?view=msvc-170
 
 :: linker flag
 :: https://learn.microsoft.com/en-us/cpp/build/reference/linker-options?view=msvc-170
-SET lflags=/NODEFAULTLIB /MACHINE:X64 /SUBSYSTEM:CONSOLE /LIBPATH:%winkit_um% /LIBPATH:%winkit_ucrt% /LIBPATH:%vcruntime%
+SET lflags=/NODEFAULTLIB /MACHINE:X64 /SUBSYSTEM:CONSOLE /LIBPATH:%winkit_um% /LIBPATH:%winkit_ucrt% /LIBPATH:%vcruntime% /LIBPATH:%sdl2%
 
 :: Important!! Our target machine build for x64. Make sure to run command using MS Development Command Prompt for
 :: the right target platform.
