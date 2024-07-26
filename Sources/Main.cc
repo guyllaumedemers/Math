@@ -23,10 +23,14 @@
 
 // vendor headers
 #include "SDL3/SDL.h"
+#include "imgui.h"
+#include "backends/imgui_impl_opengl3.h"
+#include "backends/imgui_impl_opengl3_loader.h"
+#include "backends/imgui_impl_sdl3.h"
 
 // macro for application process closure
-static constexpr int Error = -1;
-static constexpr int Success = 0;
+static int constexpr Error = -1;
+static int constexpr Success = 0;
 
 // extern check
 template<typename T>
@@ -70,23 +74,79 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 	}
 
 	//	*******
+	//	OpenGl Creation
+	//	*******
+
+	SDL_GLContext GlContext = SDL_GL_CreateContext(Window);
+
+	if (!IsValid(GlContext))
+	{
+		SDL_Log("OpenGl context creation failed: %s", SDL_GetError());
+		return Error;
+	}
+
+	//	*******
+	//	imgui Creation
+	//	*******
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& Io = ImGui::GetIO();
+	Io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+
+	// Setup Platform/Renderer backends
+	ImGui_ImplSDL3_InitForOpenGL(Window, &GlContext);
+	ImGui_ImplOpenGL3_Init();
+
+	//	*******
 	//	poll events
 	//	*******
 
-	const auto& PollPlatformEvents = [](bool& bOutRequestExit)
+	// sdl events
+	auto const& PollPlatformEvents = [](bool& bOutRequestExit)
 		{
 			// fetch platform events
 			SDL_Event Event;
-			if (!SDL_PollEvent(&Event))
+			while (SDL_PollEvent(&Event))
 			{
-				return;
+				// check for quit event
+				if (Event.type == SDL_EventType::SDL_EVENT_QUIT)
+				{
+					bOutRequestExit = true;
+				}
 			}
+		};
 
-			// check for quit event
-			if (Event.quit.type == SDL_EventType::SDL_EVENT_QUIT)
-			{
-				bOutRequestExit = true;
-			}
+
+	//	*******
+	//	rendering
+	//	*******
+
+	// imgui new frame
+	auto const& ImGuiClear = []()
+		{
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplSDL3_NewFrame();
+			ImGui::NewFrame();
+		};
+
+	// imgui content drawing
+	auto const& ImGuiDraw = []()
+		{
+			ImGui::Begin("Hello, world!");
+			ImGui::End();
+		};
+
+	// opengl back buffer handling
+	auto const& RenderViewport = [](SDL_Window* Target, ImGuiIO const& Data)
+		{
+			static auto constexpr clear_color = ImVec4(0.f, 0.f, 0.f, 1.f);
+			ImGui::Render();
+			glViewport(0, 0, (int)Data.DisplaySize.x, (int)Data.DisplaySize.y);
+			glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
+			glClear(GL_COLOR_BUFFER_BIT);
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+			SDL_GL_SwapWindow(Target);
 		};
 
 	//	*******
@@ -96,13 +156,28 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 	bool bRequestExit = false;
 	while (!bRequestExit)
 	{
+		// platform events
 		PollPlatformEvents(bRequestExit);
+
+		// imgui clear
+		ImGuiClear();
+
+		// imgui draw
+		ImGuiDraw();
+
+		// opengl viewport rendering
+		RenderViewport(Window, Io);
 	}
 
 	//	*******
 	//	lib clean up
 	//	*******
 
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplSDL3_Shutdown();
+	ImGui::DestroyContext();
+
+	SDL_GL_DestroyContext(GlContext);
 	SDL_DestroyWindow(Window);
 	SDL_Quit();
 

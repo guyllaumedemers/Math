@@ -22,6 +22,10 @@
 
 SETLOCAL enabledelayedexpansion
 
+:: build path executable
+SET vendorDir="%~dp0Out/Vendor"
+SET buildDir="%~dp0Out/Build"
+
 :: retrieve all translation units
 SET cppFilenames=
 FOR /f usebackq %%i in (`DIR /ad /b %~dp0`) do (
@@ -37,22 +41,22 @@ FOR /f usebackq %%i in (`DIR /ad /b %~dp0`) do (
 	)
 )
 
-:: build path executable
-SET vendorDir="%~dp0Out/Vendor"
-SET buildDir="%~dp0Out/Build"
-
 :: vendor include directories
+SET imguibackendsDir="%~dp0Vendor/imgui/backends"
+SET imguiDir="%~dp0Vendor/imgui"
 SET sdl2Dir="%~dp0Vendor/sdl2/include"
-SET imguiDir=
+
+:: imgui source files we care about
+SET ImguiSrc="%imguiDir%/imgui.cpp" "%imguiDir%/imgui_draw.cpp" "%imguiDir%/imgui_tables.cpp" "%imguiDir%/imgui_widgets.cpp" "%imguiDir%/backends/imgui_impl_opengl3.cpp" "%imguiDir%/backends/imgui_impl_sdl3.cpp"
+SET cppFilenames=!cppFilenames! %ImguiSrc%
 
 :: compiler flags
 :: https://learn.microsoft.com/en-us/cpp/build/reference/compiler-options-listed-by-category?view=msvc-170
-SET cflags=/std:c++17 /EHsc /MT /Od /I"%sdl2Dir%" /Fe"%buildDir%/Sandbox.exe" /Fo"%buildDir%/"
+SET cflags=/std:c++17 /EHsc /MT /Od /I"%imguibackendsDir%" /I"%imguiDir%" /I"%sdl2Dir%" /Fe"%buildDir%/Sandbox.exe" /Fo"%buildDir%/"
 
 :: libraries
 SET languagelibs=libucrt.lib libvcruntime.lib libcmt.lib libcpmt.lib
-SET systemlibs=kernel32.lib
-::SET externallibs=SDL3.lib imgui.lib
+SET systemlibs=kernel32.lib user32.lib Shell32.lib Imm32.lib
 SET externallibs=SDL3.lib
 
 :: program linkage with external libs
@@ -68,7 +72,6 @@ SET vcruntime="%VS_cruntime%"
 
 :: vendor library path
 SET sdl2="%vendorDir%/sdl2/Debug"
-::SET imgui=
 
 :: Note /LIBPATH support a single dir per-call https://learn.microsoft.com/en-us/cpp/build/reference/libpath-additional-libpath?view=msvc-170
 

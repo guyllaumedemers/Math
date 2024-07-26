@@ -8,7 +8,8 @@
       "includePath": [
         "${env.INCLUDE}",
         "${workspaceRoot}\\Includes",
-        "${workspaceRoot}\\Vendor\\sdl2\\include"
+        "${workspaceRoot}\\Vendor\\sdl2\\include",
+        "${workspaceRoot}\\Vendor\\imgui"
       ],
       "defines": [
         "WIN32",
