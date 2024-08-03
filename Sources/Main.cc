@@ -109,6 +109,7 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 			SDL_Event Event;
 			while (SDL_PollEvent(&Event))
 			{
+				ImGui_ImplSDL3_ProcessEvent(&Event);
 				// check for quit event
 				if (Event.type == SDL_EventType::SDL_EVENT_QUIT)
 				{
@@ -122,8 +123,10 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 	//	rendering
 	//	*******
 
-	// imgui new frame
-	auto const& ImGuiClear = []()
+	// imgui new frame (does way more under the hood when looking at imgui_impl but will keep it simple here!)
+	// handle backend new frame creation, opengl shader&program creation/link
+	// sdl controller updates (mouse/gamepad) + delta time management for running app at 60 fps
+	auto const& ImGuiClear = [&]()
 		{
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplSDL3_NewFrame();
@@ -131,14 +134,14 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 		};
 
 	// imgui content drawing
-	auto const& ImGuiDraw = []()
+	auto const& ImGuiDraw = [&]()
 		{
 			ImGui::Begin("Hello, world!");
 			ImGui::End();
 		};
 
 	// opengl back buffer handling
-	auto const& RenderViewport = [](SDL_Window* Target, ImGuiIO const& Data)
+	auto const& RenderViewport = [&](SDL_Window* Target, ImGuiIO const& Data)
 		{
 			static auto constexpr clear_color = ImVec4(0.f, 0.f, 0.f, 1.f);
 			ImGui::Render();
