@@ -103,7 +103,7 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 	//	*******
 
 	// sdl events
-	auto const& PollPlatformEvents = [](bool& bOutRequestExit)
+	auto const& PollPlatformEvents = [&](bool& bOutRequestExit)
 		{
 			// fetch platform events
 			SDL_Event Event;
@@ -136,17 +136,32 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 	// imgui content drawing
 	auto const& ImGuiDraw = [&]()
 		{
-			ImGui::Begin("Hello, world!");
-			ImGui::End();
+			if (ImGui::BeginMainMenuBar())
+			{
+				if (ImGui::BeginMenu("Window"))
+				{
+					if (ImGui::MenuItem("New", "Ctrl+N")) {}
+					if (ImGui::MenuItem("Open", "Ctrl+O")) {}
+					if (ImGui::BeginMenu("Open Recent"))
+					{
+						// dynamically generate entries here
+						ImGui::EndMenu();
+					}
+					if (ImGui::MenuItem("Visualizer")) {}
+					ImGui::EndMenu();
+				}
+
+				ImGui::EndMainMenuBar();
+			}
 		};
 
 	// opengl back buffer handling
 	auto const& RenderViewport = [&](SDL_Window* Target, ImGuiIO const& Data)
 		{
-			static auto constexpr clear_color = ImVec4(0.f, 0.f, 0.f, 1.f);
+			static auto constexpr ClearColor = ImVec4(0.f, 0.f, 0.f, 1.f);
 			ImGui::Render();
 			glViewport(0, 0, (int)Data.DisplaySize.x, (int)Data.DisplaySize.y);
-			glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
+			glClearColor(ClearColor.x * ClearColor.w, ClearColor.y * ClearColor.w, ClearColor.z * ClearColor.w, ClearColor.w);
 			glClear(GL_COLOR_BUFFER_BIT);
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 			SDL_GL_SwapWindow(Target);
