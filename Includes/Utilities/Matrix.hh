@@ -29,6 +29,18 @@ struct FMatrix4x4
 	FMatrix4x4(FMatrix4x4 const&)	= default;
 	FMatrix4x4(FMatrix4x4&&)		= default;
 
+	inline FMatrix4x4 operator*(FMatrix4x4 const& In) const
+	{
+		// TODO double check left-hand side vs right-hand side if weird behaviour occurs
+		return FMatrix4x4
+		{
+			FVector4d{ *this * In.Rows[0] },
+			FVector4d{ *this * In.Rows[1] },
+			FVector4d{ *this * In.Rows[2] },
+			FVector4d{ *this * In.Rows[3] }
+		};
+	}
+
 	inline FVector4d operator*(FVector4d const& In) const
 	{
 		// TODO handle differently register load/access, this is un-optimized

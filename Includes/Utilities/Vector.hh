@@ -25,6 +25,7 @@ struct FVector2d
 	FVector2d()					= default;
 	FVector2d(FVector2d const&) = default;
 	FVector2d(FVector2d&&)		= default;
+	FVector2d& operator=(FVector2d const&) = default;
 
 	inline FVector2d(float In)
 	{
@@ -49,6 +50,7 @@ struct FVector3d
 	FVector3d()					= default;
 	FVector3d(FVector3d const&) = default;
 	FVector3d(FVector3d&&)		= default;
+	FVector3d& operator=(FVector3d const&) = default;
 
 	inline FVector3d(float In)
 	{
@@ -83,6 +85,7 @@ struct FVector4d
 	FVector4d()					= default;
 	FVector4d(FVector4d const&) = default;
 	FVector4d(FVector4d&&)		= default;
+	FVector4d& operator=(FVector4d const&) = default;
 
 	inline FVector4d(float X, float Y, float Z, float W)
 	{

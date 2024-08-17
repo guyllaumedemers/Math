@@ -44,6 +44,11 @@ struct FTransform
 		return *this;
 	}
 
+	inline FMatrix4x4 ModelMatrix() const
+	{
+		return ((FMatrix4x4::Scale(Scale) * FMatrix4x4::Rotate(Rotation)) * FMatrix4x4::Translate(Position));
+	}
+
 	FVector3d Position	= FVector3d::Zero;
 	// TODO update for quaternions later, if you ever understand them
 	FVector3d Rotation	= FVector3d::Zero;
