@@ -66,6 +66,29 @@ struct FMatrix4x4
 		};
 	}
 
+	inline FMatrix4x4 operator*(float In) const
+	{
+		return FMatrix4x4
+		{
+			FVector4d{Rows[0] * In},
+			FVector4d{Rows[1] * In},
+			FVector4d{Rows[2] * In},
+			FVector4d{Rows[3] * In}
+		};
+	}
+
+	inline float Determinant() const
+	{
+		// TODO add missing impl
+		return 1.f;
+	}
+
+	inline FMatrix4x4 Adjugate() const
+	{
+		// TODO add missing impl
+		return FMatrix4x4();
+	}
+
 	// custom matrix function exposing target mutation applied in vector space
 	static FMatrix4x4 Identity();
 	static FMatrix4x4 Translate(FVector4d const& Translate);

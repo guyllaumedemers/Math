@@ -36,6 +36,12 @@ struct FCamera
 		this->Fov = Fov;
 	}
 
+	inline FMatrix4x4 ViewMatrix(FTransform const& In) const
+	{
+		// TODO double check left-hand side vs right-hand side if weird behaviour occurs
+		return Transform.Inverse() * In.ModelMatrix();
+	}
+
 	void Modify(FTransform const& In);
 	void Reset();
 

@@ -46,7 +46,14 @@ struct FTransform
 
 	inline FMatrix4x4 ModelMatrix() const
 	{
-		return ((FMatrix4x4::Scale(Scale) * FMatrix4x4::Rotate(Rotation)) * FMatrix4x4::Translate(Position));
+		// TODO double check left-hand side vs right-hand side if weird behaviour occurs
+		return (FMatrix4x4::Translate(Position) * (FMatrix4x4::Rotate(Rotation) * FMatrix4x4::Scale(Scale)));
+	}
+
+	inline FMatrix4x4 Inverse() const
+	{
+		FMatrix4x4 const& Matrix = ModelMatrix();
+		return Matrix.Adjuvent() * (1.f / Matrix.Determinant());
 	}
 
 	FVector3d Position	= FVector3d::Zero;

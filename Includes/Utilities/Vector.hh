@@ -87,6 +87,11 @@ struct FVector4d
 	FVector4d(FVector4d&&)		= default;
 	FVector4d& operator=(FVector4d const&) = default;
 
+	inline FVector4d operator*(float In) const
+	{
+		return FVector4d{ X * In, Y * In,Z * In,W * In };
+	}
+
 	inline FVector4d(float X, float Y, float Z, float W)
 	{
 		this->X = X;
