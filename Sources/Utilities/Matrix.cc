@@ -22,6 +22,8 @@
 
 namespace Private
 {
+	// subset calculation require to ignore the row[0], col[k] of the parent subset
+	// and skip those entries
 	void SubMatrix(std::size_t Size, float** Matrix, std::size_t Row, std::size_t Col, float** Output)
 	{
 		std::size_t k = 0, m = 0;
@@ -33,6 +35,8 @@ namespace Private
 				continue;
 			}
 
+			m = 0;
+			Output[k] = new float[Size - 1]();
 			for (std::size_t j = 0; j < Size; ++j)
 			{
 				if (j == Col)
@@ -48,6 +52,8 @@ namespace Private
 		}
 	};
 
+	// determinant calculation require processing a subset of a matrix which isn't
+	// possible with our current homogeneous FMatrix4x4
 	float CalculateDeterminant(std::size_t Size, float** Matrix)
 	{
 		float OutResult = 0.f;
@@ -74,6 +80,49 @@ namespace Private
 		}
 
 		return OutResult;
+	};
+
+	void Transpose(std::size_t Size, float** Matrix)
+	{
+		for (std::size_t i = 0; i < Size; ++i)
+		{
+			for (std::size_t j = 0; j < Size; ++j)
+			{
+				if (j <= i)
+				{
+					continue;
+				}
+
+				float const A = Matrix[i][j];
+				float const B = Matrix[j][i];
+				Matrix[i][j] = B;
+				Matrix[j][i] = A;
+			}
+		}
+	}
+
+	// adjugate of a matrix return the 'minor' matrix cofactor transposed
+	// note : handle memory release post-return
+	float** CalculateAdjugate(std::size_t Size, float** Matrix)
+	{
+		float** Result = new float* [Size]();
+
+		// calculate 'minor' matrix and 'cofactor'
+		for (std::size_t i = 0; i < Size; ++i)
+		{
+			Result[i] = new float[Size]();
+			for (std::size_t j = 0; j < Size; ++j)
+			{
+				float** Output = new float* [Size - 1]();
+				SubMatrix(Size, Matrix, i, j, Output);
+				Result[i][j] = CalculateDeterminant(Size - 1, Output) * ((i + j) & 1 ? -1.f : 1.f);
+				delete[] Output;
+			}
+		}
+
+		// transpose 'cofactor' matrix
+		Transpose(Size, Result);
+		return Result;
 	};
 }
 

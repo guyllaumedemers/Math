@@ -22,13 +22,13 @@
 
 #include "Vector.hh"
 
-#include <array>
 #include <atomic>
 
 namespace Private
 {
 	// extern utils
 	extern float CalculateDeterminant(std::size_t Size, float** Matrix);
+	extern float** CalculateAdjugate(std::size_t Size, float** Matrix);
 }
 
 // homogeneous coordinate
@@ -93,7 +93,8 @@ struct FMatrix4x4
 
 	inline FMatrix4x4 Adjugate() const
 	{
-		return FMatrix4x4::Zero();
+		float** Result = Private::CalculateAdjugate(4, this->ToArray());
+		return FromArray(Result);
 	}
 
 	inline float** ToArray() const
@@ -102,6 +103,11 @@ struct FMatrix4x4
 		// otherwise the ptr-to-ptr will return undef behaviour
 		float** Array = nullptr;
 		return Array;
+	}
+
+	inline FMatrix4x4 FromArray(float** In) const
+	{
+		return FMatrix4x4();
 	}
 
 	// custom matrix function exposing target mutation applied in vector space
