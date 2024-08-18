@@ -2,7 +2,7 @@
 
 #### Project
 
-A `Sandbox` project built visualizing mathematical functions using Opengl rendering library.
+A `Sandbox` project built for visualizing mathematical functions using Opengl rendering library.
 
 #### What this README.md is not
 
