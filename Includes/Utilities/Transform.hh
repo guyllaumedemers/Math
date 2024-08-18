@@ -20,7 +20,10 @@
 
 #pragma once
 
+#include <assert.h>
+
 #include "Matrix.hh"
+#include "Math.hh"
 #include "Vector.hh"
 
 struct FTransform
@@ -28,6 +31,7 @@ struct FTransform
 	FTransform()					= default;
 	FTransform(FTransform const&)	= default;
 	FTransform(FTransform &&)		= default;
+	FTransform& operator=(FTransform const&) = default;
 
 	inline FTransform(FVector3d const& Position, FVector3d const& Rotation, FVector3d const& Scale)
 	{
@@ -53,12 +57,24 @@ struct FTransform
 	inline FMatrix4x4 Inverse() const
 	{
 		FMatrix4x4 const& Matrix = ModelMatrix();
-		return Matrix.Adjuvent() * (1.f / Matrix.Determinant());
+
+		float const Determinant = Matrix.Determinant();
+		if(FMath::IsZero(Determinant))
+		{
+			// TODO determine if assertion is the correct approach as in some case, we may want to actually return and continue
+			// the execution
+			assert(false);
+			return FMatrix4x4::Zero();
+		}
+		else
+		{
+			return Matrix.Adjugate() * (1.f / Matrix.Determinant());
+		}
 	}
 
 	FVector3d Position	= FVector3d::Zero;
 	// TODO update for quaternions later, if you ever understand them
 	FVector3d Rotation	= FVector3d::Zero;
 	FVector3d Scale		= FVector3d::One;
-	FTransform const static Identity;
+	FTransform const static Default;
 };

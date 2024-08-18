@@ -21,4 +21,4 @@
 #include "Utilities/Transform.hh"
 
 // static
-FTransform const FTransform::Identity = { FVector3d(0.f), FVector3d(0.f), FVector3d(1.f) };
+FTransform const FTransform::Default = { FVector3d(0.f), FVector3d(0.f), FVector3d(1.f) };

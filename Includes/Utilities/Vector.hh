@@ -89,7 +89,7 @@ struct FVector4d
 
 	inline FVector4d operator*(float In) const
 	{
-		return FVector4d{ X * In, Y * In,Z * In,W * In };
+		return FVector4d{ X * In, Y * In, Z * In, W * In };
 	}
 
 	inline FVector4d(float X, float Y, float Z, float W)

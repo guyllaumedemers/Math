@@ -20,14 +20,11 @@
 
 #pragma once
 
-class IDrawable
+struct FMath
 {
-public:
-	virtual ~IDrawable() = 0;
-	virtual void Draw() const = 0;
+	inline static bool IsZero(float In)
+	{
+		// TODO do proper zero check
+		return In == 0.f;
+	}
 };
-
-inline IDrawable::~IDrawable()
-{
-	// pure virtual destructor require a default impl
-}

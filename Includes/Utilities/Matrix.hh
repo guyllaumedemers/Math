@@ -22,6 +22,15 @@
 
 #include "Vector.hh"
 
+#include <array>
+#include <atomic>
+
+namespace Private
+{
+	// extern utils
+	extern float CalculateDeterminant(std::size_t Size, float** Matrix);
+}
+
 // homogeneous coordinate
 struct FMatrix4x4
 {
@@ -79,17 +88,24 @@ struct FMatrix4x4
 
 	inline float Determinant() const
 	{
-		// TODO add missing impl
-		return 1.f;
+		return Private::CalculateDeterminant(4, this->ToArray());
 	}
 
 	inline FMatrix4x4 Adjugate() const
 	{
-		// TODO add missing impl
-		return FMatrix4x4();
+		return FMatrix4x4::Zero();
+	}
+
+	inline float** ToArray() const
+	{
+		// TODO fix this! cannot return a ptr-to-ptr without allocating on the heap
+		// otherwise the ptr-to-ptr will return undef behaviour
+		float** Array = nullptr;
+		return Array;
 	}
 
 	// custom matrix function exposing target mutation applied in vector space
+	static FMatrix4x4 Zero();
 	static FMatrix4x4 Identity();
 	static FMatrix4x4 Translate(FVector4d const& Translate);
 	static FMatrix4x4 Rotate(FVector4d const& Rotate);

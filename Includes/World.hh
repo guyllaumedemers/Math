@@ -22,6 +22,7 @@
 
 #include "Camera.hh"
 #include "IDrawable.hh"
+#include "Utilities/Transform.hh"
 
 // define a vector space, draw a grid to visual math function behaviours
 class FWorld : public IDrawable
@@ -36,7 +37,7 @@ public:
 	virtual void Draw() const override;
 
 protected:
-	FTransform Origin = FTransform::Identity;
+	FTransform Origin = FTransform::Default;
 	// user point of view
-	FCamera Camera;
+	FCamera Camera = FCamera::Default;
 };

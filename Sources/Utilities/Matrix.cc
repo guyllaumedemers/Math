@@ -20,6 +20,74 @@
 
 #include "Utilities/Matrix.hh"
 
+namespace Private
+{
+	void SubMatrix(std::size_t Size, float** Matrix, std::size_t Row, std::size_t Col, float** Output)
+	{
+		std::size_t k = 0, m = 0;
+
+		for (std::size_t i = 0; i < Size; ++i)
+		{
+			if (i == Row)
+			{
+				continue;
+			}
+
+			for (std::size_t j = 0; j < Size; ++j)
+			{
+				if (j == Col)
+				{
+					continue;
+				}
+
+				Output[k][m] = Matrix[i][j];
+				++m;
+			}
+
+			++k;
+		}
+	};
+
+	float CalculateDeterminant(std::size_t Size, float** Matrix)
+	{
+		float OutResult = 0.f;
+
+		if (Size == 1)
+		{
+			OutResult = Matrix[0][0];
+		}
+		else if (Size == 2)
+		{
+			float const A = Matrix[0][0] * Matrix[1][1];
+			float const B = Matrix[1][0] * Matrix[0][1] * -1;
+			OutResult = (A + B);
+		}
+		else
+		{
+			for (std::size_t k = 0; k < Size; ++k)
+			{
+				float** Output = new float* [Size - 1]();
+				SubMatrix(Size, Matrix, 0, k, Output);
+				OutResult += (Matrix[0][k] * CalculateDeterminant(Size - 1, Output) * (k & 1 ? -1.f : 1.f));
+				delete[] Output;
+			}
+		}
+
+		return OutResult;
+	};
+}
+
+FMatrix4x4 FMatrix4x4::Zero()
+{
+	return FMatrix4x4
+	{
+		FVector4d(0.f, 0.f, 0.f, 0.f),
+		FVector4d(0.f, 0.f, 0.f, 0.f),
+		FVector4d(0.f, 0.f, 0.f, 0.f),
+		FVector4d(0.f, 0.f, 0.f, 0.f)
+	};
+}
+
 FMatrix4x4 FMatrix4x4::Identity()
 {
 	return FMatrix4x4
