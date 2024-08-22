@@ -20,11 +20,42 @@
 
 #pragma once
 
+#include <array>
+#include <type_traits>
+
+#include "Utilities/Math.hh"
+
+namespace Private
+{
+	template<typename T, std::size_t N, std::enable_if_t<std::is_floating_point_v<T>, T> = true>
+	struct TVector
+	{
+		static_assert(N != 0, "TVector size is ill format");
+
+		inline float DotProduct(TVector<T, N> const& In) const
+		{
+			return FMath::DotProduct<T, N>(*this, In);
+		}
+
+		inline float Normalize() const
+		{
+			return FMath::Normalize<T, N>(Components);
+		}
+
+		inline float Magnitude() const
+		{
+			return FMath::Magnitude<T, N>(Components);
+		}
+
+		std::array<T, N> Components;
+	};
+}
+
 struct FVector2d
 {
-	FVector2d()					= default;
+	FVector2d() = default;
 	FVector2d(FVector2d const&) = default;
-	FVector2d(FVector2d&&)		= default;
+	FVector2d(FVector2d&&) = default;
 	FVector2d& operator=(FVector2d const&) = default;
 
 	inline FVector2d(float In)
@@ -47,9 +78,9 @@ struct FVector2d
 
 struct FVector3d
 {
-	FVector3d()					= default;
+	FVector3d() = default;
 	FVector3d(FVector3d const&) = default;
-	FVector3d(FVector3d&&)		= default;
+	FVector3d(FVector3d&&) = default;
 	FVector3d& operator=(FVector3d const&) = default;
 
 	inline FVector3d(float In)
@@ -82,9 +113,9 @@ struct FVector3d
 
 struct FVector4d
 {
-	FVector4d()					= default;
+	FVector4d() = default;
 	FVector4d(FVector4d const&) = default;
-	FVector4d(FVector4d&&)		= default;
+	FVector4d(FVector4d&&) = default;
 	FVector4d& operator=(FVector4d const&) = default;
 
 	inline FVector4d operator*(float In) const

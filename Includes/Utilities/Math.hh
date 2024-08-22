@@ -23,9 +23,6 @@
 #include <array>
 #include <atomic>
 
-struct FVector2d;
-struct FVector3d;
-
 struct FMath
 {
 	inline static bool IsZero(float In)
@@ -44,7 +41,7 @@ struct FMath
 	template<typename T, std::size_t N>
 	static T Magnitude(std::array<T, N> const& Vector);
 
-	template<typename T, std::size_t N>
+	template<typename T>
 	static T Sqrt(T In);
 };
 
@@ -92,7 +89,7 @@ T FMath::Magnitude(std::array<T, N> const& Vector)
 	return FMath::Sqrt<T>(Result);
 }
 
-template <typename T, std::size_t N>
+template <typename T>
 T FMath::Sqrt(T In)
 {
 	static_assert(std::is_floating_point_v<T>());
