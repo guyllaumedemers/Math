@@ -42,9 +42,10 @@ struct FMath
 
 	// TODO solve for less expensive solution
 	template<typename T, std::size_t N>
-	static float Magnitude(std::array<T, N> const& Vector);
+	static T Magnitude(std::array<T, N> const& Vector);
 
-	static float Sqrt(float In);
+	template<typename T, std::size_t N>
+	static T Sqrt(T In);
 };
 
 template <typename T, std::size_t N>
@@ -78,15 +79,23 @@ std::array<T, N> FMath::Normalize(std::array<T, N> const& Vector)
 }
 
 template <typename T, std::size_t N>
-float FMath::Magnitude(std::array<T, N> const& Vector)
+T FMath::Magnitude(std::array<T, N> const& Vector)
 {
 	static_assert(std::is_floating_point_v<T>());
 
-	float Result{};
+	T Result{};
 	for (std::size_t i; i < Vector.size(); ++i)
 	{
 		Result += (Vector[i] * Vector[i]);
 	}
 
-	return FMath::Sqrt(Result);
+	return FMath::Sqrt<T>(Result);
+}
+
+template <typename T, std::size_t N>
+T FMath::Sqrt(T In)
+{
+	static_assert(std::is_floating_point_v<T>());
+
+	return 0.f;
 }

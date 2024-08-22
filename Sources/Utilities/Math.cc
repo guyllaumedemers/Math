@@ -19,9 +19,3 @@
 //SOFTWARE.
 
 #include "Utilities/Math.hh"
-
-float FMath::Sqrt(float In)
-{
-	// TODO learn computing sqrt
-	return 0.f;
-}
