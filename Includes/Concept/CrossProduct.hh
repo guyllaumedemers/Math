@@ -18,10 +18,11 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 
-#include "Utilities/Math.hh"
+#pragma once
 
-float FMath::Sqrt(float In)
+#include "IMathExpression.hh"
+
+class UCrossProduct : public IMathExpression
 {
-	// TODO learn computing sqrt
-	return 0.f;
-}
+
+};

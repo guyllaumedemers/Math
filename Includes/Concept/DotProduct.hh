@@ -22,7 +22,7 @@
 
 #include "IMathExpression.hh"
 
-class DotProduct : public IMathExpression
+class UDotProduct : public IMathExpression
 {
 	//	math proofs : where do they come from ?
 	//

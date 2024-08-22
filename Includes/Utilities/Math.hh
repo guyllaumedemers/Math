@@ -20,6 +20,12 @@
 
 #pragma once
 
+#include <array>
+#include <atomic>
+
+struct FVector2d;
+struct FVector3d;
+
 struct FMath
 {
 	inline static bool IsZero(float In)
@@ -27,4 +33,60 @@ struct FMath
 		// TODO do proper zero check
 		return In == 0.f;
 	}
+
+	template<typename T, std::size_t N>
+	static float DotProduct(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB);
+
+	template<typename T, std::size_t N>
+	static std::array<T, N> Normalize(std::array<T, N> const& Vector);
+
+	// TODO solve for less expensive solution
+	template<typename T, std::size_t N>
+	static float Magnitude(std::array<T, N> const& Vector);
+
+	static float Sqrt(float In);
 };
+
+template <typename T, std::size_t N>
+float FMath::DotProduct(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB)
+{
+	static_assert(std::is_floating_point_v<T>() && (VectorA.size() == VectorB.size()) && N != 0);
+
+	T Result{};
+	for (std::size_t i; i < VectorA.size(); ++i)
+	{
+		Result += (VectorA[i] * VectorB[i]);
+	}
+
+	return Result;
+}
+
+template <typename T, std::size_t N>
+std::array<T, N> FMath::Normalize(std::array<T, N> const& Vector)
+{
+	static_assert(std::is_floating_point_v<T>());
+
+	std::array<T, N> Result{};
+	T const Magnitude = FMath::Magnitude<T, N>(Vector);
+
+	for (std::size_t i; i < Vector.size(); ++i)
+	{
+		Result[i] = (Vector[i] / Magnitude);
+	}
+
+	return Result;
+}
+
+template <typename T, std::size_t N>
+float FMath::Magnitude(std::array<T, N> const& Vector)
+{
+	static_assert(std::is_floating_point_v<T>());
+
+	float Result{};
+	for (std::size_t i; i < Vector.size(); ++i)
+	{
+		Result += (Vector[i] * Vector[i]);
+	}
+
+	return FMath::Sqrt(Result);
+}
