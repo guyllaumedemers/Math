@@ -28,38 +28,38 @@
 
 struct FTransform
 {
-	FTransform()					= default;
-	FTransform(FTransform const&)	= default;
-	FTransform(FTransform &&)		= default;
+	FTransform() = default;
+	FTransform(FTransform const&) = default;
+	FTransform(FTransform&&) = default;
 	FTransform& operator=(FTransform const&) = default;
 
-	inline FTransform(FVector3d const& Position, FVector3d const& Rotation, FVector3d const& Scale)
+	FTransform(FVector3d const& Position, FVector3d const& Rotation, FVector3d const& Scale)
 	{
-		this->Position	= Position;
-		this->Rotation	= Rotation;
-		this->Scale		= Scale;
+		this->Position = Position;
+		this->Rotation = Rotation;
+		this->Scale = Scale;
 	}
 
-	inline FTransform& operator*=(FTransform const& In)
+	FTransform& operator*=(FTransform const& In)
 	{
-		Position	= FMatrix4x4::Translate(In.Position)	* Position;
-		Rotation	= FMatrix4x4::Rotate(In.Rotation)		* Rotation;
-		Scale		= FMatrix4x4::Scale(In.Scale)			* Scale;
+		Position = FMatrix4x4::Translate(In.Position) * Position;
+		Rotation = FMatrix4x4::Rotate(In.Rotation) * Rotation;
+		Scale = FMatrix4x4::Scale(In.Scale) * Scale;
 		return *this;
 	}
 
-	inline FMatrix4x4 ModelMatrix() const
+	FMatrix4x4 ModelMatrix() const
 	{
 		// TODO double check left-hand side vs right-hand side if weird behaviour occurs
 		return (FMatrix4x4::Translate(Position) * (FMatrix4x4::Rotate(Rotation) * FMatrix4x4::Scale(Scale)));
 	}
 
-	inline FMatrix4x4 Inverse() const
+	FMatrix4x4 Inverse() const
 	{
 		FMatrix4x4 const& Matrix = ModelMatrix();
 
 		float const Determinant = Matrix.Determinant();
-		if(FMath::IsZero(Determinant))
+		if (FMath::IsNearlyZero(Determinant))
 		{
 			// TODO determine if assertion is the correct approach as in some case, we may want to actually return and continue
 			// the execution
@@ -72,9 +72,9 @@ struct FTransform
 		}
 	}
 
-	FVector3d Position	= FVector3d::Zero;
+	FVector4d Position{};
 	// TODO update for quaternions later, if you ever understand them
-	FVector3d Rotation	= FVector3d::Zero;
-	FVector3d Scale		= FVector3d::One;
+	FVector4d Rotation{};
+	FVector4d Scale{};
 	FTransform const static Default;
 };

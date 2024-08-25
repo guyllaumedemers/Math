@@ -55,7 +55,7 @@ SET cppFilenames=!cppFilenames! %ImguiSrc%
 
 :: compiler flags
 :: https://learn.microsoft.com/en-us/cpp/build/reference/compiler-options-listed-by-category?view=msvc-170
-SET cflags=/std:c++17 /EHsc /MT /Od /I"%projDir%" /I"%imguibackendsDir%" /I"%imguiDir%" /I"%sdl2Dir%" /Fe"%buildDir%/Sandbox.exe" /Fo"%buildDir%/"
+SET cflags=/std:c++20 /EHsc /MT /Od /I"%projDir%" /I"%imguibackendsDir%" /I"%imguiDir%" /I"%sdl2Dir%" /Fe"%buildDir%/Sandbox.exe" /Fo"%buildDir%/"
 
 :: libraries
 SET languagelibs=libucrt.lib libvcruntime.lib libcmt.lib libcpmt.lib

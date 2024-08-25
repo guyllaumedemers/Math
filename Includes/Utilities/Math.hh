@@ -25,19 +25,20 @@
 
 struct FMath
 {
-	inline static bool IsZero(float In)
+	inline static bool IsNearlyZero(float In)
 	{
 		// TODO do proper zero check
 		return In == 0.f;
 	}
 
+	// src : https://en.wikipedia.org/wiki/Dot_product
+	// description : the dot product or scalar product is an algebraic operation that takes two equal-length sequences of numbers (usually coordinate vectors), and returns a single number.
 	template<typename T, std::size_t N>
 	static float DotProduct(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB);
 
 	template<typename T, std::size_t N>
 	static std::array<T, N> Normalize(std::array<T, N> const& Vector);
 
-	// TODO solve for less expensive solution
 	template<typename T, std::size_t N>
 	static T Magnitude(std::array<T, N> const& Vector);
 

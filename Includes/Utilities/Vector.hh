@@ -27,10 +27,28 @@
 
 namespace Private
 {
-	template<typename T, std::size_t N, std::enable_if_t<std::is_floating_point_v<T>, T> = true>
+	template<typename T, std::size_t N>
 	struct TVector
 	{
-		static_assert(N != 0, "TVector size is ill format");
+		static_assert(std::is_floating_point_v<T>, "TVector size ill format, can only accept floating point types");
+
+		// left-hand side of operator=
+		inline T& operator[](std::size_t Index)
+		{
+			return Components.at(Index);
+		}
+
+		// right-hand side of operator=
+		inline T const& operator[](std::size_t Index) const
+		{
+			return Components.at(Index);
+		}
+
+		inline TVector& operator=(TVector<T, N> const& Rhs)
+		{
+			this->Components = Rhs.Components;
+			return *this;
+		}
 
 		inline float DotProduct(TVector<T, N> const& In) const
 		{
@@ -47,7 +65,12 @@ namespace Private
 			return FMath::Magnitude<T, N>(Components);
 		}
 
-		std::array<T, N> Components;
+		inline std::size_t Size() const
+		{
+			return Components.size();
+		}
+
+		std::array<T, N> Components{};
 	};
 }
 
@@ -60,20 +83,19 @@ struct FVector2d
 
 	inline FVector2d(float In)
 	{
-		this->X = In;
-		this->Y = In;
+		this->Vector[0] = In;
+		this->Vector[1] = In;
 	}
 
 	inline FVector2d(float X, float Y)
 	{
-		this->X = X;
-		this->Y = Y;
+		this->Vector[0] = X;
+		this->Vector[1] = Y;
 	}
 
-	float X = 0.f;
-	float Y = 0.f;
 	FVector2d const static Zero;
 	FVector2d const static One;
+	Private::TVector<float, 2> Vector{};
 };
 
 struct FVector3d
@@ -85,30 +107,28 @@ struct FVector3d
 
 	inline FVector3d(float In)
 	{
-		this->X = In;
-		this->Y = In;
-		this->Z = In;
+		this->Vector[0] = In;
+		this->Vector[1] = In;
+		this->Vector[2] = In;
 	}
 
 	inline FVector3d(float X, float Y, float Z)
 	{
-		this->X = X;
-		this->Y = Y;
-		this->Z = Z;
+		this->Vector[0] = X;
+		this->Vector[1] = Y;
+		this->Vector[2] = Z;
 	}
 
 	inline FVector3d(FVector2d const& In)
 	{
-		this->X = In.X;
-		this->Y = In.Y;
-		this->Z = 0.f;
+		this->Vector[0] = In.Vector[0];
+		this->Vector[1] = In.Vector[1];
+		this->Vector[2] = 1.f;
 	}
 
-	float X = 0.f;
-	float Y = 0.f;
-	float Z = 0.f;
 	FVector3d const static Zero;
 	FVector3d const static One;
+	Private::TVector<float, 3> Vector{};
 };
 
 struct FVector4d
@@ -118,29 +138,36 @@ struct FVector4d
 	FVector4d(FVector4d&&) = default;
 	FVector4d& operator=(FVector4d const&) = default;
 
-	inline FVector4d operator*(float In) const
+	FVector4d operator*(float In) const
 	{
-		return FVector4d{ X * In, Y * In, Z * In, W * In };
+		return FVector4d{};
 	}
 
-	inline FVector4d(float X, float Y, float Z, float W)
+	float& operator[](std::size_t Index)
 	{
-		this->X = X;
-		this->Y = Y;
-		this->Z = Z;
-		this->W = W;
+		return Vector[Index];
 	}
 
-	inline FVector4d(FVector3d const& In)
+	float const& operator[](std::size_t Index) const
 	{
-		this->X = In.X;
-		this->Y = In.Y;
-		this->Z = In.Z;
-		this->W = 1.f;
+		return Vector[Index];
 	}
 
-	float X = 0.f;
-	float Y = 0.f;
-	float Z = 0.f;
-	float W = 1.f;
+	FVector4d(float X, float Y, float Z, float W)
+	{
+		this->Vector[0] = X;
+		this->Vector[1] = Y;
+		this->Vector[2] = Z;
+		this->Vector[3] = W;
+	}
+
+	FVector4d(FVector3d const& In)
+	{
+		this->Vector[0] = In.Vector[0];
+		this->Vector[1] = In.Vector[1];
+		this->Vector[2] = In.Vector[2];
+		this->Vector[3] = 1.f;
+	}
+
+	Private::TVector<float, 4> Vector{};
 };

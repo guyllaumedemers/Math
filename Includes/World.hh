@@ -28,9 +28,9 @@
 class FWorld : public IDrawable
 {
 public:
-	FWorld()				= default;
-	FWorld(FWorld const&)	= default;
-	FWorld(FWorld &&)		= default;
+	FWorld() = default;
+	FWorld(FWorld const&) = default;
+	FWorld(FWorld&&) = default;
 	virtual ~FWorld() override;
 
 	// IDrawable

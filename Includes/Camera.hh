@@ -24,9 +24,9 @@
 
 struct FCamera
 {
-	FCamera()				= default;
+	FCamera() = default;
 	FCamera(FCamera const&) = default;
-	FCamera(FCamera&&)		= default;
+	FCamera(FCamera&&) = default;
 	FCamera& operator=(FCamera const&) = default;
 
 	inline FCamera(FTransform const& Transform, float NearPlane, float FarPlane, float Fov)
