@@ -52,7 +52,7 @@ namespace Private
 
 		inline float DotProduct(TVector<T, N> const& In) const
 		{
-			return FMath::DotProduct<T, N>(*this, In);
+			return FMath::DotProduct<T, N>(Components, In.Components);
 		}
 
 		inline float Normalize() const
@@ -65,7 +65,7 @@ namespace Private
 			return FMath::Magnitude<T, N>(Components);
 		}
 
-		inline std::size_t Size() const
+		inline std::size_t GetRows() const
 		{
 			return Components.size();
 		}

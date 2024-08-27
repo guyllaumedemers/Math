@@ -22,8 +22,8 @@
 
 #include <assert.h>
 
-#include "Matrix.hh"
 #include "Math.hh"
+#include "Matrix.hh"
 #include "Vector.hh"
 
 struct FTransform

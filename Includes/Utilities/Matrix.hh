@@ -21,7 +21,6 @@
 #pragma once
 
 #include <atomic>
-#include <iostream>
 #include <type_traits>
 
 #include "Vector.hh"
@@ -33,6 +32,35 @@ namespace Private
 	{
 		static_assert(std::is_floating_point_v<T>, "TMatrix size ill format, can only accept floating point types");
 
+		template<std::size_t K, std::size_t L>
+		TMatrix<T, M, L> operator*(TMatrix<T, K, L> const& Rhs) const
+		{
+			static_assert(N == K, "TMatrix size is ill format. Matrix product can only happen if Mat_A nbCol == Mat_B nbRow");
+
+			TMatrix<T, M, L> Result{};
+			return Result;
+		}
+
+		template<std::size_t K>
+		TVector<T, M> operator*(TVector<T, K> const& Rhs) const
+		{
+			static_assert(N == K, "TMatrix size is ill format. Matrix product can only happen if Mat_A nbCol == Mat_B nbRow");
+
+			TVector<T, M> Result{};
+			std::size_t RowMatrix = GetRows();
+			std::size_t RowVector = GetCols();
+
+			for (std::size_t i = 0; i < RowMatrix; ++i)
+			{
+				for (std::size_t j = 0; j < RowVector; ++j)
+				{
+					Result[i] += (RowsCols[i][j] * Rhs[j]);
+				}
+			}
+
+			return Result;
+		}
+
 		T& operator()(std::size_t Row, std::size_t Col)
 		{
 			return RowsCols[Row][Col];
@@ -41,6 +69,16 @@ namespace Private
 		T const& operator()(std::size_t Row, std::size_t Col) const
 		{
 			return RowsCols[Row][Col];
+		}
+
+		inline std::size_t GetRows() const
+		{
+			return RowsCols.size();
+		}
+
+		inline std::size_t GetCols() const
+		{
+			return RowsCols[0].Components.size();
 		}
 
 		// src : https://en.wikipedia.org/wiki/Adjugate_matrix
