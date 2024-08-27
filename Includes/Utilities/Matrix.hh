@@ -42,7 +42,7 @@ namespace Private
 			{
 				for (std::size_t j = 0; j < Rhs.GetCols(); ++j)
 				{
-					for (std::size_t k = 0; k < GetCols(); ++k)
+					for (std::size_t k = 0; k < Rhs.GetRows(); ++k)
 					{
 						Result(i, j) += (RowsCols[i][k] * Rhs(k, j));
 					}
