@@ -35,13 +35,13 @@ namespace Private
 		// left-hand side of operator=
 		inline T& operator[](std::size_t Index)
 		{
-			return Components.at(Index);
+			return Components[Index];
 		}
 
 		// right-hand side of operator=
 		inline T const& operator[](std::size_t Index) const
 		{
-			return Components.at(Index);
+			return Components[Index];
 		}
 
 		inline TVector& operator=(TVector<T, N> const& Rhs)

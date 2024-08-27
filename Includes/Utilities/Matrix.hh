@@ -38,6 +38,17 @@ namespace Private
 			static_assert(N == K, "TMatrix size is ill format. Matrix product can only happen if Mat_A nbCol == Mat_B nbRow");
 
 			TMatrix<T, M, L> Result{};
+			for (std::size_t i = 0; i < GetRows(); ++i)
+			{
+				for (std::size_t j = 0; j < Rhs.GetCols(); ++j)
+				{
+					for (std::size_t k = 0; k < GetCols(); ++k)
+					{
+						Result(i, j) += (RowsCols[i][k] * Rhs(k, j));
+					}
+				}
+			}
+
 			return Result;
 		}
 
@@ -47,12 +58,9 @@ namespace Private
 			static_assert(N == K, "TMatrix size is ill format. Matrix product can only happen if Mat_A nbCol == Mat_B nbRow");
 
 			TVector<T, M> Result{};
-			std::size_t RowMatrix = GetRows();
-			std::size_t RowVector = GetCols();
-
-			for (std::size_t i = 0; i < RowMatrix; ++i)
+			for (std::size_t i = 0; i < GetRows(); ++i)
 			{
-				for (std::size_t j = 0; j < RowVector; ++j)
+				for (std::size_t j = 0; j < Rhs.GetRows(); ++j)
 				{
 					Result[i] += (RowsCols[i][j] * Rhs[j]);
 				}
