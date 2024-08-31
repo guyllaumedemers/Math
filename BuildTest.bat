@@ -61,7 +61,11 @@ SET cflags=/std:c++20 /EHsc /MT /Od /I"%projDir%" /I"%googletestDir%" /I"%google
 
 :: libraries
 SET languagelibs=libucrt.lib libvcruntime.lib libcmt.lib libcpmt.lib
-SET systemlibs=kernel32.lib user32.lib Shell32.lib
+SET systemlibs=kernel32.lib user32.lib Shell32.lib oldnames.lib
+
+:: https://learn.microsoft.com/en-us/cpp/c-runtime-library/compatibility?view=msvc-170
+:: https://learn.microsoft.com/en-us/cpp/c-runtime-library/backward-compatibility?view=msvc-170
+:: oldnames.lib
 
 :: program linkage with system libs
 SET elinkage=%languagelibs% %systemlibs%
