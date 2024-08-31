@@ -9,7 +9,8 @@
         "${env.INCLUDE}",
         "${workspaceRoot}\\Includes",
         "${workspaceRoot}\\Vendor\\sdl2\\include",
-        "${workspaceRoot}\\Vendor\\imgui"
+        "${workspaceRoot}\\Vendor\\imgui",
+        "${workspaceRoot}\\Vendor\\googletest\\googletest\\include"
       ],
       "defines": [
         "WIN32",
