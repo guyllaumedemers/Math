@@ -21,3 +21,6 @@
 @ECHO OFF
 
 SETLOCAL enabledelayedexpansion
+
+:: run executable
+.\Out\Build\Test\Test.exe
