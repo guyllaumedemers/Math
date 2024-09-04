@@ -52,7 +52,7 @@ SET projDir="%~dp0Includes"
 :: vendor include directories
 SET googletestDir="%~dp0Vendor/googletest/googletest"
 
-:: imgui source files we care about
+:: googletest source files we care about
 SET googletestSrc="%googletestDir%/src/gtest-all.cc" "%googletestDir%/src/gtest_main.cc"
 SET cppFilenames=!cppFilenames! %googletestSrc%
 

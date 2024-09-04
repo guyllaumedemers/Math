@@ -69,6 +69,20 @@ namespace Private
 			return Result;
 		}
 
+		TMatrix operator*(float In) const
+		{
+			TMatrix<T, M, N> Result{};
+			for (std::size_t i = 0; i < GetRows(); ++i)
+			{
+				for (std::size_t j = 0; j < GetRows(); ++j)
+				{
+					Result(i, j) += (this->RowsCols[i][j] * In);
+				}
+			}
+
+			return Result;
+		}
+
 		T& operator()(std::size_t Row, std::size_t Col)
 		{
 			return RowsCols[Row][Col];
@@ -99,7 +113,7 @@ namespace Private
 
 		// description : calculate recursively sub-matrix, reaching at 2x2 size to calculate determinant.
 		template<std::size_t K, std::size_t L>
-		TMatrix<T, K, L> SubMatrix(std::size_t Row, std::size_t Col) const;
+		TMatrix<T, K, L> SubMatrix(std::size_t IgnoredRow, std::size_t IgnoredCol) const;
 
 		// src : https://en.wikipedia.org/wiki/Transpose
 		// description : the transpose of a matrix is an operator which flips a matrix over its diagonal.
@@ -111,14 +125,15 @@ namespace Private
 	template <typename T, std::size_t M, std::size_t N>
 	TMatrix<T, M, N> TMatrix<T, M, N>::Transpose() const
 	{
-		static_assert(M == N, "TMatrix ill format. Size must be square to allow transposition");
+		static_assert(M == N, "TMatrix ill format. Transpose : Cannot transpose non-squared matrix");
 
 		TMatrix<T, M, N> Result{};
-		std::size_t Size = RowsCols.size();
+		std::size_t Row = GetRows();
+		std::size_t Col = GetCols();
 
-		for (std::size_t i = 0; i < Size; ++i)
+		for (std::size_t i = 0; i < Row; ++i)
 		{
-			for (std::size_t j = 0; j < Size; ++j)
+			for (std::size_t j = 0; j < Col; ++j)
 			{
 				if (j < i)
 				{
@@ -137,23 +152,24 @@ namespace Private
 
 	template <typename T, std::size_t M, std::size_t N>
 	template <std::size_t K, std::size_t L>
-	TMatrix<T, K, L> TMatrix<T, M, N>::SubMatrix(std::size_t Row, std::size_t Col) const
+	TMatrix<T, K, L> TMatrix<T, M, N>::SubMatrix(std::size_t IgnoredRow, std::size_t IgnoredCol) const
 	{
 		TMatrix<T, K, L> Result{};
-		std::size_t Size = RowsCols.size();
+		std::size_t Row = GetRows();
+		std::size_t Col = GetCols();
 		std::size_t k = 0, l = 0;
 
-		for (std::size_t i = 0; i < Size; ++i)
+		for (std::size_t i = 0; i < Row; ++i)
 		{
-			if (i == Row)
+			if (i == IgnoredRow)
 			{
 				continue;
 			}
 
 			l = 0;
-			for (std::size_t j = 0; j < Size; ++j)
+			for (std::size_t j = 0; j < Col; ++j)
 			{
-				if (j == Col)
+				if (j == IgnoredCol)
 				{
 					continue;
 				}
@@ -174,13 +190,14 @@ namespace Private
 		static_assert(M == N, "TMatrix size is ill format. Determinant : Cannot calculate determinant of non-squared matrix");
 
 		T OutResult{};
-		std::size_t Size = RowsCols.size();
+		std::size_t Row = GetRows();
+		std::size_t Col = GetCols();
 
-		if (Size == 1)
+		if (Row == 1)
 		{
 			OutResult = RowsCols[0][0];
 		}
-		else if (Size == 2)
+		else if (Row == 2)
 		{
 			T const A = RowsCols[0][0] * RowsCols[1][1];
 			T const B = RowsCols[1][0] * RowsCols[0][1] * -1;
@@ -188,7 +205,7 @@ namespace Private
 		}
 		else
 		{
-			for (std::size_t k = 0; k < Size; ++k)
+			for (std::size_t k = 0; k < Col; ++k)
 			{
 				TMatrix<T, M - 1, N - 1> const TempMatrix = this->template SubMatrix<M - 1, N - 1>(0, k);
 				OutResult += (RowsCols[0][k] * TempMatrix.CalculateDeterminant() * (k & 1 ? -1.f : 1.f));
@@ -204,11 +221,12 @@ namespace Private
 		static_assert(M == N, "TMatrix size is ill format. Adjugate : Cannot calculate determinant of non-squared matrix");
 
 		TMatrix<T, M, N> Result{};
-		std::size_t Size = RowsCols.size();
+		std::size_t Row = GetRows();
+		std::size_t Col = GetCols();
 
-		for (std::size_t i = 0; i < Size; ++i)
+		for (std::size_t i = 0; i < Row; ++i)
 		{
-			for (std::size_t j = 0; j < Size; ++j)
+			for (std::size_t j = 0; j < Col; ++j)
 			{
 				TMatrix<T, M - 1, N - 1> const TempMatrix = this->template SubMatrix<M - 1, N - 1>(i, j);
 				Result(i, j) = TempMatrix.CalculateDeterminant() * ((i + j) & 1 ? -1.f : 1.f);
@@ -258,7 +276,7 @@ namespace Private
 		}
 
 		[[noreturn]]
-		TMatrix<T, 0, 0> SubMatrix() const
+		TMatrix<T, 0, 0> SubMatrix(std::size_t IgnoredRow, std::size_t IgnoredCol) const
 		{
 			throw;
 		}
