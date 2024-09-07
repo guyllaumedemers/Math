@@ -34,20 +34,12 @@ FOR /f usebackq %%i in (`DIR /ad /b %~dp0`) do (
 			SET cppFilenames=!cppFilenames! %%k
 		)
 		POPD
-	) ELSE IF "%%i" EQU "Sources" (
-		PUSHD "%%i"
-		FOR /r %%k in (*.cc) do (
-			:: ignore main as we only care about gtest_main to run our test executable
-			IF NOT "%%k" EQU "%~dp0%%i\Main.cc" (
-				SET cppFilenames=!cppFilenames! %%k
-			)
-		)
-		POPD
 	)
 )
 
 :: project include directory
 SET projDir="%~dp0Includes"
+SET srcDir="%~dp0Sources"
 
 :: vendor include directories
 SET googletestDir="%~dp0Vendor/googletest/googletest"
@@ -57,7 +49,7 @@ SET googletestSrc="%googletestDir%/src/gtest-all.cc" "%googletestDir%/src/gtest_
 SET cppFilenames=!cppFilenames! %googletestSrc%
 
 :: compiler flags
-SET cflags=/std:c++20 /EHsc /MT /Od /I"%projDir%" /I"%googletestDir%" /I"%googletestDir%/include" /Fe"%buildDir%/Test/Test.exe" /Fo"%buildDir%/Test/"
+SET cflags=/std:c++20 /EHsc /MT /Od /I"%projDir%" /I"%srcDir%" /I"%googletestDir%" /I"%googletestDir%/include" /Fe"%buildDir%/Test/Test.exe" /Fo"%buildDir%/Test/"
 
 :: libraries
 SET languagelibs=libucrt.lib libvcruntime.lib libcmt.lib libcpmt.lib

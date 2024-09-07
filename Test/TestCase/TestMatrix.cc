@@ -116,8 +116,8 @@ TEST_F(TestTMatrix, AdjugateWorks)
 TEST_F(TestTMatrix, MatrixInverseWorks)
 {
 	auto const InverseMatrix = NonZeroDeterminant.CalculateAdjugate() * (1.f / NonZeroDeterminant.CalculateDeterminant());
-	float const Tenth = 1.f / 10;
-	float const Fifth = 1.f / 5;
+	float constexpr Tenth = 0.1f;
+	float constexpr Fifth = 0.2f;
 
 	EXPECT_FLOAT_EQ(InverseMatrix(0, 0), 29.f * Tenth);
 	EXPECT_FLOAT_EQ(InverseMatrix(0, 1), 6.f * Fifth);
