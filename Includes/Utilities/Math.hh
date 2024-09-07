@@ -35,7 +35,7 @@ struct FMath
 	// src : https://en.wikipedia.org/wiki/Dot_product
 	// description : the dot product or scalar product is an algebraic operation that takes two equal-length sequences of numbers (usually coordinate vectors), and returns a single number.
 	template<typename T, std::size_t N>
-	static float DotProduct(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB);
+	static T DotProduct(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB);
 
 	template<typename T, std::size_t N>
 	static std::array<T, N> Normalize(std::array<T, N> const& Vector);
@@ -51,7 +51,7 @@ struct FMath
 };
 
 template <typename T, std::size_t N>
-float FMath::DotProduct(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB)
+T FMath::DotProduct(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB)
 {
 	static_assert(std::is_floating_point_v<T>, "FMath ill format, can only accept floating point types");
 
