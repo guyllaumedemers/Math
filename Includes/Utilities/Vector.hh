@@ -30,7 +30,7 @@ namespace Private
 	template<typename T, std::size_t N>
 	struct TVector
 	{
-		static_assert(std::is_floating_point_v<T>, "TVector size ill format, can only accept floating point types");
+		static_assert(std::is_floating_point_v<T>, "TVector ill format, can only accept floating point types");
 
 		// left-hand side of operator=
 		inline T& operator[](std::size_t Index)
@@ -50,17 +50,63 @@ namespace Private
 			return *this;
 		}
 
-		inline float DotProduct(TVector<T, N> const& In) const
+		inline TVector operator+(TVector<T, N> const& Rhs) const
+		{
+			TVector<T, N> Result{};
+
+			for (std::size_t i = 0; i < GetRows(); ++i)
+			{
+				Result[i] = (Components[i] + Rhs[i]);
+			}
+
+			return Result;
+		}
+
+		inline TVector& operator+=(TVector<T, N> const& Rhs)
+		{
+			*this = (*this + Rhs);
+			return *this;
+		}
+
+		inline TVector operator-(TVector<T, N> const& Rhs) const
+		{
+			TVector<T, N> Result{};
+
+			for (std::size_t i = 0; i < GetRows(); ++i)
+			{
+				Result[i] = (Components[i] - Rhs[i]);
+			}
+
+			return Result;
+		}
+
+		inline TVector& operator-=(TVector<T, N> const& Rhs)
+		{
+			*this = (*this - Rhs);
+			return *this;
+		}
+
+		inline bool operator==(TVector<T, N> const& Rhs) const
+		{
+			return (this->Components == Rhs.Components);
+		}
+
+		inline T DotProduct(TVector<T, N> const& In) const
 		{
 			return FMath::DotProduct<T, N>(Components, In.Components);
 		}
 
-		inline float Normalize() const
+		inline TVector Normalize() const
 		{
-			return FMath::Normalize<T, N>(Components);
+			return TVector{ FMath::Normalize<T, N>(Components) };
 		}
 
-		inline float Magnitude() const
+		inline T SquaredMagnitude() const
+		{
+			return FMath::SquaredMagnitude<T, N>(Components);
+		}
+
+		inline T Magnitude() const
 		{
 			return FMath::Magnitude<T, N>(Components);
 		}

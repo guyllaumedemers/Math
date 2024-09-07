@@ -22,15 +22,11 @@
 #include <cstdio>
 
 // vendor headers
-#include <iostream>
-
 #include "SDL3/SDL.h"
 #include "imgui.h"
 #include "backends/imgui_impl_opengl3.h"
 #include "backends/imgui_impl_opengl3_loader.h"
 #include "backends/imgui_impl_sdl3.h"
-
-#include "Utilities/Matrix.hh"
 
 // macro for application process closure
 static int constexpr Error = -1;
@@ -170,32 +166,6 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 			SDL_GL_SwapWindow(Target);
 		};
-
-	Private::TMatrix<float, 2, 2> MatrixA
-	{
-		Private::TVector<float, 2>{1,2},
-		Private::TVector<float, 2>{4,5},
-	};
-
-	Private::TMatrix<float, 2, 3> MatrixB
-	{
-		Private::TVector<float, 3>{1,2,3},
-		Private::TVector<float, 3>{4,5,6},
-	};
-
-	Private::TVector<float, 3> Vector{ 1, 2, 3 };
-
-	auto Test = MatrixA * MatrixB;
-
-	for (auto Row : Test.RowsCols)
-	{
-		for (auto RowComponent : Row.Components)
-		{
-			std::cout << RowComponent << " ";
-		}
-
-		std::cout  << "\n";
-	}
 
 	//	*******
 	//	application loop

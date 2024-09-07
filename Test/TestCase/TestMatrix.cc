@@ -18,9 +18,9 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 
-#include "Utilities/Matrix.hh"
-
 #include "gtest/gtest.h"
+
+#include "Utilities/Matrix.hh"
 
 class TestTMatrix : public testing::Test
 {
@@ -86,7 +86,7 @@ TEST_F(TestTMatrix, DeterminantWorks)
 
 TEST_F(TestTMatrix, TransposeWorks)
 {
-	auto const TransposeMatrix = Squared.Transpose();
+	auto const& TransposeMatrix = Squared.Transpose();
 	auto const Row = TransposeMatrix.GetRows();
 	auto const Col = TransposeMatrix.GetCols();
 
@@ -101,7 +101,7 @@ TEST_F(TestTMatrix, TransposeWorks)
 
 TEST_F(TestTMatrix, AdjugateWorks)
 {
-	auto const AdjugateMatrix = NonZeroDeterminant.CalculateAdjugate();
+	auto const& AdjugateMatrix = NonZeroDeterminant.CalculateAdjugate();
 	EXPECT_FLOAT_EQ(AdjugateMatrix(0, 0), 29.f);
 	EXPECT_FLOAT_EQ(AdjugateMatrix(0, 1), 12.f);
 	EXPECT_FLOAT_EQ(AdjugateMatrix(0, 2), -22.f);
@@ -115,7 +115,7 @@ TEST_F(TestTMatrix, AdjugateWorks)
 
 TEST_F(TestTMatrix, MatrixInverseWorks)
 {
-	auto const InverseMatrix = NonZeroDeterminant.CalculateAdjugate() * (1.f / NonZeroDeterminant.CalculateDeterminant());
+	auto const& InverseMatrix = NonZeroDeterminant.CalculateAdjugate() * (1.f / NonZeroDeterminant.CalculateDeterminant());
 	float constexpr Tenth = 0.1f;
 	float constexpr Fifth = 0.2f;
 

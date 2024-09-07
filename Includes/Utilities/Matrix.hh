@@ -30,7 +30,7 @@ namespace Private
 	template<typename T, std::size_t M, std::size_t N>
 	struct TMatrix
 	{
-		static_assert(std::is_floating_point_v<T>, "TMatrix size ill format, can only accept floating point types");
+		static_assert(std::is_floating_point_v<T>, "TMatrix ill format, can only accept floating point types");
 
 		template<std::size_t K, std::size_t L>
 		TMatrix<T, M, L> operator*(TMatrix<T, K, L> const& Rhs) const

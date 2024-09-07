@@ -22,6 +22,7 @@
 
 #include <array>
 #include <atomic>
+#include <math.h>
 
 struct FMath
 {
@@ -39,6 +40,9 @@ struct FMath
 	template<typename T, std::size_t N>
 	static std::array<T, N> Normalize(std::array<T, N> const& Vector);
 
+	template <typename T, std::size_t N>
+	static T SquaredMagnitude(std::array<T, N> const& Vector);
+
 	template<typename T, std::size_t N>
 	static T Magnitude(std::array<T, N> const& Vector);
 
@@ -49,10 +53,10 @@ struct FMath
 template <typename T, std::size_t N>
 float FMath::DotProduct(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB)
 {
-	static_assert(std::is_floating_point_v<T>() && (VectorA.size() == VectorB.size()) && N != 0);
+	static_assert(std::is_floating_point_v<T>, "FMath ill format, can only accept floating point types");
 
 	T Result{};
-	for (std::size_t i; i < VectorA.size(); ++i)
+	for (std::size_t i = 0; i < VectorA.size(); ++i)
 	{
 		Result += (VectorA[i] * VectorB[i]);
 	}
@@ -63,14 +67,28 @@ float FMath::DotProduct(std::array<T, N> const& VectorA, std::array<T, N> const&
 template <typename T, std::size_t N>
 std::array<T, N> FMath::Normalize(std::array<T, N> const& Vector)
 {
-	static_assert(std::is_floating_point_v<T>());
+	static_assert(std::is_floating_point_v<T>, "FMath ill format, can only accept floating point types");
 
 	std::array<T, N> Result{};
-	T const Magnitude = FMath::Magnitude<T, N>(Vector);
+	T const Magnitude = (1.f / FMath::Magnitude<T, N>(Vector));
 
-	for (std::size_t i; i < Vector.size(); ++i)
+	for (std::size_t i = 0; i < Vector.size(); ++i)
 	{
-		Result[i] = (Vector[i] / Magnitude);
+		Result[i] = (Vector[i] * Magnitude);
+	}
+
+	return Result;
+}
+
+template <typename T, std::size_t N>
+T FMath::SquaredMagnitude(std::array<T, N> const& Vector)
+{
+	static_assert(std::is_floating_point_v<T>, "FMath ill format, can only accept floating point types");
+
+	T Result{};
+	for (std::size_t i = 0; i < Vector.size(); ++i)
+	{
+		Result += (Vector[i] * Vector[i]);
 	}
 
 	return Result;
@@ -79,21 +97,15 @@ std::array<T, N> FMath::Normalize(std::array<T, N> const& Vector)
 template <typename T, std::size_t N>
 T FMath::Magnitude(std::array<T, N> const& Vector)
 {
-	static_assert(std::is_floating_point_v<T>());
+	static_assert(std::is_floating_point_v<T>, "FMath ill format, can only accept floating point types");
 
-	T Result{};
-	for (std::size_t i; i < Vector.size(); ++i)
-	{
-		Result += (Vector[i] * Vector[i]);
-	}
-
-	return FMath::Sqrt<T>(Result);
+	return FMath::Sqrt<T>(FMath::SquaredMagnitude<T, N>(Vector));
 }
 
 template <typename T>
 T FMath::Sqrt(T In)
 {
-	static_assert(std::is_floating_point_v<T>());
+	static_assert(std::is_floating_point_v<T>, "FMath ill format, can only accept floating point types");
 
-	return 0.f;
+	return sqrt(In);
 }
