@@ -38,6 +38,9 @@ struct FMath
 	static T DotProduct(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB);
 
 	template<typename T, std::size_t N>
+	static std::array<T, N> CrossProduct(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB);
+
+	template<typename T, std::size_t N>
 	static std::array<T, N> Normalize(std::array<T, N> const& Vector);
 
 	template <typename T, std::size_t N>
@@ -59,6 +62,25 @@ T FMath::DotProduct(std::array<T, N> const& VectorA, std::array<T, N> const& Vec
 	for (std::size_t i = 0; i < VectorA.size(); ++i)
 	{
 		Result += (VectorA[i] * VectorB[i]);
+	}
+
+	return Result;
+}
+
+template <typename T, std::size_t N>
+std::array<T, N> FMath::CrossProduct(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB)
+{
+	static_assert(std::is_floating_point_v<T>, "FMath ill format, can only accept floating point types");
+	static_assert(N == 3, "FMath ill format, cross product only exist in 3-dimension *exception exist*");
+
+	std::array<T, N> Result{};
+	auto const Range = VectorA.size();
+
+	for (std::size_t i = 0; i < Range; ++i)
+	{
+		auto const IndexA = ((i + 1) % Range);
+		auto const IndexB = ((i + 2) % Range);
+		Result[i] += ((VectorA[IndexA] * VectorB[IndexB]) - (VectorA[IndexB] * VectorB[IndexA])) * (i & 1 ? -1.f : 1.f);
 	}
 
 	return Result;

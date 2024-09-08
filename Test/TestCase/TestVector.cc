@@ -30,6 +30,7 @@ protected:
 		Vector2d = { 3,4 };
 		Vector3d = { 2,3, 6 };
 		DotProductVector = { 1,2, 3 };
+		CrossProductVector = { 1,2, 3 };
 	}
 
 	virtual void TearDown() override
@@ -41,6 +42,7 @@ protected:
 	Private::TVector<float, 2> Vector2d{};
 	Private::TVector<float, 3> Vector3d{};
 	Private::TVector<float, 3> DotProductVector{};
+	Private::TVector<float, 3> CrossProductVector{};
 };
 
 /**
@@ -170,5 +172,15 @@ TEST_F(TestTVector, DotProduct)
 TEST_F(TestTVector, CrossProduct)
 {
 	// also known : vector product
+	auto const ZeroVector = Vector3d.CrossProduct(Vector3d);
+	for (std::size_t i = 0; i < ZeroVector.GetRows(); ++i)
+	{
+		EXPECT_FLOAT_EQ(ZeroVector[i], 0.f);
+	}
+
+	auto const CrossVector = Vector3d.CrossProduct(CrossProductVector);
+	EXPECT_FLOAT_EQ(CrossVector[0], -3.f);
+	EXPECT_FLOAT_EQ(CrossVector[1], 0.f);
+	EXPECT_FLOAT_EQ(CrossVector[2], 1.f);
 }
 
