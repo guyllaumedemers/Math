@@ -96,7 +96,7 @@ namespace Private
 			return FMath::DotProduct<T, N>(Components, In.Components);
 		}
 
-		inline TVector<T, N> CrossProduct(TVector<T, N> const& In) const
+		inline TVector CrossProduct(TVector<T, N> const& In) const
 		{
 			return TVector{ FMath::CrossProduct<T, N>(Components, In.Components) };
 		}
