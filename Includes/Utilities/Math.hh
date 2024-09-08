@@ -41,6 +41,9 @@ struct FMath
 	static std::array<T, N> CrossProduct(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB);
 
 	template<typename T, std::size_t N>
+	static std::array<T, N> VectorProjection(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB);
+
+	template<typename T, std::size_t N>
 	static std::array<T, N> Normalize(std::array<T, N> const& Vector);
 
 	template <typename T, std::size_t N>
@@ -81,6 +84,24 @@ std::array<T, N> FMath::CrossProduct(std::array<T, N> const& VectorA, std::array
 		auto const IndexA = ((i + 1) % Range);
 		auto const IndexB = ((i + 2) % Range);
 		Result[i] += ((VectorA[IndexA] * VectorB[IndexB]) - (VectorA[IndexB] * VectorB[IndexA])) * (i & 1 ? -1.f : 1.f);
+	}
+
+	return Result;
+}
+
+template <typename T, std::size_t N>
+std::array<T, N> FMath::VectorProjection(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB)
+{
+	static_assert(std::is_floating_point_v<T>, "FMath ill format, can only accept floating point types");
+
+	std::array<T, N> Result{};
+
+	auto const Range = VectorA.size();
+	auto const Factor = (FMath::DotProduct<T, N>(VectorA, VectorB) / FMath::DotProduct<T, N>(VectorB, VectorB));
+
+	for (std::size_t i = 0; i < Range; ++i)
+	{
+		Result[i] += (VectorB[i] * Factor);
 	}
 
 	return Result;

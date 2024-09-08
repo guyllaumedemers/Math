@@ -31,6 +31,7 @@ protected:
 		Vector3d = { 2,3, 6 };
 		DotProductVector = { 1,2, 3 };
 		CrossProductVector = { 1,2, 3 };
+		ProjectionVector = { 3,1 };
 	}
 
 	virtual void TearDown() override
@@ -43,6 +44,7 @@ protected:
 	Private::TVector<float, 3> Vector3d{};
 	Private::TVector<float, 3> DotProductVector{};
 	Private::TVector<float, 3> CrossProductVector{};
+	Private::TVector<float, 2> ProjectionVector{};
 };
 
 /**
@@ -172,15 +174,28 @@ TEST_F(TestTVector, DotProduct)
 TEST_F(TestTVector, CrossProduct)
 {
 	// also known : vector product
-	auto const ZeroVector = Vector3d.CrossProduct(Vector3d);
+	auto const& ZeroVector = Vector3d.CrossProduct(Vector3d);
 	for (std::size_t i = 0; i < ZeroVector.GetRows(); ++i)
 	{
 		EXPECT_FLOAT_EQ(ZeroVector[i], 0.f);
 	}
 
-	auto const CrossVector = Vector3d.CrossProduct(CrossProductVector);
+	auto const& CrossVector = Vector3d.CrossProduct(CrossProductVector);
 	EXPECT_FLOAT_EQ(CrossVector[0], -3.f);
 	EXPECT_FLOAT_EQ(CrossVector[1], 0.f);
 	EXPECT_FLOAT_EQ(CrossVector[2], 1.f);
+}
+
+TEST_F(TestTVector, VectorProjection)
+{
+	auto const& IdentityVector = Vector2d.VectorProjection(Vector2d);
+	for (std::size_t i = 0; i < IdentityVector.GetRows(); ++i)
+	{
+		EXPECT_FLOAT_EQ(IdentityVector[i], Vector2d[i]);
+	}
+
+	auto const& ResultVector = Vector2d.VectorProjection(ProjectionVector);
+	EXPECT_FLOAT_EQ(ResultVector[0], 3.9f);
+	EXPECT_FLOAT_EQ(ResultVector[1], 1.3f);
 }
 
