@@ -32,6 +32,11 @@ protected:
 		DotProductVector = { 1,2, 3 };
 		CrossProductVector = { 1,2, 3 };
 		SegmentVector = { 3,1 };
+
+		// careful about handed-ness
+		BoundingBoxSegmentA = { 2,0, 0 };
+		BoundingBoxSegmentB = { 0, 2, 0 };
+		BoundingBoxSegmentC = { 0,0, 2 };
 	}
 
 	virtual void TearDown() override
@@ -45,6 +50,9 @@ protected:
 	Private::TVector<float, 3> DotProductVector{};
 	Private::TVector<float, 3> CrossProductVector{};
 	Private::TVector<float, 2> SegmentVector{};
+	Private::TVector<float, 3> BoundingBoxSegmentA{};
+	Private::TVector<float, 3> BoundingBoxSegmentB{};
+	Private::TVector<float, 3> BoundingBoxSegmentC{};
 };
 
 /**
@@ -210,5 +218,15 @@ TEST_F(TestTVector, VectorRejection)
 	auto const& RejectionVector = Vector2d.Rejection(SegmentVector);
 	EXPECT_FLOAT_EQ(RejectionVector[0], -0.9f);
 	EXPECT_FLOAT_EQ(RejectionVector[1], 2.7f);
+}
+
+TEST_F(TestTVector, ScalarTripleProduct)
+{
+	float const Volume = FMath::ScalarTripleProduct<float, 3>(
+		BoundingBoxSegmentA.Components,
+		BoundingBoxSegmentB.Components,
+		BoundingBoxSegmentC.Components);
+
+	EXPECT_FLOAT_EQ(Volume, 8.f);
 }
 

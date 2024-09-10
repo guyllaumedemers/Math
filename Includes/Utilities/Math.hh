@@ -49,6 +49,9 @@ struct FMath
 	template<typename T, std::size_t N>
 	static std::array<T, N> Normalize(std::array<T, N> const& Vector);
 
+	template<typename T, std::size_t N>
+	static T ScalarTripleProduct(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB, std::array<T, N> const& VectorC);
+
 	template <typename T, std::size_t N>
 	static T SquaredMagnitude(std::array<T, N> const& Vector);
 
@@ -118,7 +121,7 @@ std::array<T, N> FMath::Rejection(std::array<T, N> const& VectorA, std::array<T,
 	std::array<T, N> Result{};
 
 	auto const Range = VectorA.size();
-	auto const& Projection = FMath::Projection(VectorA, VectorB);
+	auto const& Projection = FMath::Projection<T, N>(VectorA, VectorB);
 
 	for (std::size_t i = 0; i < Range; ++i)
 	{
@@ -142,6 +145,12 @@ std::array<T, N> FMath::Normalize(std::array<T, N> const& Vector)
 	}
 
 	return Result;
+}
+
+template <typename T, std::size_t N>
+T FMath::ScalarTripleProduct(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB, std::array<T, N> const& VectorC)
+{
+	return FMath::DotProduct<T, N>(FMath::CrossProduct<T, N>(VectorA, VectorB), VectorC);
 }
 
 template <typename T, std::size_t N>
