@@ -41,7 +41,10 @@ struct FMath
 	static std::array<T, N> CrossProduct(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB);
 
 	template<typename T, std::size_t N>
-	static std::array<T, N> VectorProjection(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB);
+	static std::array<T, N> Projection(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB);
+
+	template<typename T, std::size_t N>
+	static std::array<T, N> Rejection(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB);
 
 	template<typename T, std::size_t N>
 	static std::array<T, N> Normalize(std::array<T, N> const& Vector);
@@ -90,7 +93,7 @@ std::array<T, N> FMath::CrossProduct(std::array<T, N> const& VectorA, std::array
 }
 
 template <typename T, std::size_t N>
-std::array<T, N> FMath::VectorProjection(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB)
+std::array<T, N> FMath::Projection(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB)
 {
 	static_assert(std::is_floating_point_v<T>, "FMath ill format, can only accept floating point types");
 
@@ -102,6 +105,24 @@ std::array<T, N> FMath::VectorProjection(std::array<T, N> const& VectorA, std::a
 	for (std::size_t i = 0; i < Range; ++i)
 	{
 		Result[i] += (VectorB[i] * Factor);
+	}
+
+	return Result;
+}
+
+template <typename T, std::size_t N>
+std::array<T, N> FMath::Rejection(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB)
+{
+	static_assert(std::is_floating_point_v<T>, "FMath ill format, can only accept floating point types");
+
+	std::array<T, N> Result{};
+
+	auto const Range = VectorA.size();
+	auto const& Projection = FMath::Projection(VectorA, VectorB);
+
+	for (std::size_t i = 0; i < Range; ++i)
+	{
+		Result[i] += (VectorA[i] - Projection[i]);
 	}
 
 	return Result;

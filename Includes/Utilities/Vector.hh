@@ -101,9 +101,14 @@ namespace Private
 			return TVector{ FMath::CrossProduct<T, N>(Components, In.Components) };
 		}
 
-		inline TVector VectorProjection(TVector<T, N> const& In) const
+		inline TVector Projection(TVector<T, N> const& In) const
 		{
-			return TVector{ FMath::VectorProjection<T, N>(Components, In.Components) };
+			return TVector{ FMath::Projection<T, N>(Components, In.Components) };
+		}
+
+		inline TVector Rejection(TVector<T, N> const& In) const
+		{
+			return TVector{ FMath::Rejection<T, N>(Components, In.Components) };
 		}
 
 		inline TVector Normalize() const

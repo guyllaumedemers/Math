@@ -31,7 +31,7 @@ protected:
 		Vector3d = { 2,3, 6 };
 		DotProductVector = { 1,2, 3 };
 		CrossProductVector = { 1,2, 3 };
-		ProjectionVector = { 3,1 };
+		SegmentVector = { 3,1 };
 	}
 
 	virtual void TearDown() override
@@ -44,7 +44,7 @@ protected:
 	Private::TVector<float, 3> Vector3d{};
 	Private::TVector<float, 3> DotProductVector{};
 	Private::TVector<float, 3> CrossProductVector{};
-	Private::TVector<float, 2> ProjectionVector{};
+	Private::TVector<float, 2> SegmentVector{};
 };
 
 /**
@@ -188,14 +188,27 @@ TEST_F(TestTVector, CrossProduct)
 
 TEST_F(TestTVector, VectorProjection)
 {
-	auto const& IdentityVector = Vector2d.VectorProjection(Vector2d);
+	auto const& IdentityVector = Vector2d.Projection(Vector2d);
 	for (std::size_t i = 0; i < IdentityVector.GetRows(); ++i)
 	{
 		EXPECT_FLOAT_EQ(IdentityVector[i], Vector2d[i]);
 	}
 
-	auto const& ResultVector = Vector2d.VectorProjection(ProjectionVector);
-	EXPECT_FLOAT_EQ(ResultVector[0], 3.9f);
-	EXPECT_FLOAT_EQ(ResultVector[1], 1.3f);
+	auto const& ProjectionVector = Vector2d.Projection(SegmentVector);
+	EXPECT_FLOAT_EQ(ProjectionVector[0], 3.9f);
+	EXPECT_FLOAT_EQ(ProjectionVector[1], 1.3f);
+}
+
+TEST_F(TestTVector, VectorRejection)
+{
+	auto const& ZeroVector = Vector2d.Rejection(Vector2d);
+	for (std::size_t i = 0; i < ZeroVector.GetRows(); ++i)
+	{
+		EXPECT_FLOAT_EQ(ZeroVector[i], 0.f);
+	}
+
+	auto const& RejectionVector = Vector2d.Rejection(SegmentVector);
+	EXPECT_FLOAT_EQ(RejectionVector[0], -0.9f);
+	EXPECT_FLOAT_EQ(RejectionVector[1], 2.7f);
 }
 
