@@ -52,6 +52,9 @@ struct FMath
 	template<typename T, std::size_t N>
 	static T ScalarTripleProduct(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB, std::array<T, N> const& VectorC);
 
+	template<typename T, std::size_t N>
+	static std::array<T, N> VectorTripleProduct(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB, std::array<T, N> const& VectorC);
+
 	template <typename T, std::size_t N>
 	static T SquaredMagnitude(std::array<T, N> const& Vector);
 
@@ -102,10 +105,9 @@ std::array<T, N> FMath::Projection(std::array<T, N> const& VectorA, std::array<T
 
 	std::array<T, N> Result{};
 
-	auto const Range = VectorA.size();
-	auto const Factor = (FMath::DotProduct<T, N>(VectorA, VectorB) / FMath::DotProduct<T, N>(VectorB, VectorB));
+	auto const Factor = (FMath::DotProduct<T, N>(VectorA, VectorB) / FMath::SquaredMagnitude<T, N>(VectorB));
 
-	for (std::size_t i = 0; i < Range; ++i)
+	for (std::size_t i = 0; i < VectorB.size(); ++i)
 	{
 		Result[i] += (VectorB[i] * Factor);
 	}
@@ -120,10 +122,9 @@ std::array<T, N> FMath::Rejection(std::array<T, N> const& VectorA, std::array<T,
 
 	std::array<T, N> Result{};
 
-	auto const Range = VectorA.size();
 	auto const& Projection = FMath::Projection<T, N>(VectorA, VectorB);
 
-	for (std::size_t i = 0; i < Range; ++i)
+	for (std::size_t i = 0; i < VectorA.size(); ++i)
 	{
 		Result[i] += (VectorA[i] - Projection[i]);
 	}
@@ -150,7 +151,17 @@ std::array<T, N> FMath::Normalize(std::array<T, N> const& Vector)
 template <typename T, std::size_t N>
 T FMath::ScalarTripleProduct(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB, std::array<T, N> const& VectorC)
 {
+	static_assert(std::is_floating_point_v<T>, "FMath ill format, can only accept floating point types");
+
 	return FMath::DotProduct<T, N>(FMath::CrossProduct<T, N>(VectorA, VectorB), VectorC);
+}
+
+template <typename T, std::size_t N>
+std::array<T, N> FMath::VectorTripleProduct(std::array<T, N> const& VectorA, std::array<T, N> const& VectorB, std::array<T, N> const& VectorC)
+{
+	static_assert(std::is_floating_point_v<T>, "FMath ill format, can only accept floating point types");
+
+	return FMath::CrossProduct<T, N>(FMath::CrossProduct<T, N>(VectorA, VectorB), VectorC);
 }
 
 template <typename T, std::size_t N>

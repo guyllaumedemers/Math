@@ -60,7 +60,7 @@ namespace Private
 			TVector<T, M> Result{};
 			for (std::size_t i = 0; i < GetRows(); ++i)
 			{
-				for (std::size_t j = 0; j < Rhs.GetRows(); ++j)
+				for (std::size_t j = 0; j < Rhs.GetRows() /*j = Rhs Row[index] AND Matrix Cols[index]*/; ++j)
 				{
 					Result[i] += (RowsCols[i][j] * Rhs[j]);
 				}
@@ -74,7 +74,7 @@ namespace Private
 			TMatrix<T, M, N> Result{};
 			for (std::size_t i = 0; i < GetRows(); ++i)
 			{
-				for (std::size_t j = 0; j < GetRows(); ++j)
+				for (std::size_t j = 0; j < GetCols(); ++j)
 				{
 					Result(i, j) += (this->RowsCols[i][j] * In);
 				}

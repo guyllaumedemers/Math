@@ -18,59 +18,11 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 
-#include "Utilities/Matrix.hh"
+#pragma once
 
-FMatrix4x4 FMatrix4x4::Zero()
+struct FViewport
 {
-	return FMatrix4x4
-	{
-		Private::TMatrix<float, 4, 4>{}
-	};
-}
+	float Top, Bottom, Left, Right = 0.f;
 
-FMatrix4x4 FMatrix4x4::Identity()
-{
-	return FMatrix4x4
-	{
-		Private::TMatrix<float, 4, 4>
-		{
-			Private::TVector<float, 4>{1,0,0,0},
-			Private::TVector<float, 4>{0,1,0,0},
-			Private::TVector<float, 4>{0,0,1,0},
-			Private::TVector<float, 4>{0,0,0,1}
-		}
-	};
-}
-
-FMatrix4x4 FMatrix4x4::Translate(FVector4d const& Translate)
-{
-	return FMatrix4x4
-	{
-		Private::TMatrix<float, 4, 4>
-		{
-			Private::TVector<float, 4>{1,0,0,0},
-			Private::TVector<float, 4>{0,1,0,0},
-			Private::TVector<float, 4>{0,0,1,0},
-			Private::TVector<float, 4>{Translate[0],Translate[1],Translate[2],1}
-		}
-	};
-}
-
-FMatrix4x4 FMatrix4x4::Rotate(FVector4d const& Rotate)
-{
-	return {};
-}
-
-FMatrix4x4 FMatrix4x4::Scale(FVector4d const& Scale)
-{
-	return FMatrix4x4
-	{
-		Private::TMatrix<float, 4, 4>
-		{
-			Private::TVector<float, 4>{Scale[0],0,0,0},
-			Private::TVector<float, 4>{0,Scale[1],0,0},
-			Private::TVector<float, 4>{0,0,Scale[2],0},
-			Private::TVector<float, 4>{0,0,0,1}
-		}
-	};
-}
+	static FViewport Application;
+};

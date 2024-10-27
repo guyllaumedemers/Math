@@ -230,3 +230,16 @@ TEST_F(TestTVector, ScalarTripleProduct)
 	EXPECT_FLOAT_EQ(Volume, 8.f);
 }
 
+TEST_F(TestTVector, VectorTripleProduct)
+{
+	/*auto const& ResultVector = FMath::VectorTripleProduct<float, 3>(
+		BoundingBoxSegmentA.Components,
+		BoundingBoxSegmentB.Components,
+		BoundingBoxSegmentC.Components);
+
+	for (std::size_t i = 0; i < ResultVector.size(); ++i)
+	{
+		EXPECT_FLOAT_EQ(ResultVector[i], 8.f);
+	}*/
+}
+

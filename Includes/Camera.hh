@@ -21,6 +21,7 @@
 #pragma once
 
 #include "Utilities/Transform.hh"
+#include <Utilities/Viewport.hh>
 
 struct FCamera
 {
@@ -37,10 +38,30 @@ struct FCamera
 		this->Fov = Fov;
 	}
 
-	inline FMatrix4x4 ModelViewMatrix(FTransform const& In) const
+	inline FMatrix4x4 ModelViewMatrix(FTransform const& Object) const
 	{
 		// TODO double check left-hand side vs right-hand side if weird behaviour occurs
-		return Transform.Inverse() * In.ModelMatrix();
+		return this->Transform.Inverse() * Object.ModelMatrix();
+	}
+
+	inline FMatrix4x4 ProjectionMatrix(FTransform const& Object)
+	{
+		float const X = ((2 * Object.Position[0]/*Pw(x)*/) - FViewport::Application.Left) / ((FViewport::Application.Right - FViewport::Application.Left) * Object.Position[2] /*Pw(z)*/ * tan(Fov * 0.5f));
+		float const Y = ((2 * Object.Position[1]/*Pw(y)*/) - FViewport::Application.Bottom) / ((FViewport::Application.Top - FViewport::Application.Bottom) * Object.Position[2] /*Pw(z)*/ * tan(Fov * 0.5f));
+		float const Z = 0.f; // TODO add missing depth calculation
+
+		auto const ProjectionMatrix = FMatrix4x4
+		{
+			Private::TMatrix<float, 4, 4>
+			{
+				Private::TVector<float, 4>{X,0,0,-((FViewport::Application.Right + FViewport::Application.Left) / (FViewport::Application.Right - FViewport::Application.Left))},
+				Private::TVector<float, 4>{0,Y,0,-((FViewport::Application.Top + FViewport::Application.Bottom) / (FViewport::Application.Top - FViewport::Application.Bottom))},
+				Private::TVector<float, 4>{0,0,Z,0},
+				Private::TVector<float, 4>{0,0,-1,0}
+			}
+		};
+
+		return ProjectionMatrix * this->ModelViewMatrix(Object);
 	}
 
 	void Modify(FTransform const& In);
