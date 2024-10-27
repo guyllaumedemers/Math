@@ -48,7 +48,7 @@ struct FCamera
 	{
 		float const X = ((2 * Object.Position[0]/*Pw(x)*/) - FViewport::Application.Left) / ((FViewport::Application.Right - FViewport::Application.Left) * Object.Position[2] /*Pw(z)*/ * tan(Fov * 0.5f));
 		float const Y = ((2 * Object.Position[1]/*Pw(y)*/) - FViewport::Application.Bottom) / ((FViewport::Application.Top - FViewport::Application.Bottom) * Object.Position[2] /*Pw(z)*/ * tan(Fov * 0.5f));
-		float const Z = 0.f; // TODO add missing depth calculation
+		float const Z = ((2 * Object.Position[2]/*Pw(z)*/) - FarPlane) / ((NearPlane - FarPlane) * Object.Position[2] /*Pw(z)*/);
 
 		auto const ProjectionMatrix = FMatrix4x4
 		{
@@ -56,7 +56,7 @@ struct FCamera
 			{
 				Private::TVector<float, 4>{X,0,0,-((FViewport::Application.Right + FViewport::Application.Left) / (FViewport::Application.Right - FViewport::Application.Left))},
 				Private::TVector<float, 4>{0,Y,0,-((FViewport::Application.Top + FViewport::Application.Bottom) / (FViewport::Application.Top - FViewport::Application.Bottom))},
-				Private::TVector<float, 4>{0,0,Z,0},
+				Private::TVector<float, 4>{0,0,Z,-((FarPlane + NearPlane) / (NearPlane - FarPlane))},
 				Private::TVector<float, 4>{0,0,-1,0}
 			}
 		};

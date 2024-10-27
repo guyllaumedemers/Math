@@ -78,7 +78,7 @@ Notes : Projected point should be between the following bounds of our projection
 
 l <= Ps(x) <= r
 b <= Ps(y) <= t
-n <= Ps(z) <= f
+f <= Ps(z) <= n
 
 in order to simplify our approach, and math, working with normalized values will be required:
 
