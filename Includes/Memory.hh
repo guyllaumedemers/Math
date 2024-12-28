@@ -58,6 +58,6 @@ struct FStackAllocator : public FAllocator
 
 private:
 	std::size_t ReservedMemory[128];
-	std::size_t* Front = nullptr;
-	std::size_t* Back = nullptr;
+	std::size_t* Head = nullptr;
+	std::size_t* Tail = nullptr;
 };
