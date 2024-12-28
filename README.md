@@ -67,7 +67,7 @@ legend :
 If we look at the View frustum from the side, we see that we are forming a right triangle between the camera z-axis and the point in 3d space. Our projection plane distance from the camera and fov will determine the trace intersection with the plane.
 
 * Using basic trig, we can find the components of our right triangles with : tan(angle) = opposite / adjacent.
-* And knowing that angle sum identities prove our triangle equality, we can say that : Pw(y) / Pw(z) equals Ps(y) / g.
+* And knowing that both triangles have congruent angles, we can say that : Pw(y) / Pw(z) equals Ps(y) / g.
 
 Projection & Perspective Divide - solving for Ps(y)
 
