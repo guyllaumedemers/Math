@@ -20,30 +20,44 @@
 
 #pragma once
 
-#include "DefaultExpression.hh"
+#include <cstddef>
 
-class UCrossProduct : public UDemoExpression
+struct FAllocatorInfo
 {
-	// A = Axi + Ayj + Azk
-	// B = Bxi + Byj + Bzk
+	struct FAllocator* Allocator = nullptr;
+	std::size_t Size = 0;
+};
 
-	// i x i = 0
-	// i x j = k
-	// i x k = j
-	// j x i = -k
-	// j x j = 0
-	// j x k = i
-	// k x i = -j
-	// k x j = -i
-	// k x k = 0
+struct FMemoryBlock
+{
+	std::size_t Size = 0;
+	void* Payload = nullptr;
+};
 
-	// (Axi * Byj)k  + (Axi * Bzk)j
-	// (Ayj * Bxi)-k + (Ayj * Bzk)i
-	// (Azk * Bxi)-j + (Azk * Byj)-i
+struct FAllocator
+{
+	virtual ~FAllocator() = default;
+	virtual void* Allocate(std::size_t) = 0;
+	virtual void Deallocate(std::size_t) = 0;
+};
 
-	// {(Ayj * Bzk)i + (Azk * Byj)-i, (Axi * Bzk)j + (Azk * Bxi)-j, (Axi * Byj)k + (Ayj * Bxi)-k}
-public:
-	virtual std::size_t Size() const override { return sizeof(UCrossProduct); };
-	virtual void Tick() override;
-	virtual void Draw() override;
+// memory system handling resource allocation/deallocation
+struct FMemory
+{
+	static FMemoryBlock Malloc(FAllocatorInfo const&);
+	static FMemoryBlock Malloc(FAllocatorInfo const&, void*);
+	static FMemoryBlock MemCpy(FMemoryBlock, void*);
+	static void Free(FAllocator*, FMemoryBlock&);
+};
+
+struct FStackAllocator : public FAllocator
+{
+	FStackAllocator();
+	virtual void* Allocate(std::size_t) override;
+	virtual void Deallocate(std::size_t) override;
+
+private:
+	std::size_t ReservedMemory[128];
+	std::size_t* Front = nullptr;
+	std::size_t* Back = nullptr;
 };

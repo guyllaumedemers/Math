@@ -20,30 +20,25 @@
 
 #pragma once
 
-#include "DefaultExpression.hh"
+#include "IBatchResource.hh"
+#include "IDrawable.hh"
+#include "IMathExpression.hh"
+#include "ITickable.hh"
 
-class UCrossProduct : public UDemoExpression
+// define the default implementation details of a Math expression
+class UDemoExpression :
+	public IBatchResource,
+	public IDrawable,
+	public IMathExpression,
+	public ITickable
 {
-	// A = Axi + Ayj + Azk
-	// B = Bxi + Byj + Bzk
-
-	// i x i = 0
-	// i x j = k
-	// i x k = j
-	// j x i = -k
-	// j x j = 0
-	// j x k = i
-	// k x i = -j
-	// k x j = -i
-	// k x k = 0
-
-	// (Axi * Byj)k  + (Axi * Bzk)j
-	// (Ayj * Bxi)-k + (Ayj * Bzk)i
-	// (Azk * Bxi)-j + (Azk * Byj)-i
-
-	// {(Ayj * Bzk)i + (Azk * Byj)-i, (Axi * Bzk)j + (Azk * Bxi)-j, (Axi * Byj)k + (Ayj * Bxi)-k}
 public:
-	virtual std::size_t Size() const override { return sizeof(UCrossProduct); };
-	virtual void Tick() override;
+	virtual std::size_t Size() const override { return sizeof(UDemoExpression); };
 	virtual void Draw() override;
+	virtual void Tick() override;
+
+protected:
+	bool bIsOrthographic = false;
+	bool bIs3d = false;
+	bool bDisplayGrid = false;
 };

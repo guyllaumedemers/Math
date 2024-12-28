@@ -20,9 +20,11 @@
 
 #pragma once
 
+// define a set of properties specific to a space on screen. each player can own their viewport
 struct FViewport
 {
-	float Top, Bottom, Left, Right = 0.f;
+	float Top, Bottom, Left, Right, AspectRatio = 0.f;
 
-	static FViewport Application;
+	FViewport static Application;
+	FViewport static Default;
 };

@@ -55,7 +55,7 @@ SET cppFilenames=!cppFilenames! %ImguiSrc%
 
 :: compiler flags
 :: https://learn.microsoft.com/en-us/cpp/build/reference/compiler-options-listed-by-category?view=msvc-170
-SET cflags=/std:c++20 /EHsc /MT /Od /I"%projDir%" /I"%imguibackendsDir%" /I"%imguiDir%" /I"%sdl2Dir%" /Fe"%buildDir%/Sandbox.exe" /Fo"%buildDir%/"
+SET cflags=/std:c++20 /EHsc /MT /Od /I"%projDir%" /I"%imguibackendsDir%" /I"%imguiDir%" /I"%sdl2Dir%" /Fe"%buildDir%/Sandbox.exe" /Fo"%buildDir%/" /Zi
 
 :: libraries
 SET languagelibs=libucrt.lib libvcruntime.lib libcmt.lib libcpmt.lib
@@ -80,7 +80,7 @@ SET sdl2="%vendorDir%/sdl2/Debug"
 
 :: linker flag
 :: https://learn.microsoft.com/en-us/cpp/build/reference/linker-options?view=msvc-170
-SET lflags=/NODEFAULTLIB /MACHINE:X64 /SUBSYSTEM:CONSOLE /LIBPATH:%winkit_um% /LIBPATH:%winkit_ucrt% /LIBPATH:%vcruntime% /LIBPATH:%sdl2%
+SET lflags=/NODEFAULTLIB /MACHINE:X64 /SUBSYSTEM:CONSOLE /LIBPATH:%winkit_um% /LIBPATH:%winkit_ucrt% /LIBPATH:%vcruntime% /LIBPATH:%sdl2% /DEBUG
 
 :: Important!! Our target machine build for x64. Make sure to run command using MS Development Command Prompt for
 :: the right target platform.

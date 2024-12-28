@@ -28,6 +28,11 @@
 #include "backends/imgui_impl_opengl3_loader.h"
 #include "backends/imgui_impl_sdl3.h"
 
+// application headers
+#include "World.hh"
+#include "Concept/DefaultExpression.hh"
+#include "Concept/ImGui/ImGuiBuilder.hh"
+
 // macro for application process closure
 static int constexpr Error = -1;
 static int constexpr Success = 0;
@@ -98,12 +103,15 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 	ImGui_ImplSDL3_InitForOpenGL(Window, &GlContext);
 	ImGui_ImplOpenGL3_Init();
 
+	// world creation
+	auto EditorWorld = FWorld::Factory(UDemoExpression());
+
 	//	*******
 	//	poll events
 	//	*******
 
 	// sdl events
-	auto const& PollPlatformEvents = [&](bool& bOutRequestExit)
+	auto const PollPlatformEvents = [&](bool& bOutRequestExit)
 		{
 			// fetch platform events
 			SDL_Event Event;
@@ -118,6 +126,15 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 			}
 		};
 
+	//	*******
+	//	ticking
+	//	*******
+
+	// world tick
+	auto const ApplicationTick = [](FWorld& World)
+		{
+			World.Tickable().Tick();
+		};
 
 	//	*******
 	//	rendering
@@ -126,7 +143,7 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 	// imgui new frame (does way more under the hood when looking at imgui_impl but will keep it simple here!)
 	// handle backend new frame creation, opengl shader&program creation/link
 	// sdl controller updates (mouse/gamepad) + delta time management for running app at 60 fps
-	auto const& ImGuiClear = [&]()
+	auto const ImGuiClear = [&]()
 		{
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplSDL3_NewFrame();
@@ -134,31 +151,21 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 		};
 
 	// imgui content drawing
-	auto const& ImGuiDraw = [&]()
+	auto const ImGuiDraw = [&](FWorld& World, FImGuiBuilder& Builder)
 		{
-			if (ImGui::BeginMainMenuBar())
-			{
-				if (ImGui::BeginMenu("Window"))
-				{
-					if (ImGui::MenuItem("New", "Ctrl+N")) {}
-					if (ImGui::MenuItem("Open", "Ctrl+O")) {}
-					if (ImGui::BeginMenu("Open Recent"))
-					{
-						// dynamically generate entries here
-						ImGui::EndMenu();
-					}
-					if (ImGui::MenuItem("Visualizer")) {}
-					ImGui::EndMenu();
-				}
+			//Builder.MakeMainMenu(World);
+		};
 
-				ImGui::EndMainMenuBar();
-			}
+	// world render
+	auto const ApplicationDraw = [](FWorld& World)
+		{
+			World.Drawable().Draw();
 		};
 
 	// opengl back buffer handling
-	auto const& RenderViewport = [&](SDL_Window* Target, ImGuiIO const& Data)
+	auto const RenderViewport = [&](SDL_Window* Target, ImGuiIO const& Data)
 		{
-			static auto constexpr ClearColor = ImVec4(0.f, 0.f, 0.f, 1.f);
+			auto static constexpr ClearColor = ImVec4(0.f, 0.f, 0.f, 1.f);
 			ImGui::Render();
 			glViewport(0, 0, (int)Data.DisplaySize.x, (int)Data.DisplaySize.y);
 			glClearColor(ClearColor.x * ClearColor.w, ClearColor.y * ClearColor.w, ClearColor.z * ClearColor.w, ClearColor.w);
@@ -177,11 +184,17 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 		// platform events
 		PollPlatformEvents(bRequestExit);
 
+		// application tick
+		ApplicationTick(EditorWorld);
+
 		// imgui clear
 		ImGuiClear();
 
 		// imgui draw
-		ImGuiDraw();
+		ImGuiDraw(EditorWorld, FImGuiBuilder::Builder);
+
+		// application draw
+		ApplicationDraw(EditorWorld);
 
 		// opengl viewport rendering
 		RenderViewport(Window, Io);

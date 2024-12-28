@@ -20,27 +20,47 @@
 
 #include "World.hh"
 
-FWorld::~FWorld()
+#include "Memory.hh"
+
+extern FStackAllocator gStackAllocator;
+
+FWorld FWorld::Factory(IBatchResource&& BatchResource)
 {
+	return FWorldContext{ std::move(BatchResource) };
 }
 
-void FWorld::Draw() const
+FWorld::FWorld(FWorldContext&& WorldContext)
 {
-	// need to draw a grid in a specific vector space (i.e 2d or 3d)
+	this->WorldContext = WorldContext;
+}
 
-	// where we can visualize objects moving into that space
+FWorld::FWorldContext::FWorldContext(IBatchResource&& BatchResource)
+{
+	uint32_t static RefCount = 0;
+	Handle.MemoryBlock = FMemory::Malloc({ &gStackAllocator, BatchResource.Size() }, &BatchResource);
+	Handle.HandleId = ++RefCount;
+}
 
-	// example : showing how a point lerp from A to B
+FWorld::FWorldContext::~FWorldContext()
+{
+	if (Handle.MemoryBlock.Payload == nullptr) { return; }
+	FMemory::Free(&gStackAllocator, Handle.MemoryBlock);
+}
 
-	// displaying this information through opengl rendering pipeline
+void FWorld::FWorldContext::Draw()
+{
+	// TODO Fix this! vtable to IDrawable doesnt have a valid address
+	if (Handle.MemoryBlock.Payload == nullptr) { return; }
+	auto* const Payload = reinterpret_cast<IDrawable*>(Handle.MemoryBlock.Payload);
+	assert(!!Payload);
+	Payload->Draw();
+}
 
-	// imply : A - converting any object from Model-Space (Object local coordinate), View-space (Camera view coordinate/frustrum),
-
-	// Clip-space (NDC - normalize device coordinate), Screen-space (Monitor 2d space - orthographic projection or perspective projection)
-
-	// maybe what I want is :
-
-	// draw the basis in world space (x, y, z)
-
-	// define a camera with set position, rotation according to this point in space
+void FWorld::FWorldContext::Tick()
+{
+	// TODO Fix this! vtable to ITickable doesnt have a valid address
+	if (Handle.MemoryBlock.Payload == nullptr) { return; }
+	auto* const Payload = reinterpret_cast<ITickable*>(Handle.MemoryBlock.Payload);
+	assert(!!Payload);
+	Payload->Tick();
 }

@@ -22,6 +22,8 @@
 
 // interface to be impl by context object representing a mathematical expression
 // we wish to display, experiment with.
-class IMathExpression 
+class IMathExpression
 {
+public:
+	virtual ~IMathExpression() = default;
 };

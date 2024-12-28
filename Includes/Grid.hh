@@ -20,30 +20,24 @@
 
 #pragma once
 
-#include "DefaultExpression.hh"
+#include "IDrawable.hh"
+#include "IBatchResource.hh"
+#include "ITickable.hh"
+#include "Utilities/Transform.hh"
 
-class UCrossProduct : public UDemoExpression
+// define a system handling a 2d/3d space layout
+struct FGrid :
+	public IBatchResource,
+	public IDrawable
 {
-	// A = Axi + Ayj + Azk
-	// B = Bxi + Byj + Bzk
+	inline FGrid static& Get() { return Singleton; }
 
-	// i x i = 0
-	// i x j = k
-	// i x k = j
-	// j x i = -k
-	// j x j = 0
-	// j x k = i
-	// k x i = -j
-	// k x j = -i
-	// k x k = 0
-
-	// (Axi * Byj)k  + (Axi * Bzk)j
-	// (Ayj * Bxi)-k + (Ayj * Bzk)i
-	// (Azk * Bxi)-j + (Azk * Byj)-i
-
-	// {(Ayj * Bzk)i + (Azk * Byj)-i, (Axi * Bzk)j + (Azk * Bxi)-j, (Axi * Byj)k + (Ayj * Bxi)-k}
-public:
-	virtual std::size_t Size() const override { return sizeof(UCrossProduct); };
-	virtual void Tick() override;
 	virtual void Draw() override;
+
+protected:
+	FTransform Transform = FTransform::Default;
+	std::size_t NumRows = 0;
+	std::size_t NumCols = 0;
+
+	FGrid static Singleton;
 };

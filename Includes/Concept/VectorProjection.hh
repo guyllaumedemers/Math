@@ -20,9 +20,9 @@
 
 #pragma once
 
-#include "IMathExpression.hh"
+#include "DefaultExpression.hh"
 
-class UVectorProjection : public IMathExpression
+class UVectorProjection : public UDemoExpression
 {
 	// c being a scalar factor
 	// b being a vector
@@ -48,4 +48,9 @@ class UVectorProjection : public IMathExpression
 	// and since c == ('b' * 'a') / ('b' * 'b')
 
 	// ('b' * (('b' * 'a') / ('b' * 'b'))) == proj[b]a
+
+public:
+	virtual std::size_t Size() const override { return sizeof(UVectorProjection); };
+	virtual void Tick() override;
+	virtual void Draw() override;
 };

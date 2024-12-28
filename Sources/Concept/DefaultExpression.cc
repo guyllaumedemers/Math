@@ -18,32 +18,20 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 
-#pragma once
+#include "Concept/DefaultExpression.hh"
 
-#include "DefaultExpression.hh"
+#include <imgui.h>
 
-class UCrossProduct : public UDemoExpression
+void UDemoExpression::Draw()
 {
-	// A = Axi + Ayj + Azk
-	// B = Bxi + Byj + Bzk
+	ImGui::Begin("Demo");
+	ImGui::Checkbox("Toggle Orthographic View", &bIsOrthographic);
+	ImGui::Checkbox("Toggle 3d", &bIs3d);
+	ImGui::Checkbox("Toggle Grid", &bDisplayGrid);
+	ImGui::End();
+}
 
-	// i x i = 0
-	// i x j = k
-	// i x k = j
-	// j x i = -k
-	// j x j = 0
-	// j x k = i
-	// k x i = -j
-	// k x j = -i
-	// k x k = 0
-
-	// (Axi * Byj)k  + (Axi * Bzk)j
-	// (Ayj * Bxi)-k + (Ayj * Bzk)i
-	// (Azk * Bxi)-j + (Azk * Byj)-i
-
-	// {(Ayj * Bzk)i + (Azk * Byj)-i, (Axi * Bzk)j + (Azk * Bxi)-j, (Axi * Byj)k + (Ayj * Bxi)-k}
-public:
-	virtual std::size_t Size() const override { return sizeof(UCrossProduct); };
-	virtual void Tick() override;
-	virtual void Draw() override;
-};
+void UDemoExpression::Tick()
+{
+	// TODO Display an OpenGl Cube on screen
+}

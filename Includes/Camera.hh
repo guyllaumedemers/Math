@@ -21,8 +21,9 @@
 #pragma once
 
 #include "Utilities/Transform.hh"
-#include <Utilities/Viewport.hh>
+#include "Utilities/Viewport.hh"
 
+// define a target from which we can see the world. Allow conversion from 3d space to 2d
 struct FCamera
 {
 	FCamera() = default;
@@ -44,18 +45,18 @@ struct FCamera
 		return this->Transform.Inverse() * Object.ModelMatrix();
 	}
 
-	inline FMatrix4x4 ProjectionMatrix(FTransform const& Object)
+	inline FMatrix4x4 ProjectionMatrix(FViewport const& Viewport, FTransform const& Object)
 	{
-		float const X = ((2 * Object.Position[0]/*Pw(x)*/) - FViewport::Application.Left) / ((FViewport::Application.Right - FViewport::Application.Left) * tan(Fov * 0.5f));
-		float const Y = ((2 * Object.Position[1]/*Pw(y)*/) - FViewport::Application.Bottom) / ((FViewport::Application.Top - FViewport::Application.Bottom) * tan(Fov * 0.5f));
+		float const X = ((2 * Object.Position[0]/*Pw(x)*/) - Viewport.Left) / ((Viewport.Right - Viewport.Left) * tan(Fov * 0.5f));
+		float const Y = ((2 * Object.Position[1]/*Pw(y)*/) - Viewport.Bottom) / ((Viewport.Top - Viewport.Bottom) * tan(Fov * 0.5f));
 		float const Z = ((2 * Object.Position[2]/*Pw(z)*/) - FarPlane) / ((NearPlane - FarPlane));
 
 		auto const ProjectionMatrix = FMatrix4x4
 		{
 			Private::TMatrix<float, 4, 4>
 			{
-				Private::TVector<float, 4>{X,0,((FViewport::Application.Right + FViewport::Application.Left) / (FViewport::Application.Right - FViewport::Application.Left)),0},
-				Private::TVector<float, 4>{0,Y,((FViewport::Application.Top + FViewport::Application.Bottom) / (FViewport::Application.Top - FViewport::Application.Bottom)),0},
+				Private::TVector<float, 4>{X,0,((Viewport.Right + Viewport.Left) / (Viewport.Right - Viewport.Left)),0},
+				Private::TVector<float, 4>{0,Y,((Viewport.Top + Viewport.Bottom) / (Viewport.Top - Viewport.Bottom)),0},
 				Private::TVector<float, 4>{0,0,((FarPlane + NearPlane) / (NearPlane - FarPlane)), Z },
 				Private::TVector<float, 4>{0,0,-1,0}
 			}

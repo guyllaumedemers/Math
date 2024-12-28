@@ -23,11 +23,6 @@
 class IDrawable
 {
 public:
-	virtual ~IDrawable() = 0;
-	virtual void Draw() const = 0;
+	virtual ~IDrawable() = default;
+	virtual void Draw() = 0;
 };
-
-inline IDrawable::~IDrawable()
-{
-	// pure virtual destructor require a default impl
-}

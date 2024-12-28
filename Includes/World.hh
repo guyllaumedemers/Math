@@ -22,22 +22,50 @@
 
 #include "Camera.hh"
 #include "IDrawable.hh"
+#include "IBatchResource.hh"
+#include "ITickable.hh"
 #include "Utilities/Transform.hh"
 
 // define a vector space, draw a grid to visual math function behaviours
-class FWorld : public IDrawable
+class FWorld
 {
 public:
 	FWorld() = default;
 	FWorld(FWorld const&) = default;
 	FWorld(FWorld&&) = default;
-	virtual ~FWorld() override;
 
-	// IDrawable
-	virtual void Draw() const override;
+	IDrawable& Drawable() { return static_cast<IDrawable&>(WorldContext); }
+	ITickable& Tickable() { return static_cast<ITickable&>(WorldContext); }
+
+	// factory
+	static FWorld Factory(IBatchResource&&);
 
 protected:
-	FTransform Origin = FTransform::Default;
-	// user point of view
-	FCamera Camera = FCamera::Default;
+	// context object for a simulation
+	struct FWorldContext :
+		public IDrawable,
+		public ITickable
+	{
+		FWorldContext() = default;
+		FWorldContext(IBatchResource&&);
+		~FWorldContext();
+
+		virtual void Draw() override;
+		virtual void Tick() override;
+
+		// viewport target
+		FViewport Viewport = FViewport::Default;
+		// user point of view
+		FCamera Camera = FCamera::Default;
+		// resources handle
+		FBatchResourceHandle Handle;
+	};
+
+	FWorld(FWorldContext&& WorldContext);
+
+	// TODO later addition to support multiple world context, i.e multiple viewport with
+	// various running instance of math expression should be expected
+
+	// world resources
+	FWorldContext WorldContext;
 };
