@@ -40,7 +40,7 @@ FMemoryBlock FMemory::Malloc(FAllocatorInfo const& Info, void* Data)
 FMemoryBlock FMemory::MemCpy(FMemoryBlock&& MemoryBlock, void* Data)
 {
 	auto* const Dest = reinterpret_cast<char*>(MemoryBlock.Payload);
-	auto* const Src = reinterpret_cast<char*>(Data); // problem here!
+	auto* const Src = reinterpret_cast<char*>(Data);
 	for (std::size_t i = 0; i < MemoryBlock.Size; ++i) { Dest[i] = Src[i]; }
 	return MemoryBlock;
 }
