@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "DefaultExpression.hh"
+#include "DemoExpression.hh"
 
 class UDotProduct : public UDemoExpression
 {

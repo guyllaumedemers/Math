@@ -33,7 +33,7 @@ class UDemoExpression :
 	public ITickable
 {
 public:
-	virtual std::size_t Size() const override { return sizeof(UDemoExpression); };
+	virtual std::size_t Size() const override;
 	virtual void Draw() override;
 	virtual void Tick() override;
 

@@ -33,6 +33,8 @@ public:
 	FWorld() = default;
 	FWorld(FWorld const&) = default;
 	FWorld(FWorld&&) = default;
+	FWorld& operator=(FWorld const&) = default;
+	FWorld& operator=(FWorld&&) = default;
 
 	IDrawable& Drawable() { return static_cast<IDrawable&>(WorldContext); }
 	ITickable& Tickable() { return static_cast<ITickable&>(WorldContext); }
@@ -47,6 +49,10 @@ protected:
 		public ITickable
 	{
 		FWorldContext() = default;
+		FWorldContext(FWorldContext const&) = default;
+		FWorldContext(FWorldContext&&) = default;
+		FWorldContext& operator=(FWorldContext const&) = default;
+		FWorldContext& operator=(FWorldContext&&) = default;
 		FWorldContext(IBatchResource&&);
 		~FWorldContext();
 
@@ -61,7 +67,7 @@ protected:
 		FBatchResourceHandle Handle;
 	};
 
-	FWorld(FWorldContext&& WorldContext);
+	FWorld(FWorldContext&&);
 
 	// TODO later addition to support multiple world context, i.e multiple viewport with
 	// various running instance of math expression should be expected

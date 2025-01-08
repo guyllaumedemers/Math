@@ -30,7 +30,7 @@
 
 // application headers
 #include "World.hh"
-#include "Concept/DefaultExpression.hh"
+#include "Concept/DemoExpression.hh"
 #include "Concept/ImGui/ImGuiBuilder.hh"
 
 // macro for application process closure

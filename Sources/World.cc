@@ -21,6 +21,7 @@
 #include "World.hh"
 
 #include "Memory.hh"
+#include "Concept/DemoExpression.hh"
 
 extern FStackAllocator gStackAllocator;
 
@@ -49,18 +50,21 @@ FWorld::FWorldContext::~FWorldContext()
 
 void FWorld::FWorldContext::Draw()
 {
-	// TODO Fix this! vtable to IDrawable doesnt have a valid address
+	// https://lukasatkinson.de/2018/interface-dispatch/
+	// https://stackoverflow.com/questions/24067594/how-does-a-c-compiler-handle-offsets-with-multiple-inheritance
+	// Conclusion : Multiple inheritance and compiler way of handling object offset doesn't allow for
+	// abstraction of type here! All allocated payload have to be casted to a common base type so object layout can be resolved, otherwise compiler treat all vtables
+	// as the starting one (implying it may call the wrong function at starting address).
 	if (Handle.MemoryBlock.Payload == nullptr) { return; }
-	auto* const Payload = reinterpret_cast<IDrawable*>(Handle.MemoryBlock.Payload);
+	auto* const Payload = static_cast<UDemoExpression*>(Handle.MemoryBlock.Payload);
 	assert(!!Payload);
 	Payload->Draw();
 }
 
 void FWorld::FWorldContext::Tick()
 {
-	// TODO Fix this! vtable to ITickable doesnt have a valid address
 	if (Handle.MemoryBlock.Payload == nullptr) { return; }
-	auto* const Payload = reinterpret_cast<ITickable*>(Handle.MemoryBlock.Payload);
+	auto* const Payload = static_cast<UDemoExpression*>(Handle.MemoryBlock.Payload);
 	assert(!!Payload);
 	Payload->Tick();
 }

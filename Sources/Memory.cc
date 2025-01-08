@@ -21,26 +21,27 @@
 #include "Memory.hh"
 
 #include <cassert>
+#include <stdio.h>
 
 FStackAllocator gStackAllocator;
 
-FMemoryBlock FMemory::Malloc(FAllocatorInfo const& Info)
+FMemoryBlock FMemory::Malloc(FAllocator* Allocator, std::size_t Size)
 {
 	// TODO handle alignment later!
-	assert(!!Info.Allocator);
-	return FMemoryBlock{ Info.Size, Info.Allocator->Allocate(Info.Size) };
+	assert(!!Allocator);
+	return FMemoryBlock{ Size, Allocator->Allocate(Size) };
 }
 
 FMemoryBlock FMemory::Malloc(FAllocatorInfo const& Info, void* Data)
 {
-	return MemCpy(Malloc(Info), Data);
+	return MemCpy(Malloc(Info.Allocator, Info.Size), Data);
 }
 
-FMemoryBlock FMemory::MemCpy(FMemoryBlock MemoryBlock, void* Data)
+FMemoryBlock FMemory::MemCpy(FMemoryBlock&& MemoryBlock, void* Data)
 {
-	auto* const Dest = reinterpret_cast<std::size_t*>(MemoryBlock.Payload);
-	auto* const Src = reinterpret_cast<std::size_t*>(Data);
-	*Dest = *Src;
+	auto* const Dest = reinterpret_cast<char*>(MemoryBlock.Payload);
+	auto* const Src = reinterpret_cast<char*>(Data); // problem here!
+	for (std::size_t i = 0; i < MemoryBlock.Size; ++i) { Dest[i] = Src[i]; }
 	return MemoryBlock;
 }
 
@@ -56,21 +57,21 @@ FStackAllocator::FStackAllocator()
 	Head = ReservedMemory;
 	// https://www.geeksforgeeks.org/what-is-array-decay-in-c-how-can-it-be-prevented/
 	// back point to out-of-bound memory on purpose to warn against possible overflow
-	Tail = (Head + (sizeof(ReservedMemory) / sizeof(ReservedMemory[0]))/*Arr num*/);
+	Tail = Head + sizeof(ReservedMemory)/*Arr num*/;
+	printf("Head: %p, Tail: %p, Allocator Size in Bytes: %llu \n", Head, Tail, sizeof(ReservedMemory));
 }
 
 void* FStackAllocator::Allocate(std::size_t Size)
 {
-	assert((Head < Tail));
-	void* Previous = Head;
-	Head += (Size / sizeof(std::size_t));
-	return Previous;
+	printf("Head: %p, Tail: %p, Allocation Size in Bytes: %zu, Remaining Size: %zu \n", Head, Tail, Size, (Tail - Head) - Size);
+	assert((Head + Size) < Tail);
+	Head += Size;
+	return Head - Size;
 }
 
 void FStackAllocator::Deallocate(std::size_t Size)
 {
-	if (Head == ReservedMemory) { return; }
-	auto const MemoryJump = (Size / sizeof(std::size_t));
-	assert((Head - MemoryJump) >= ReservedMemory);
-	Head -= MemoryJump;
+	printf("Head: %p, Tail: %p, DeAllocation Size in Bytes: %zu, Remaining Size: %zu \n", Head, Tail, Size, (Tail - Head) + Size);
+	assert((Head - Size) >= ReservedMemory);
+	Head -= Size;
 }

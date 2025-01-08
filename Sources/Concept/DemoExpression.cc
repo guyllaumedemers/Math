@@ -18,9 +18,15 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 
-#include "Concept/DefaultExpression.hh"
+#include "Concept/DemoExpression.hh"
 
 #include <imgui.h>
+#include <stdio.h>
+
+std::size_t UDemoExpression::Size() const
+{
+	return sizeof(UDemoExpression);
+}
 
 void UDemoExpression::Draw()
 {

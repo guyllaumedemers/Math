@@ -22,6 +22,10 @@
 
 #include <cstddef>
 
+#ifndef STACK_ALLOCATOR_SIZE
+#define STACK_ALLOCATOR_SIZE 1024
+#endif
+
 struct FAllocatorInfo
 {
 	struct FAllocator* Allocator = nullptr;
@@ -44,9 +48,9 @@ struct FAllocator
 // memory system handling resource allocation/deallocation
 struct FMemory
 {
-	static FMemoryBlock Malloc(FAllocatorInfo const&);
+	static FMemoryBlock Malloc(FAllocator*, std::size_t);
 	static FMemoryBlock Malloc(FAllocatorInfo const&, void*);
-	static FMemoryBlock MemCpy(FMemoryBlock, void*);
+	static FMemoryBlock MemCpy(FMemoryBlock&&, void*);
 	static void Free(FAllocator*, FMemoryBlock&);
 };
 
@@ -57,7 +61,7 @@ struct FStackAllocator : public FAllocator
 	virtual void Deallocate(std::size_t) override;
 
 private:
-	std::size_t ReservedMemory[128];
-	std::size_t* Head = nullptr;
-	std::size_t* Tail = nullptr;
+	char ReservedMemory[STACK_ALLOCATOR_SIZE];
+	char* Head = nullptr;
+	char* Tail = nullptr;
 };
