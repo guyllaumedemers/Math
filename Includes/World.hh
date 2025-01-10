@@ -49,10 +49,11 @@ protected:
 		public ITickable
 	{
 		FWorldContext() = default;
-		FWorldContext(FWorldContext const&) = default;
+		FWorldContext(FWorldContext const&) = delete;
 		FWorldContext(FWorldContext&&) = default;
-		FWorldContext& operator=(FWorldContext const&) = default;
-		FWorldContext& operator=(FWorldContext&&) = default;
+		FWorldContext& operator=(FWorldContext const&) = delete;
+		FWorldContext& operator=(FWorldContext&& WorldContext);
+
 		FWorldContext(IBatchResource&&);
 		~FWorldContext();
 

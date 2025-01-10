@@ -32,7 +32,17 @@ FWorld FWorld::Factory(IBatchResource&& BatchResource)
 
 FWorld::FWorld(FWorldContext&& WorldContext)
 {
-	this->WorldContext = WorldContext;
+	// move operation doesn't invalidate correctly resources, an overload of the move assignment is required
+	this->WorldContext = std::move(WorldContext);
+}
+
+FWorld::FWorldContext& FWorld::FWorldContext::operator=(FWorld::FWorldContext&& WorldContext)
+{
+	this->Viewport = std::move(WorldContext.Viewport);
+	this->Camera = std::move(WorldContext.Camera);
+	this->Handle = std::move(WorldContext.Handle);
+	WorldContext.Handle = {};
+	return *this;
 }
 
 FWorld::FWorldContext::FWorldContext(IBatchResource&& BatchResource)
@@ -44,6 +54,8 @@ FWorld::FWorldContext::FWorldContext(IBatchResource&& BatchResource)
 
 FWorld::FWorldContext::~FWorldContext()
 {
+	// TODO Fix problem where Destructor of FWorldContext is called during copy construction/move construction
+	// and deallocate without reallocating
 	if (Handle.MemoryBlock.Payload == nullptr) { return; }
 	FMemory::Free(&gStackAllocator, Handle.MemoryBlock);
 }
