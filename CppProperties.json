@@ -8,8 +8,9 @@
       "includePath": [
         "${env.INCLUDE}",
         "${workspaceRoot}\\Includes",
-        "${workspaceRoot}\\Vendor\\sdl2\\include",
         "${workspaceRoot}\\Vendor\\imgui",
+        "${workspaceRoot}\\Vendor\\glad\\include",
+        "${workspaceRoot}\\Vendor\\sdl2\\include",
         "${workspaceRoot}\\Vendor\\googletest\\googletest",
         "${workspaceRoot}\\Vendor\\googletest\\googletest\\include"
       ],

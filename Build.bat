@@ -47,15 +47,17 @@ SET projDir="%~dp0Includes"
 :: vendor include directories
 SET imguibackendsDir="%~dp0Vendor/imgui/backends"
 SET imguiDir="%~dp0Vendor/imgui"
+SET gladDir="%~dp0Vendor/glad"
 SET sdl2Dir="%~dp0Vendor/sdl2/include"
 
 :: imgui source files we care about
 SET ImguiSrc="%imguiDir%/imgui.cpp" "%imguiDir%/imgui_draw.cpp" "%imguiDir%/imgui_tables.cpp" "%imguiDir%/imgui_widgets.cpp" "%imguiDir%/backends/imgui_impl_opengl3.cpp" "%imguiDir%/backends/imgui_impl_sdl3.cpp"
-SET cppFilenames=!cppFilenames! %ImguiSrc%
+SET GladSrc="%gladDir%/src/glad.c"
+SET cppFilenames=!cppFilenames! %ImguiSrc% %GladSrc%
 
 :: compiler flags
 :: https://learn.microsoft.com/en-us/cpp/build/reference/compiler-options-listed-by-category?view=msvc-170
-SET cflags=/std:c++20 /EHsc /MT /Od /I"%projDir%" /I"%imguibackendsDir%" /I"%imguiDir%" /I"%sdl2Dir%" /Fe"%buildDir%/Sandbox.exe" /Fo"%buildDir%/" /Zi
+SET cflags=/std:c++20 /EHsc /MT /Od /I"%projDir%" /I"%imguibackendsDir%" /I"%imguiDir%" /I"%gladDir%/include" /I"%sdl2Dir%" /Fe"%buildDir%/Sandbox.exe" /Fo"%buildDir%/" /Zi
 
 :: libraries
 SET languagelibs=libucrt.lib libvcruntime.lib libcmt.lib libcpmt.lib

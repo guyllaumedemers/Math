@@ -73,6 +73,9 @@ protected:
 	// TODO later addition to support multiple world context, i.e multiple viewport with
 	// various running instance of math expression should be expected
 
+	// Could add a Push/Pop function that append our world with various context that split screen
+	// into each context available
+
 	// world resources
 	FWorldContext WorldContext;
 };

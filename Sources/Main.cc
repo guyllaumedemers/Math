@@ -25,8 +25,8 @@
 #include "SDL3/SDL.h"
 #include "imgui.h"
 #include "backends/imgui_impl_opengl3.h"
-#include "backends/imgui_impl_opengl3_loader.h"
 #include "backends/imgui_impl_sdl3.h"
+#include "glad/glad.h"
 
 // application headers
 #include "World.hh"
@@ -52,7 +52,7 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 	//	*******
 
 	SDL_InitFlags InitFlags = SDL_INIT_VIDEO | SDL_INIT_EVENTS;
-	if (SDL_Init(InitFlags) < 0)
+	if (!SDL_Init(InitFlags))
 	{
 		SDL_Log("Init failed: %s", SDL_GetError());
 		return Error;
@@ -82,11 +82,22 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 	//	OpenGl Creation
 	//	*******
 
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
 	SDL_GLContext GlContext = SDL_GL_CreateContext(Window);
 
 	if (!IsValid(GlContext))
 	{
 		SDL_Log("OpenGl context creation failed: %s", SDL_GetError());
+		return Error;
+	}
+
+	// load function ptr specific to the os sdl is compiling for
+	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
+	{
+		SDL_Log("Gl loader failed: %s", SDL_GetError());
 		return Error;
 	}
 
@@ -153,13 +164,12 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 	// imgui content drawing
 	auto const ImGuiDraw = [&](FWorld& World, FImGuiBuilder& Builder)
 		{
-			//Builder.MakeMainMenu(World);
+			World.Drawable().Draw();
 		};
 
 	// world render
 	auto const ApplicationDraw = [](FWorld& World)
 		{
-			World.Drawable().Draw();
 		};
 
 	// opengl back buffer handling
