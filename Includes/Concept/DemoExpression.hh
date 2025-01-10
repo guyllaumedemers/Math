@@ -33,6 +33,12 @@ class UDemoExpression :
 	public ITickable
 {
 public:
+	UDemoExpression();
+	~UDemoExpression();
+	UDemoExpression(UDemoExpression const&) = delete;
+	UDemoExpression(UDemoExpression&&) = default;
+	UDemoExpression& operator=(UDemoExpression const&) = delete;
+	UDemoExpression& operator=(UDemoExpression&&) = default;
 	virtual std::size_t Size() const override;
 	virtual void Draw() override;
 	virtual void Tick() override;
@@ -41,4 +47,7 @@ protected:
 	bool bIsOrthographic = false;
 	bool bIs3d = false;
 	bool bDisplayGrid = false;
+
+private:
+	struct FObject* DemoCube = nullptr;
 };

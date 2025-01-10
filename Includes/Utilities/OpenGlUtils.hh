@@ -20,50 +20,23 @@
 
 #pragma once
 
-#ifndef STACK_ALLOCATOR_SIZE
-#define STACK_ALLOCATOR_SIZE 1024
-#endif
+#include "glad/glad.h"
 
-#include <cstddef>
-#include <cstdint>
-
-struct FAllocatorInfo
+struct FOpenGlUtils
 {
-	struct FAllocator* Allocator = nullptr;
-	std::size_t Size = 0;
-};
+	static void SetupVertexShader(GLuint* BufferId,
+		GLuint* ShaderId,
+		char const* ShaderSrc,
+		GLsizeiptr size,
+		void const* data,
+		GLenum usage);
 
-struct FMemoryBlock
-{
-	std::size_t Size = 0;
-	void* Payload = nullptr;
-};
+	static void SetupFragmentShader(GLuint* ShaderId,
+		char const* ShaderSrc);
 
-struct FAllocator
-{
-	virtual ~FAllocator() = default;
-	virtual void* Allocate(std::size_t) = 0;
-	virtual void Deallocate(std::size_t) = 0;
-};
+	static void SetupShaderProgram(GLuint* ShaderProgramId,
+		GLuint VertextShaderId,
+		GLuint FragmentShaderId);
 
-// memory system handling resource allocation/deallocation
-struct FMemory
-{
-	static FMemoryBlock Malloc(FAllocator*, std::size_t);
-	static FMemoryBlock Malloc(FAllocatorInfo const&, void*);
-	static FMemoryBlock MemCpy(FMemoryBlock&&, void*);
-	static void Free(FAllocator*, FMemoryBlock&);
-	static void Free(FAllocator*, FMemoryBlock&&);
-};
-
-struct FStackAllocator : public FAllocator
-{
-	FStackAllocator();
-	virtual void* Allocate(std::size_t) override;
-	virtual void Deallocate(std::size_t) override;
-
-private:
-	char ReservedMemory[STACK_ALLOCATOR_SIZE];
-	char* Head = nullptr;
-	char* Tail = nullptr;
+	static void* LoadVertices(char const* File, void* Dest);
 };

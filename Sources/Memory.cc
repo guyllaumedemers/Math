@@ -52,6 +52,11 @@ void FMemory::Free(FAllocator* Allocator, FMemoryBlock& MemoryBlock)
 	MemoryBlock = FMemoryBlock();
 }
 
+void FMemory::Free(FAllocator* Allocator, FMemoryBlock&& MemoryBlock)
+{
+	Free(Allocator, MemoryBlock/*rvalue, becomes a named variable, i.e lvalue*/);
+}
+
 FStackAllocator::FStackAllocator()
 {
 	Head = ReservedMemory;
@@ -63,7 +68,7 @@ FStackAllocator::FStackAllocator()
 
 void* FStackAllocator::Allocate(std::size_t Size)
 {
-	printf("Head: %p, Tail: %p, Allocation Size in Bytes: %zu, Remaining Size: %zu \n", Head, Tail, Size, (Tail - Head) - Size);
+	printf("Allocation Size in Bytes: %zu, Remaining Size: %zu \n", Size, (Tail - Head) - Size);
 	assert((Head + Size) < Tail);
 	Head += Size;
 	return Head - Size;
@@ -71,7 +76,7 @@ void* FStackAllocator::Allocate(std::size_t Size)
 
 void FStackAllocator::Deallocate(std::size_t Size)
 {
-	printf("Head: %p, Tail: %p, DeAllocation Size in Bytes: %zu, Remaining Size: %zu \n", Head, Tail, Size, (Tail - Head) + Size);
+	printf("DeAllocation Size in Bytes: %zu, Remaining Size: %zu \n", Size, (Tail - Head) + Size);
 	assert((Head - Size) >= ReservedMemory);
 	Head -= Size;
 }

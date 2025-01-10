@@ -20,50 +20,18 @@
 
 #pragma once
 
-#ifndef STACK_ALLOCATOR_SIZE
-#define STACK_ALLOCATOR_SIZE 1024
-#endif
+#include "IBatchResource.hh"
 
-#include <cstddef>
 #include <cstdint>
+#include <cstddef>
 
-struct FAllocatorInfo
+// opengl object
+struct FObject : public IBatchResource
 {
-	struct FAllocator* Allocator = nullptr;
-	std::size_t Size = 0;
-};
+	virtual std::size_t Size() const override { return sizeof(FObject); }
 
-struct FMemoryBlock
-{
-	std::size_t Size = 0;
-	void* Payload = nullptr;
-};
-
-struct FAllocator
-{
-	virtual ~FAllocator() = default;
-	virtual void* Allocate(std::size_t) = 0;
-	virtual void Deallocate(std::size_t) = 0;
-};
-
-// memory system handling resource allocation/deallocation
-struct FMemory
-{
-	static FMemoryBlock Malloc(FAllocator*, std::size_t);
-	static FMemoryBlock Malloc(FAllocatorInfo const&, void*);
-	static FMemoryBlock MemCpy(FMemoryBlock&&, void*);
-	static void Free(FAllocator*, FMemoryBlock&);
-	static void Free(FAllocator*, FMemoryBlock&&);
-};
-
-struct FStackAllocator : public FAllocator
-{
-	FStackAllocator();
-	virtual void* Allocate(std::size_t) override;
-	virtual void Deallocate(std::size_t) override;
-
-private:
-	char ReservedMemory[STACK_ALLOCATOR_SIZE];
-	char* Head = nullptr;
-	char* Tail = nullptr;
+	GLuint VBO = UINT64_MAX;
+	GLuint VAO = UINT64_MAX;
+	GLuint ShaderProgramID = UINT64_MAX;
+	void* Mesh = nullptr;
 };
