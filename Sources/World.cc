@@ -54,8 +54,6 @@ FWorld::FWorldContext::FWorldContext(IBatchResource&& BatchResource)
 
 FWorld::FWorldContext::~FWorldContext()
 {
-	// TODO Fix problem where Destructor of FWorldContext is called during copy construction/move construction
-	// and deallocate without reallocating
 	if (Handle.MemoryBlock.Payload == nullptr) { return; }
 	FMemory::Free(&gStackAllocator, Handle.MemoryBlock);
 }
