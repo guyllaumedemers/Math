@@ -26,8 +26,12 @@ void UCrossProduct::Tick()
 {
 }
 
-void UCrossProduct::Draw()
+void UCrossProduct::ApplicationDraw()
 {
 	/*auto& Builder = FImGuiBuilder::Get();
 	Builder.PushWindow();*/
+}
+
+void UCrossProduct::ImGuiDraw()
+{
 }

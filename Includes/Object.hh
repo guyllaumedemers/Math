@@ -26,8 +26,12 @@
 // opengl object
 struct FObject
 {
+	// buffer ids
 	GLuint VAO = UINT64_MAX;
 	GLuint VBO = UINT64_MAX;
 	GLuint ShaderProgramID = UINT64_MAX;
+
+	// vertices
 	void* Mesh = nullptr;
+	GLuint Size = UINT64_MAX;
 };

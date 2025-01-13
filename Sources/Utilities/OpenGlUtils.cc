@@ -129,7 +129,9 @@ void FOpenGlUtils::Cleanup(GLuint* ShaderProgramId, GLuint* VBOs, GLuint* VAOs)
 	*VAOs = 0;
 }
 
-void* FOpenGlUtils::LoadVertices(char const* File, void* Dest)
+void* FOpenGlUtils::LoadVertices(char const* File,
+	void* Dest,
+	GLuint* Size)
 {
 	// TODO make real fopen function to read from file
 	float static Temp[]
@@ -139,6 +141,7 @@ void* FOpenGlUtils::LoadVertices(char const* File, void* Dest)
 		 0.0f,  0.5f, 1.0f
 	};
 
+	*Size = sizeof(Temp);
 	Dest = Temp;
 	return Dest;
 }

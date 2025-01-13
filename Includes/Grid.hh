@@ -32,7 +32,8 @@ struct FGrid :
 {
 	inline FGrid static& Get() { return Singleton; }
 
-	virtual void Draw() override;
+	virtual void ApplicationDraw() override;
+	virtual void ImGuiDraw() override;
 
 protected:
 	FTransform Transform = FTransform::Default;

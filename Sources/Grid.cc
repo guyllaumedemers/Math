@@ -20,6 +20,10 @@
 
 #include "Grid.hh"
 
-void FGrid::Draw()
+void FGrid::ApplicationDraw()
+{
+}
+
+void FGrid::ImGuiDraw()
 {
 }

@@ -24,5 +24,6 @@ class IDrawable
 {
 public:
 	virtual ~IDrawable() = default;
-	virtual void Draw() = 0;
+	virtual void ApplicationDraw() = 0;
+	virtual void ImGuiDraw() = 0;
 };

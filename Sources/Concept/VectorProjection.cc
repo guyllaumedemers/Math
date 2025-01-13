@@ -24,7 +24,11 @@ void UVectorProjection::Tick()
 {
 }
 
-void UVectorProjection::Draw()
+void UVectorProjection::ApplicationDraw()
 {
 	// TODO Open a new ImGui window context for layout specific to this demo
+}
+
+void UVectorProjection::ImGuiDraw()
+{
 }

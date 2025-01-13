@@ -68,7 +68,7 @@ FWorld::FWorldContext::~FWorldContext()
 	FMemory::Free(&gStackAllocator, Handle.MemoryBlock);
 }
 
-void FWorld::FWorldContext::Draw()
+void FWorld::FWorldContext::ApplicationDraw()
 {
 	// https://lukasatkinson.de/2018/interface-dispatch/
 	// https://stackoverflow.com/questions/24067594/how-does-a-c-compiler-handle-offsets-with-multiple-inheritance
@@ -78,7 +78,15 @@ void FWorld::FWorldContext::Draw()
 	if (Handle.MemoryBlock.Payload == nullptr) { return; }
 	auto* const Payload = static_cast<UDemoExpression*>(Handle.MemoryBlock.Payload);
 	assert(!!Payload);
-	Payload->Draw();
+	Payload->ApplicationDraw();
+}
+
+void FWorld::FWorldContext::ImGuiDraw()
+{
+	if (Handle.MemoryBlock.Payload == nullptr) { return; }
+	auto* const Payload = static_cast<UDemoExpression*>(Handle.MemoryBlock.Payload);
+	assert(!!Payload);
+	Payload->ImGuiDraw();
 }
 
 void FWorld::FWorldContext::Tick()

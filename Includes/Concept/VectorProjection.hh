@@ -52,5 +52,6 @@ class UVectorProjection : public UDemoExpression
 public:
 	virtual std::size_t Size() const override { return sizeof(UVectorProjection); };
 	virtual void Tick() override;
-	virtual void Draw() override;
+	virtual void ApplicationDraw() override;
+	virtual void ImGuiDraw() override;
 };

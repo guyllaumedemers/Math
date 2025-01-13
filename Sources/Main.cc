@@ -164,24 +164,29 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 	// imgui content drawing
 	auto const ImGuiDraw = [&](FWorld& World, FImGuiBuilder& Builder)
 		{
-			World.Drawable().Draw();
+			World.Drawable().ImGuiDraw();
+			ImGui::Render();
+		};
+
+	auto const ViewportClear = [&](ImGuiIO const& Data)
+		{
+			auto static constexpr ClearColor = ImVec4(0.f, 0.f, 0.f, 1.f);
+			glViewport(0, 0, (int)Data.DisplaySize.x, (int)Data.DisplaySize.y);
+			glClearColor(ClearColor.x * ClearColor.w, ClearColor.y * ClearColor.w, ClearColor.z * ClearColor.w, ClearColor.w);
+			glClear(GL_COLOR_BUFFER_BIT);
+		};
+
+	// opengl back buffer handling
+	auto const ViewportDraw = [&](SDL_Window* Target)
+		{
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+			SDL_GL_SwapWindow(Target);
 		};
 
 	// world render
 	auto const ApplicationDraw = [](FWorld& World)
 		{
-		};
-
-	// opengl back buffer handling
-	auto const RenderViewport = [&](SDL_Window* Target, ImGuiIO const& Data)
-		{
-			auto static constexpr ClearColor = ImVec4(0.f, 0.f, 0.f, 1.f);
-			ImGui::Render();
-			glViewport(0, 0, (int)Data.DisplaySize.x, (int)Data.DisplaySize.y);
-			glClearColor(ClearColor.x * ClearColor.w, ClearColor.y * ClearColor.w, ClearColor.z * ClearColor.w, ClearColor.w);
-			glClear(GL_COLOR_BUFFER_BIT);
-			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-			SDL_GL_SwapWindow(Target);
+			World.Drawable().ApplicationDraw();
 		};
 
 	//	*******
@@ -197,17 +202,20 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 		// application tick
 		ApplicationTick(EditorWorld);
 
-		// imgui clear
+		// imgui clear - doesnt affect rendering backend
 		ImGuiClear();
 
-		// imgui draw
+		// imgui draw - doesnt affect rendering backend
 		ImGuiDraw(EditorWorld, FImGuiBuilder::Builder);
+
+		// viewport clear
+		ViewportClear(Io);
 
 		// application draw
 		ApplicationDraw(EditorWorld);
 
 		// opengl viewport rendering
-		RenderViewport(Window, Io);
+		ViewportDraw(Window);
 	}
 
 	//	*******

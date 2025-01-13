@@ -36,7 +36,13 @@ std::size_t UDemoExpression::Size() const
 	return sizeof(UDemoExpression);
 }
 
-void UDemoExpression::Draw()
+void UDemoExpression::ApplicationDraw()
+{
+	assert(DemoCube != nullptr);
+	FOpenGlUtils::RunVAO(DemoCube->ShaderProgramID, DemoCube->VAO);
+}
+
+void UDemoExpression::ImGuiDraw()
 {
 	ImGui::Begin("Demo");
 	ImGui::Checkbox("Toggle Orthographic View", &bIsOrthographic);
@@ -47,10 +53,6 @@ void UDemoExpression::Draw()
 
 void UDemoExpression::Tick()
 {
-	assert(DemoCube != nullptr);
-
-	FOpenGlUtils::RunVAO(DemoCube->ShaderProgramID, DemoCube->VAO);
-
 	// TODO do more here if required!
 }
 
@@ -73,7 +75,9 @@ void UDemoExpression::Init()
 	{
 		char const* File = "";
 		char const* VertexShader = "#version 330 core\nlayout (location = 0) in vec3 aPos;\nvoid main()\n{\n\tgl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n}";
-		FOpenGlUtils::SetupVertexShader(&DemoCube->VBO, &VertexShaderID, VertexShader, FOpenGlUtils::LoadVertices(File, DemoCube->Mesh), sizeof(DemoCube->Mesh)/*size*/, GL_STATIC_DRAW);
+		// ISA reordering require non-inline call to this so DemoCube->Size has correct value
+		void* Data = FOpenGlUtils::LoadVertices(File, DemoCube->Mesh, &DemoCube->Size);
+		FOpenGlUtils::SetupVertexShader(&DemoCube->VBO, &VertexShaderID, VertexShader, Data, DemoCube->Size/*size*/, GL_STATIC_DRAW);
 	}
 
 	{

@@ -24,7 +24,11 @@ void UDotProduct::Tick()
 {
 }
 
-void UDotProduct::Draw()
+void UDotProduct::ApplicationDraw()
 {
 	// TODO Open a new ImGui window context for layout specific to this demo
+}
+
+void UDotProduct::ImGuiDraw()
+{
 }

@@ -52,5 +52,7 @@ struct FOpenGlUtils
 		GLuint* VBOs,
 		GLuint* VAOs);
 
-	static void* LoadVertices(char const* File, void* Dest);
+	static void* LoadVertices(char const* File,
+		void* Dest,
+		GLuint* Size);
 };

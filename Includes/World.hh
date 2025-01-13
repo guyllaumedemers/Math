@@ -57,7 +57,8 @@ protected:
 		FWorldContext(IBatchResource&&);
 		~FWorldContext();
 
-		virtual void Draw() override;
+		virtual void ApplicationDraw() override;
+		virtual void ImGuiDraw() override;
 		virtual void Tick() override;
 
 		// viewport target
