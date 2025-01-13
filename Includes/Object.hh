@@ -20,18 +20,14 @@
 
 #pragma once
 
-#include "IBatchResource.hh"
-
 #include <cstdint>
 #include <cstddef>
 
 // opengl object
-struct FObject : public IBatchResource
+struct FObject
 {
-	virtual std::size_t Size() const override { return sizeof(FObject); }
-
-	GLuint VBO = UINT64_MAX;
 	GLuint VAO = UINT64_MAX;
+	GLuint VBO = UINT64_MAX;
 	GLuint ShaderProgramID = UINT64_MAX;
 	void* Mesh = nullptr;
 };

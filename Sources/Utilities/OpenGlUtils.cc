@@ -24,16 +24,33 @@
 
 #include "SDL3/SDL.h"
 
+#include "Memory.hh"
+
+void FOpenGlUtils::SetupVertexArrayObject(GLuint* BufferId)
+{
+	glGenVertexArrays(1, BufferId);
+	glBindVertexArray(*BufferId);
+}
+
+void FOpenGlUtils::SetupVertexAttributePointer(GLuint AttributeId,
+	GLuint Count,
+	GLuint Stride,
+	void const* Offset)
+{
+	glVertexAttribPointer(AttributeId, Count, GL_FLOAT, GL_FALSE, Stride, Offset);
+	glEnableVertexAttribArray(AttributeId);
+}
+
 void FOpenGlUtils::SetupVertexShader(GLuint* BufferId,
 	GLuint* ShaderId,
 	char const* ShaderSrc,
-	GLsizeiptr size,
-	void const* data,
-	GLenum usage)
+	void const* Data,
+	GLuint Size,
+	GLenum Usage)
 {
 	glGenBuffers(1, BufferId);
 	glBindBuffer(GL_ARRAY_BUFFER, *BufferId);
-	glBufferData(GL_ARRAY_BUFFER, size, data, usage);
+	glBufferData(GL_ARRAY_BUFFER, Size, Data, Usage);
 
 	*ShaderId = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(*ShaderId, 1, &ShaderSrc, NULL);
@@ -91,15 +108,37 @@ void FOpenGlUtils::SetupShaderProgram(GLuint* ShaderProgramId,
 	glDeleteShader(FragmentShaderId);
 }
 
+void FOpenGlUtils::RunVAO(GLuint ShaderProgramId, GLuint VAO)
+{
+	glUseProgram(ShaderProgramId);
+	glBindVertexArray(VAO);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+}
+
+void FOpenGlUtils::Cleanup(GLuint* ShaderProgramId, GLuint* VBOs, GLuint* VAOs)
+{
+	glUseProgram(0);
+	glDisableVertexAttribArray(0);
+	glDeleteProgram(*ShaderProgramId);
+	glDeleteBuffers(1, VBOs);
+	glDeleteVertexArrays(1, VAOs);
+
+	// clear cached variables
+	*ShaderProgramId = 0;
+	*VBOs = 0;
+	*VAOs = 0;
+}
+
 void* FOpenGlUtils::LoadVertices(char const* File, void* Dest)
 {
 	// TODO make real fopen function to read from file
 	float static Temp[]
 	{
-		-0.5, -0.5, 1.0,
-		 0.5, -0.5, 1.0,
-		 0.0,  0.5, 1.0
+		-0.5f, -0.5f, 1.0f,
+		 0.5f, -0.5f, 1.0f,
+		 0.0f,  0.5f, 1.0f
 	};
 
-	return static_cast<void*>(Temp);
+	Dest = Temp;
+	return Dest;
 }

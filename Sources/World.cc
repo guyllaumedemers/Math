@@ -50,11 +50,21 @@ FWorld::FWorldContext::FWorldContext(IBatchResource&& BatchResource)
 	uint32_t static RefCount = 0;
 	Handle.MemoryBlock = FMemory::Malloc({ &gStackAllocator, BatchResource.Size() }, &BatchResource);
 	Handle.HandleId = ++RefCount;
+
+	// TODO find better architecture to support init an expression
+	auto* const Payload = static_cast<UDemoExpression*>(Handle.MemoryBlock.Payload);
+	assert(!!Payload);
+	Payload->Init();
 }
 
 FWorld::FWorldContext::~FWorldContext()
 {
 	if (Handle.MemoryBlock.Payload == nullptr) { return; }
+
+	// TODO find better architecture to support cleanup an expression
+	auto* const Payload = static_cast<UDemoExpression*>(Handle.MemoryBlock.Payload);
+	assert(!!Payload);
+	Payload->Cleanup();
 	FMemory::Free(&gStackAllocator, Handle.MemoryBlock);
 }
 

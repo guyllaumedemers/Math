@@ -31,38 +31,6 @@
 
 extern FStackAllocator gStackAllocator;
 
-UDemoExpression::UDemoExpression()
-{
-	FObject Cube;
-	FMemoryBlock const Payload = FMemory::Malloc({ &gStackAllocator, sizeof(FObject) }, &Cube);
-	DemoCube = reinterpret_cast<FObject*>(Payload.Payload);
-
-	GLuint VertextShaderID;
-	GLuint FramentShaderID;
-
-	{
-		char const* File = "";
-		char const* VertextShader = "#version 330 core\nlayout (location = 0) in vec3 aPos;\nvoid main()\n{\n\tgl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n}";
-		FOpenGlUtils::SetupVertexShader(&DemoCube->VBO, &VertextShaderID, VertextShader, sizeof(DemoCube->Mesh), FOpenGlUtils::LoadVertices(File, DemoCube->Mesh), GL_STATIC_DRAW);
-	}
-
-	{
-		char const* FragmentShader = "#version 330 core\nout vec4 fragColor;\nvoid main()\n{\n\tfragColor = vec4(0.5, 0.5, 0.5, 1.0);\n}";
-		FOpenGlUtils::SetupFragmentShader(&FramentShaderID, FragmentShader);
-	}
-
-	{
-		FOpenGlUtils::SetupShaderProgram(&DemoCube->ShaderProgramID, VertextShaderID, FramentShaderID);
-	}
-}
-
-UDemoExpression::~UDemoExpression()
-{
-	// TODO Fix problem here. We deallocate in main when escaping the factory method.
-	if (DemoCube == nullptr) { return; }
-	FMemory::Free(&gStackAllocator, FMemoryBlock{ sizeof(FObject), DemoCube });
-}
-
 std::size_t UDemoExpression::Size() const
 {
 	return sizeof(UDemoExpression);
@@ -80,5 +48,51 @@ void UDemoExpression::Draw()
 void UDemoExpression::Tick()
 {
 	assert(DemoCube != nullptr);
-	glUseProgram(DemoCube->ShaderProgramID);
+
+	FOpenGlUtils::RunVAO(DemoCube->ShaderProgramID, DemoCube->VAO);
+
+	// TODO do more here if required!
+}
+
+void UDemoExpression::Init()
+{
+	FObject Cube;
+	FMemoryBlock const Payload = FMemory::Malloc({ &gStackAllocator, sizeof(FObject) }, &Cube);
+	DemoCube = reinterpret_cast<FObject*>(Payload.Payload);
+
+	assert(DemoCube != nullptr);
+
+	GLuint VertexShaderID;
+	GLuint FragmentShaderID;
+
+	{
+		FOpenGlUtils::SetupVertexArrayObject(&DemoCube->VAO);
+		FOpenGlUtils::SetupVertexAttributePointer(0, 3 /*count*/, 3 * sizeof(float) /*stride*/, static_cast<void*>(0)/*offset*/);
+	}
+
+	{
+		char const* File = "";
+		char const* VertexShader = "#version 330 core\nlayout (location = 0) in vec3 aPos;\nvoid main()\n{\n\tgl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n}";
+		FOpenGlUtils::SetupVertexShader(&DemoCube->VBO, &VertexShaderID, VertexShader, FOpenGlUtils::LoadVertices(File, DemoCube->Mesh), sizeof(DemoCube->Mesh)/*size*/, GL_STATIC_DRAW);
+	}
+
+	{
+		char const* FragmentShader = "#version 330 core\nout vec4 fragColor;\nvoid main()\n{\n\tfragColor = vec4(0.5, 0.5, 0.5, 1.0);\n}";
+		FOpenGlUtils::SetupFragmentShader(&FragmentShaderID, FragmentShader);
+	}
+
+	{
+		FOpenGlUtils::SetupShaderProgram(&DemoCube->ShaderProgramID, VertexShaderID, FragmentShaderID);
+	}
+}
+
+void UDemoExpression::Cleanup()
+{
+	assert(DemoCube != nullptr);
+
+	{
+		FOpenGlUtils::Cleanup(&DemoCube->ShaderProgramID, &DemoCube->VBO, &DemoCube->VAO);
+	}
+
+	FMemory::Free(&gStackAllocator, FMemoryBlock{ sizeof(FObject), DemoCube });
 }
