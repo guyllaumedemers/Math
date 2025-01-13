@@ -26,6 +26,8 @@
 
 #include "Memory.hh"
 
+extern FStackAllocator gStackAllocator;
+
 void FOpenGlUtils::SetupVertexArrayObject(GLuint* BufferId)
 {
 	glGenVertexArrays(1, BufferId);
@@ -33,8 +35,8 @@ void FOpenGlUtils::SetupVertexArrayObject(GLuint* BufferId)
 }
 
 void FOpenGlUtils::SetupVertexAttributePointer(GLuint AttributeId,
-	GLuint Count,
-	GLuint Stride,
+	GLint Count,
+	GLsizei Stride,
 	void const* Offset)
 {
 	glVertexAttribPointer(AttributeId, Count, GL_FLOAT, GL_FALSE, Stride, Offset);
@@ -45,7 +47,7 @@ void FOpenGlUtils::SetupVertexShader(GLuint* BufferId,
 	GLuint* ShaderId,
 	char const* ShaderSrc,
 	void const* Data,
-	GLuint Size,
+	GLsizeiptr Size,
 	GLenum Usage)
 {
 	glGenBuffers(1, BufferId);
@@ -112,6 +114,8 @@ void FOpenGlUtils::RunVAO(GLuint ShaderProgramId, GLuint VAO)
 {
 	glUseProgram(ShaderProgramId);
 	glBindVertexArray(VAO);
+
+	// TODO Fix this garbage! throw exception for invalid access.
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
@@ -129,9 +133,9 @@ void FOpenGlUtils::Cleanup(GLuint* ShaderProgramId, GLuint* VBOs, GLuint* VAOs)
 	*VAOs = 0;
 }
 
-void* FOpenGlUtils::LoadVertices(char const* File,
-	void* Dest,
-	GLuint* Size)
+bool FOpenGlUtils::LoadVertices(char const* File,
+	void*& Dest,
+	GLsizeiptr& Size)
 {
 	// TODO make real fopen function to read from file
 	float static Temp[]
@@ -141,7 +145,9 @@ void* FOpenGlUtils::LoadVertices(char const* File,
 		 0.0f,  0.5f, 1.0f
 	};
 
-	*Size = sizeof(Temp);
-	Dest = Temp;
-	return Dest;
+	// TODO later when reading from file, we'll preallocate for the requested file content
+	auto const MemBlock = FMemory::Malloc({ &gStackAllocator, sizeof(Temp) }, Temp);
+	Size = MemBlock.Size;
+	Dest = MemBlock.Payload;
+	return true;
 }

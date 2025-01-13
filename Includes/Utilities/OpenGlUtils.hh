@@ -27,15 +27,15 @@ struct FOpenGlUtils
 	static void SetupVertexArrayObject(GLuint* BufferId);
 
 	static void SetupVertexAttributePointer(GLuint LocationId,
-		GLuint Count,
-		GLuint Stride,
+		GLint Count,
+		GLsizei Stride,
 		void const* Offset);
 
 	static void SetupVertexShader(GLuint* BufferId,
 		GLuint* ShaderId,
 		char const* ShaderSrc,
 		void const* data,
-		GLuint Size,
+		GLsizeiptr Size,
 		GLenum usage);
 
 	static void SetupFragmentShader(GLuint* ShaderId,
@@ -52,7 +52,7 @@ struct FOpenGlUtils
 		GLuint* VBOs,
 		GLuint* VAOs);
 
-	static void* LoadVertices(char const* File,
-		void* Dest,
-		GLuint* Size);
+	static bool LoadVertices(char const* File,
+		void*& Dest,
+		GLsizeiptr& Size);
 };

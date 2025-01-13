@@ -33,5 +33,5 @@ struct FObject
 
 	// vertices
 	void* Mesh = nullptr;
-	GLuint Size = UINT64_MAX;
+	GLsizeiptr Size = 0;
 };
