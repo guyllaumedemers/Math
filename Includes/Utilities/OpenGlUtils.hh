@@ -26,29 +26,30 @@ struct FOpenGlUtils
 {
 	static void SetupVertexArrayObject(GLuint* BufferId);
 
-	static void SetupVertexAttributePointer(GLuint LocationId,
+	static void SetupVertexAttributePointer(GLuint VertexAttributeId,
 		GLint Count,
 		GLsizei Stride,
 		void const* Offset);
 
-	static void SetupVertexShader(GLuint* BufferId,
-		GLuint* ShaderId,
-		char const* ShaderSrc,
-		void const* data,
+	static void SetupVertexBufferObject(GLuint* BufferId,
+		void const* Data,
 		GLsizeiptr Size,
-		GLenum usage);
+		GLenum Usage);
 
-	static void SetupFragmentShader(GLuint* ShaderId,
-		char const* ShaderSrc);
+	static void SetupShader(GLuint* ShaderId,
+		char const* ShaderSrc,
+		GLenum ShaderType);
 
 	static void SetupShaderProgram(GLuint* ShaderProgramId,
 		GLuint VertextShaderId,
 		GLuint FragmentShaderId);
 
-	static void RunVAO(GLuint ShaderProgramId,
+	static void UseProgram(GLuint ShaderProgramId,
 		GLuint VAO);
 
 	static void Cleanup(GLuint* ShaderProgramId,
+		GLuint* VertexShaderId,
+		GLuint* FragmentShaderId,
 		GLuint* VBOs,
 		GLuint* VAOs);
 

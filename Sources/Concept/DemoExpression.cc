@@ -37,7 +37,7 @@ std::size_t UDemoExpression::Size() const
 void UDemoExpression::ApplicationDraw()
 {
 	assert(DemoCube != nullptr);
-	FOpenGlUtils::RunVAO(DemoCube->ShaderProgramID, DemoCube->VAO);
+	FOpenGlUtils::UseProgram(DemoCube->ShaderProgramID, DemoCube->VAO);
 }
 
 void UDemoExpression::ImGuiDraw()
@@ -62,29 +62,46 @@ void UDemoExpression::Init()
 
 	assert(DemoCube != nullptr);
 
-	GLuint VertexShaderID;
-	GLuint FragmentShaderID;
-
 	{
 		FOpenGlUtils::SetupVertexArrayObject(&DemoCube->VAO);
-		FOpenGlUtils::SetupVertexAttributePointer(0, 3 /*count*/, 3 * sizeof(float) /*stride*/, NULL/*offset*/);
 	}
 
 	{
 		char const* File = "";
-		char const* VertexShader = "#version 330 core\nlayout (location = 0) in vec3 aPos;\nvoid main()\n{\n\tgl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n}";
-		// ISA reordering require non-inline call to FOpenGlUtils::LoadVertices so DemoCube->Size has correct value
-		assert(FOpenGlUtils::LoadVertices(File, DemoCube->Mesh, DemoCube->Size) == true);
-		FOpenGlUtils::SetupVertexShader(&DemoCube->VBO, &VertexShaderID, VertexShader, DemoCube->Mesh, DemoCube->Size/*size*/, GL_STATIC_DRAW);
+		assert(FOpenGlUtils::LoadVertices(File,
+			DemoCube->Mesh,
+			DemoCube->Size) == true);
+
+		FOpenGlUtils::SetupVertexBufferObject(&DemoCube->VBO,
+			DemoCube->Mesh /*data*/,
+			DemoCube->Size /*size*/,
+			GL_STATIC_DRAW);
 	}
 
 	{
-		char const* FragmentShader = "#version 330 core\nout vec4 fragColor;\nvoid main()\n{\n\tfragColor = vec4(0.5, 0.5, 0.5, 1.0);\n}";
-		FOpenGlUtils::SetupFragmentShader(&FragmentShaderID, FragmentShader);
+		// Note to self : VertexAttributePointer are configured based on the currently bound VBO (which is attached to the active VAO context bound)
+		// failing to configure VertexAttributePointer AFTER VBO binding will result in glDrawArrays throwing!
+		FOpenGlUtils::SetupVertexAttributePointer(0, 3 /*count*/, 3 * sizeof(float) /*stride*/, NULL/*offset*/);
 	}
 
 	{
-		FOpenGlUtils::SetupShaderProgram(&DemoCube->ShaderProgramID, VertexShaderID, FragmentShaderID);
+		char const* VertexShader = "#version 460 core\nlayout (location = 0) in vec3 aPos;\nvoid main()\n{\n\tgl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n}";
+		FOpenGlUtils::SetupShader(&DemoCube->VertexProgramID,
+			VertexShader,
+			GL_VERTEX_SHADER);
+	}
+
+	{
+		char const* FragmentShader = "#version 460 core\nout vec4 fragColor;\nvoid main()\n{\n\tfragColor = vec4(0.5, 0.5, 0.5, 1.0);\n}";
+		FOpenGlUtils::SetupShader(&DemoCube->FragmentProgramID,
+			FragmentShader,
+			GL_FRAGMENT_SHADER);
+	}
+
+	{
+		FOpenGlUtils::SetupShaderProgram(&DemoCube->ShaderProgramID,
+			DemoCube->VertexProgramID,
+			DemoCube->FragmentProgramID);
 	}
 }
 
@@ -93,7 +110,11 @@ void UDemoExpression::Cleanup()
 	assert(DemoCube != nullptr);
 
 	{
-		FOpenGlUtils::Cleanup(&DemoCube->ShaderProgramID, &DemoCube->VBO, &DemoCube->VAO);
+		FOpenGlUtils::Cleanup(&DemoCube->ShaderProgramID,
+			&DemoCube->VertexProgramID,
+			&DemoCube->FragmentProgramID,
+			&DemoCube->VBO,
+			&DemoCube->VAO);
 	}
 
 	FMemory::Free(&gStackAllocator, FMemoryBlock{ sizeof(FObject), DemoCube });

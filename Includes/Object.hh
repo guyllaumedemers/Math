@@ -29,6 +29,10 @@ struct FObject
 	// buffer ids
 	GLuint VAO = UINT64_MAX;
 	GLuint VBO = UINT64_MAX;
+
+	// shader id
+	GLuint VertexProgramID = UINT64_MAX;
+	GLuint FragmentProgramID = UINT64_MAX;
 	GLuint ShaderProgramID = UINT64_MAX;
 
 	// vertices
