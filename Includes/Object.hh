@@ -36,6 +36,6 @@ struct FObject
 	GLuint ShaderProgramID = UINT64_MAX;
 
 	// vertices
-	void* Mesh = nullptr;
-	GLsizeiptr Size = 0;
+	void* Data = nullptr;
+	std::size_t MemBlockSize = 0;
 };

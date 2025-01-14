@@ -20,8 +20,6 @@
 
 #include "Utilities/OpenGlUtils.hh"
 
-#include <cstddef>
-
 #include "SDL3/SDL.h"
 
 #include "Memory.hh"
@@ -40,7 +38,7 @@ void FOpenGlUtils::SetupVertexAttributePointer(GLuint VertexAttributeId,
 	void const* Offset)
 {
 	glVertexAttribPointer(VertexAttributeId, Count, GL_FLOAT, GL_FALSE, Stride, Offset);
-	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(VertexAttributeId);
 }
 
 void FOpenGlUtils::SetupVertexBufferObject(GLuint* BufferId,
@@ -130,7 +128,7 @@ void FOpenGlUtils::Cleanup(GLuint* ShaderProgramId,
 
 bool FOpenGlUtils::LoadVertices(char const* File,
 	void*& Dest,
-	GLsizeiptr& Size)
+	std::size_t& MemblockSize)
 {
 	// TODO make real fopen function to read from file
 	float static Temp[]
@@ -142,7 +140,7 @@ bool FOpenGlUtils::LoadVertices(char const* File,
 
 	// TODO later when reading from file, we'll preallocate for the requested file content
 	auto const MemBlock = FMemory::Malloc({ &gStackAllocator, sizeof(Temp) }, Temp);
-	Size = MemBlock.Size;
+	MemblockSize = MemBlock.Size;
 	Dest = MemBlock.Payload;
 	return true;
 }

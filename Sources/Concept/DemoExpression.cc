@@ -69,12 +69,12 @@ void UDemoExpression::Init()
 	{
 		char const* File = "";
 		assert(FOpenGlUtils::LoadVertices(File,
-			DemoCube->Mesh,
-			DemoCube->Size) == true);
+			DemoCube->Data,
+			DemoCube->MemBlockSize) == true);
 
 		FOpenGlUtils::SetupVertexBufferObject(&DemoCube->VBO,
-			DemoCube->Mesh /*data*/,
-			DemoCube->Size /*size*/,
+			DemoCube->Data /*data*/,
+			DemoCube->MemBlockSize /*size*/,
 			GL_STATIC_DRAW);
 	}
 
@@ -92,7 +92,7 @@ void UDemoExpression::Init()
 	}
 
 	{
-		char const* FragmentShader = "#version 460 core\nout vec4 fragColor;\nvoid main()\n{\n\tfragColor = vec4(0.5, 0.5, 0.5, 1.0);\n}";
+		char const* FragmentShader = "#version 460 core\nout vec4 fragColor;\nvoid main()\n{\n\tfragColor = vec4(1.0, 0.0, 0.0, 1.0);\n}";
 		FOpenGlUtils::SetupShader(&DemoCube->FragmentProgramID,
 			FragmentShader,
 			GL_FRAGMENT_SHADER);
@@ -117,5 +117,6 @@ void UDemoExpression::Cleanup()
 			&DemoCube->VAO);
 	}
 
+	FMemory::Free(&gStackAllocator, FMemoryBlock{ DemoCube->MemBlockSize, DemoCube->Data });
 	FMemory::Free(&gStackAllocator, FMemoryBlock{ sizeof(FObject), DemoCube });
 }

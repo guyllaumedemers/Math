@@ -22,6 +22,8 @@
 
 #include "glad/glad.h"
 
+#include <cstddef>
+
 struct FOpenGlUtils
 {
 	static void SetupVertexArrayObject(GLuint* BufferId);
@@ -55,5 +57,5 @@ struct FOpenGlUtils
 
 	static bool LoadVertices(char const* File,
 		void*& Dest,
-		GLsizeiptr& Size);
+		std::size_t& MemblockSize);
 };
