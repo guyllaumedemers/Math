@@ -72,9 +72,8 @@ void FWorld::FWorldContext::ApplicationDraw()
 {
 	// https://lukasatkinson.de/2018/interface-dispatch/
 	// https://stackoverflow.com/questions/24067594/how-does-a-c-compiler-handle-offsets-with-multiple-inheritance
-	// Conclusion : Multiple inheritance and compiler way of handling object offset doesn't allow for
-	// abstraction of type here! All allocated payload have to be casted to a common base type so object layout can be resolved, otherwise compiler treat all vtables
-	// as the starting one (implying it may call the wrong function at starting address).
+	// Conclusion : Compiler doesnt know how to handle void* cast to multiple inheritance. All allocated payload have to be casted to a common base type so object layout can be resolved,
+	// otherwise compiler treat all vtables as the starting one (implying it may call the wrong function at starting address).
 	if (Handle.MemoryBlock.Payload == nullptr) { return; }
 	auto* const Payload = static_cast<UDemoExpression*>(Handle.MemoryBlock.Payload);
 	assert(!!Payload);
