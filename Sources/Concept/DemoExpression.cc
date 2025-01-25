@@ -37,7 +37,7 @@ std::size_t UDemoExpression::Size() const
 void UDemoExpression::ApplicationDraw()
 {
 	assert(DemoCube != nullptr);
-	FOpenGlUtils::UseProgram(DemoCube->ShaderProgramID, DemoCube->VAO);
+	FOpenGlUtils::UseProgram(DemoCube->ShaderProgramID, DemoCube->VAO, 6);
 }
 
 void UDemoExpression::ImGuiDraw()
@@ -67,19 +67,45 @@ void UDemoExpression::Init()
 	}
 
 	{
-		char const* File = "";
-		assert(FOpenGlUtils::LoadVertices(File,
-			DemoCube->Data,
-			DemoCube->MemBlockSize) == true);
+		// TODO until we add an object loading library, this will be the approach for testing
+		{
+			float static TempVertices[] = {
+				 0.5f,  0.5f, 0.0f,  // top right
+				 0.5f, -0.5f, 0.0f,  // bottom right
+				-0.5f, -0.5f, 0.0f,  // bottom left
+				-0.5f,  0.5f, 0.0f   // top left 
+			};
 
-		FOpenGlUtils::SetupVertexBufferObject(&DemoCube->VBO,
-			DemoCube->Data /*data*/,
-			DemoCube->MemBlockSize /*size*/,
+			DemoCube->Data = FMemory::Malloc({ &gStackAllocator, sizeof(TempVertices) }, TempVertices);
+		}
+
+		FOpenGlUtils::SetupBufferObject(&DemoCube->VBO,
+			DemoCube->Data.Payload /*data*/,
+			DemoCube->Data.Size /*size*/,
+			GL_ARRAY_BUFFER,
 			GL_STATIC_DRAW);
 	}
 
 	{
-		// Note to self : VertexAttributePointer are configured based on the currently bound VBO (which is attached to the active VAO context bound)
+		// TODO until we add an object loading library, this will be the approach for testing
+		{
+			int unsigned static TempIndices[] = {
+				0, 1, 3,   // first triangle
+				1, 2, 3    // second triangle
+			};
+
+			DemoCube->Indices = FMemory::Malloc({ &gStackAllocator, sizeof(TempIndices) }, TempIndices);
+		}
+
+		FOpenGlUtils::SetupBufferObject(&DemoCube->EBO,
+			DemoCube->Indices.Payload /*data*/,
+			DemoCube->Indices.Size /*size*/,
+			GL_ELEMENT_ARRAY_BUFFER,
+			GL_STATIC_DRAW);
+	}
+
+	{
+		// Note to self : VertexAttributePointer are configured based on the currently bound VBO (which is attached to the active VAO context)
 		// failing to configure VertexAttributePointer AFTER VBO binding will result in glDrawArrays throwing!
 		FOpenGlUtils::SetupVertexAttributePointer(0, 3 /*count*/, 3 * sizeof(float) /*stride*/, NULL/*offset*/);
 	}
@@ -114,9 +140,11 @@ void UDemoExpression::Cleanup()
 			&DemoCube->VertexProgramID,
 			&DemoCube->FragmentProgramID,
 			&DemoCube->VBO,
-			&DemoCube->VAO);
+			&DemoCube->VAO,
+			&DemoCube->EBO);
 	}
 
-	FMemory::Free(&gStackAllocator, FMemoryBlock{ DemoCube->MemBlockSize, DemoCube->Data });
+	FMemory::Free(&gStackAllocator, DemoCube->Indices);
+	FMemory::Free(&gStackAllocator, DemoCube->Data);
 	FMemory::Free(&gStackAllocator, FMemoryBlock{ sizeof(FObject), DemoCube });
 }

@@ -28,6 +28,7 @@ struct FObject
 {
 	// buffer ids
 	GLuint VAO = UINT64_MAX;
+	GLuint EBO = UINT64_MAX;
 	GLuint VBO = UINT64_MAX;
 
 	// shader id
@@ -35,7 +36,7 @@ struct FObject
 	GLuint FragmentProgramID = UINT64_MAX;
 	GLuint ShaderProgramID = UINT64_MAX;
 
-	// vertices
-	void* Data = nullptr;
-	std::size_t MemBlockSize = 0;
+	// memory
+	FMemoryBlock Data;
+	FMemoryBlock Indices;
 };

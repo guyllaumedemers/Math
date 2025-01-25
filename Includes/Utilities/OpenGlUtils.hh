@@ -33,9 +33,10 @@ struct FOpenGlUtils
 		GLsizei Stride,
 		void const* Offset);
 
-	static void SetupVertexBufferObject(GLuint* BufferId,
+	static void SetupBufferObject(GLuint* BufferId,
 		void const* Data,
 		GLsizeiptr Size,
+		GLenum BufferType,
 		GLenum Usage);
 
 	static void SetupShader(GLuint* ShaderId,
@@ -47,15 +48,17 @@ struct FOpenGlUtils
 		GLuint FragmentShaderId);
 
 	static void UseProgram(GLuint ShaderProgramId,
-		GLuint VAO);
+		GLuint VAO,
+		GLsizei Count);
 
 	static void Cleanup(GLuint* ShaderProgramId,
 		GLuint* VertexShaderId,
 		GLuint* FragmentShaderId,
 		GLuint* VBOs,
-		GLuint* VAOs);
+		GLuint* VAOs,
+		GLuint* EBOs);
 
-	static bool LoadVertices(char const* File,
+	static bool LoadFile(char const* File,
 		void*& Dest,
 		std::size_t& MemblockSize);
 };

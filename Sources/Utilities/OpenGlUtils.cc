@@ -41,14 +41,15 @@ void FOpenGlUtils::SetupVertexAttributePointer(GLuint VertexAttributeId,
 	glEnableVertexAttribArray(VertexAttributeId);
 }
 
-void FOpenGlUtils::SetupVertexBufferObject(GLuint* BufferId,
+void FOpenGlUtils::SetupBufferObject(GLuint* BufferId,
 	void const* Data,
 	GLsizeiptr Size,
+	GLenum BufferType,
 	GLenum Usage)
 {
 	glGenBuffers(1, BufferId);
-	glBindBuffer(GL_ARRAY_BUFFER, *BufferId);
-	glBufferData(GL_ARRAY_BUFFER, Size, Data, Usage);
+	glBindBuffer(BufferType, *BufferId);
+	glBufferData(BufferType, Size, Data, Usage);
 }
 
 void FOpenGlUtils::SetupShader(GLuint* ShaderId,
@@ -93,24 +94,25 @@ void FOpenGlUtils::SetupShaderProgram(GLuint* ShaderProgramId,
 	glDeleteShader(FragmentShaderId);
 }
 
-void FOpenGlUtils::UseProgram(GLuint ShaderProgramId, GLuint VAO)
+void FOpenGlUtils::UseProgram(GLuint ShaderProgramId,
+	GLuint VAO,
+	GLsizei Count)
 {
 	glUseProgram(ShaderProgramId);
 	glBindVertexArray(VAO);
-
-	// TODO Fix this garbage! throw exception for invalid access.
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawElements(GL_TRIANGLES, Count, GL_UNSIGNED_INT, 0);
 }
 
 void FOpenGlUtils::Cleanup(GLuint* ShaderProgramId,
 	GLuint* VertexShaderId,
 	GLuint* FragmentShaderId,
 	GLuint* VBOs,
-	GLuint* VAOs)
+	GLuint* VAOs,
+	GLuint* EBOs)
 {
 	glUseProgram(0);
 	glBindVertexArray(0);
-	glDisableVertexAttribArray(0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glDetachShader(*ShaderProgramId, *VertexShaderId);
 	glDetachShader(*ShaderProgramId, *FragmentShaderId);
@@ -124,23 +126,12 @@ void FOpenGlUtils::Cleanup(GLuint* ShaderProgramId,
 	*ShaderProgramId = 0;
 	*VBOs = 0;
 	*VAOs = 0;
+	*EBOs = 0;
 }
 
-bool FOpenGlUtils::LoadVertices(char const* File,
+bool FOpenGlUtils::LoadFile(char const* File,
 	void*& Dest,
 	std::size_t& MemblockSize)
 {
-	// TODO make real fopen function to read from file
-	float static Temp[]
-	{
-		-0.5f, -0.5f, 1.0f,
-		 0.5f, -0.5f, 1.0f,
-		 0.0f,  0.5f, 1.0f
-	};
-
-	// TODO later when reading from file, we'll preallocate for the requested file content
-	auto const MemBlock = FMemory::Malloc({ &gStackAllocator, sizeof(Temp) }, Temp);
-	MemblockSize = MemBlock.Size;
-	Dest = MemBlock.Payload;
 	return true;
 }
