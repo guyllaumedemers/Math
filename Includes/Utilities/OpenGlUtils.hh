@@ -58,7 +58,7 @@ struct FOpenGlUtils
 		GLuint* VAOs,
 		GLuint* EBOs);
 
-	static bool LoadFile(char const* File,
+	static bool ImportMesh(char const* File,
 		void*& Dest,
 		std::size_t& MemblockSize);
 };

@@ -63,7 +63,7 @@ FStackAllocator::FStackAllocator()
 	// https://www.geeksforgeeks.org/what-is-array-decay-in-c-how-can-it-be-prevented/
 	// back point to out-of-bound memory on purpose to warn against possible overflow
 	Tail = Head + sizeof(ReservedMemory)/*Arr num*/;
-	printf("Head: %p, Tail: %p, Allocator Size in Bytes: %llu \n", Head, Tail, sizeof(ReservedMemory));
+	printf("Head: %p, Tail: %p, Allocator Size in Bytes: %u \n", Head, Tail, sizeof(ReservedMemory));
 }
 
 void* FStackAllocator::Allocate(std::size_t Size)

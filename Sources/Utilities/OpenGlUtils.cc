@@ -20,6 +20,7 @@
 
 #include "Utilities/OpenGlUtils.hh"
 
+#include "assimp/cimport.h"
 #include "SDL3/SDL.h"
 
 #include "Memory.hh"
@@ -129,9 +130,11 @@ void FOpenGlUtils::Cleanup(GLuint* ShaderProgramId,
 	*EBOs = 0;
 }
 
-bool FOpenGlUtils::LoadFile(char const* File,
+bool FOpenGlUtils::ImportMesh(char const* File,
 	void*& Dest,
 	std::size_t& MemblockSize)
 {
+	const aiScene* Resource = aiImportFile(File, 0);
+
 	return true;
 }
