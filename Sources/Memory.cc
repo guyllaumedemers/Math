@@ -176,10 +176,10 @@ void* FStackAllocator::Allocate(std::size_t Bytes)
 
 void FStackAllocator::Deallocate(std::size_t Bytes)
 {
-	printf("Stack - Before Deallocate Bytes:%zu, CurrenOffset:%zu\n", Bytes, CurrOffset);
 	auto* Header = reinterpret_cast<FStackAllocatorHeader*>(&MemoryBuffer[CurrOffset - Bytes - sizeof(FStackAllocatorHeader)]);
 	CurrOffset = CurrOffset - Header->Padding - Bytes;
-	printf("Stack - After Deallocate Bytes:%zu, Padding:%zu, CurrenOffset:%zu\n", Bytes, Header->Padding, CurrOffset);
+
+	printf("Stack - Deallocate Bytes:%zu, Padding:%zu, CurrenOffset:%zu\n", Bytes, Header->Padding, CurrOffset);
 	std::memset(&MemoryBuffer[CurrOffset], 0, Header->Padding + Bytes);
 }
 

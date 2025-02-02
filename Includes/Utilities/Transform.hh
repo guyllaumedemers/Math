@@ -25,6 +25,7 @@
 #include "Math.hh"
 #include "Matrix.hh"
 #include "Vector.hh"
+#include "Quaternion.hh"
 
 struct FTransform
 {
@@ -43,7 +44,7 @@ struct FTransform
 	FTransform& operator*=(FTransform const& In)
 	{
 		Position = FMatrix4x4::Translate(In.Position) * Position;
-		Rotation = FMatrix4x4::Rotate(In.Rotation) * Rotation;
+		Rotation = FMatrix4x4::Rotate(In.Rotation.ToVector()) * Rotation.ToVector();
 		Scale = FMatrix4x4::Scale(In.Scale) * Scale;
 		return *this;
 	}
@@ -51,7 +52,21 @@ struct FTransform
 	FMatrix4x4 ModelMatrix() const
 	{
 		// TODO double check left-hand side vs right-hand side if weird behaviour occurs
-		return (FMatrix4x4::Translate(Position) * (FMatrix4x4::Rotate(Rotation) * FMatrix4x4::Scale(Scale)));
+		return (FMatrix4x4::Translate(Position) * (FMatrix4x4::Rotate(Rotation.ToVector()) * FMatrix4x4::Scale(Scale)));
+	}
+
+	FMatrix4x4 OrthoNormal() const
+	{
+		// we have to provide a vector, which represent the orthogonal vector (i.e basis from which other vector are defered from)
+
+		// a second vector is provided and does vector rejection to become orthogonal from A
+
+		// ... n is repeated
+
+		// we normalize
+
+		// we return our new basis
+		return {};
 	}
 
 	FMatrix4x4 Inverse() const
@@ -74,7 +89,7 @@ struct FTransform
 
 	FVector4d Position{};
 	// TODO update for quaternions later, if you ever understand them
-	FVector4d Rotation{};
+	FQuaternion Rotation{};
 	FVector4d Scale{};
 	FTransform const static Default;
 };

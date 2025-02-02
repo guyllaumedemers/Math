@@ -18,29 +18,4 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 
-#pragma once
-
-#include <cstdint>
-#include <cstddef>
-
-#include "glad/glad.h"
-
-struct FMesh;
-
-// class default object of an opengl entity object from which we would
-// instanced from. handle cached memory performed during mesh loading.
-struct FObject
-{
-	// buffer ids
-	GLuint VAO = UINT64_MAX;
-
-	// shader id
-	GLuint VertexProgramID = UINT64_MAX;
-	GLuint FragmentProgramID = UINT64_MAX;
-	GLuint ShaderProgramID = UINT64_MAX;
-
-	unsigned int NumMeshes = 0;
-
-	// array meshes
-	FMesh* Meshes;
-};
+#include "Mesh.hh"

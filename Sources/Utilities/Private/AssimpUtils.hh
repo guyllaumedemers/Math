@@ -20,27 +20,18 @@
 
 #pragma once
 
-#include <cstdint>
-#include <cstddef>
+#include <vector>
 
-#include "glad/glad.h"
+struct aiMesh;
+struct aiNode;
+struct aiScene;
 
-struct FMesh;
-
-// class default object of an opengl entity object from which we would
-// instanced from. handle cached memory performed during mesh loading.
-struct FObject
+struct FAssimpUtils
 {
-	// buffer ids
-	GLuint VAO = UINT64_MAX;
+	static void GetMeshes(aiScene const* Scene,
+		aiNode const* Node,
+		std::vector<aiMesh const*>& Out);
 
-	// shader id
-	GLuint VertexProgramID = UINT64_MAX;
-	GLuint FragmentProgramID = UINT64_MAX;
-	GLuint ShaderProgramID = UINT64_MAX;
-
-	unsigned int NumMeshes = 0;
-
-	// array meshes
-	FMesh* Meshes;
+	static void ConvertMeshes(std::vector<aiMesh const*> const& Meshes,
+		void*& MemoryBlock);
 };

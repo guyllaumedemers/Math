@@ -23,7 +23,7 @@
 #include "Memory.hh"
 #include "Concept/DemoExpression.hh"
 
-extern FStackAllocator gStackAllocator;
+extern FArenaAllocator gArenaAllocator;
 
 FWorld FWorld::Factory(IBatchResource&& BatchResource)
 {
@@ -48,7 +48,7 @@ FWorld::FWorldContext& FWorld::FWorldContext::operator=(FWorld::FWorldContext&& 
 FWorld::FWorldContext::FWorldContext(IBatchResource&& BatchResource)
 {
 	uint32_t static RefCount = 0;
-	Handle.MemoryBlock = FMemory::Malloc({ &gStackAllocator, BatchResource.Size() }, &BatchResource);
+	Handle.MemoryBlock = FMemory::Malloc({ &gArenaAllocator, BatchResource.Size() }, &BatchResource);
 	Handle.HandleId = ++RefCount;
 
 	// TODO find better architecture to support init an expression
@@ -65,7 +65,7 @@ FWorld::FWorldContext::~FWorldContext()
 	auto* const Payload = static_cast<UDemoExpression*>(Handle.MemoryBlock.Payload);
 	assert(!!Payload);
 	Payload->Cleanup();
-	FMemory::Free(&gStackAllocator, Handle.MemoryBlock);
+	FMemory::Free(&gArenaAllocator, Handle.MemoryBlock);
 }
 
 void FWorld::FWorldContext::ApplicationDraw()

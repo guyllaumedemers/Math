@@ -20,12 +20,17 @@
 
 #include "Utilities/OpenGlUtils.hh"
 
+#include <cassert>
+#include <functional>
+#include <vector>
+
 #include "assimp/cimport.h"
+#include "assimp/mesh.h"
+#include "assimp/scene.h"
 #include "SDL3/SDL.h"
 
-#include "Memory.hh"
-
-extern FStackAllocator gStackAllocator;
+#include "Object.hh"
+#include "Private/AssimpUtils.hh"
 
 void FOpenGlUtils::SetupVertexArrayObject(GLuint* BufferId)
 {
@@ -104,12 +109,10 @@ void FOpenGlUtils::UseProgram(GLuint ShaderProgramId,
 	glDrawElements(GL_TRIANGLES, Count, GL_UNSIGNED_INT, 0);
 }
 
-void FOpenGlUtils::Cleanup(GLuint* ShaderProgramId,
+void FOpenGlUtils::CleanupProgram(GLuint* ShaderProgramId,
 	GLuint* VertexShaderId,
 	GLuint* FragmentShaderId,
-	GLuint* VBOs,
-	GLuint* VAOs,
-	GLuint* EBOs)
+	GLuint* VAOs)
 {
 	glUseProgram(0);
 	glBindVertexArray(0);
@@ -118,23 +121,39 @@ void FOpenGlUtils::Cleanup(GLuint* ShaderProgramId,
 	glDetachShader(*ShaderProgramId, *VertexShaderId);
 	glDetachShader(*ShaderProgramId, *FragmentShaderId);
 	glDeleteProgram(*ShaderProgramId);
-	glDeleteBuffers(1, VBOs);
 	glDeleteVertexArrays(1, VAOs);
 
 	// clear cached variables
 	*VertexShaderId = 0;
 	*FragmentShaderId = 0;
 	*ShaderProgramId = 0;
+}
+
+void FOpenGlUtils::CleanupMesh(GLuint* VBOs,
+	GLuint* EBOs)
+{
+	glDeleteBuffers(1, VBOs);
+	glDeleteBuffers(1, EBOs);
 	*VBOs = 0;
-	*VAOs = 0;
 	*EBOs = 0;
 }
 
-bool FOpenGlUtils::ImportMesh(char const* File,
-	void*& Dest,
-	std::size_t& MemblockSize)
+void FOpenGlUtils::ImportMesh(char const* File,
+	FObject* Object)
 {
-	const aiScene* Resource = aiImportFile(File, 0);
+	aiScene const* Scene = aiImportFile(File, 0);
+	if (Scene != nullptr && Scene->HasMeshes())
+	{
+		std::vector<aiMesh const*> OutResult;
+		void* OutMemory = nullptr;
 
-	return true;
+		FAssimpUtils::GetMeshes(Scene, Scene->mRootNode, OutResult);
+		FAssimpUtils::ConvertMeshes(OutResult, OutMemory);
+
+		Object->Meshes = reinterpret_cast<FMesh*>(OutMemory);
+		Object->NumMeshes = OutResult.size();
+	}
+
+	// use the cached importer pimp, on the scene, to clear resources
+	aiReleaseImport(Scene);
 }

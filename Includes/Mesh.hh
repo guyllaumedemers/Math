@@ -22,25 +22,26 @@
 
 #include <cstdint>
 #include <cstddef>
+#include <vector>
 
 #include "glad/glad.h"
 
-struct FMesh;
+#include "Utilities/Vector.hh"
 
-// class default object of an opengl entity object from which we would
-// instanced from. handle cached memory performed during mesh loading.
-struct FObject
+// POD Class. Represent a single Vertex object.
+struct FVertex
 {
-	// buffer ids
-	GLuint VAO = UINT64_MAX;
+	std::vector<FVector3d> Positions;
+	std::vector<FVector3d> Normals;
+	std::vector<FVector3d> Tangeant;
+};
 
-	// shader id
-	GLuint VertexProgramID = UINT64_MAX;
-	GLuint FragmentProgramID = UINT64_MAX;
-	GLuint ShaderProgramID = UINT64_MAX;
+// POD Class. Represent a single Mesh object.
+struct FMesh
+{
+	std::vector<FVertex> Vertices;
+	std::vector<std::size_t> Indices;
 
-	unsigned int NumMeshes = 0;
-
-	// array meshes
-	FMesh* Meshes;
+	GLuint VBO = UINT64_MAX;
+	GLuint EBO = UINT64_MAX;
 };

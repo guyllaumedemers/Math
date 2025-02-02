@@ -24,6 +24,8 @@
 
 #include <cstddef>
 
+struct FObject;
+
 struct FOpenGlUtils
 {
 	static void SetupVertexArrayObject(GLuint* BufferId);
@@ -51,14 +53,14 @@ struct FOpenGlUtils
 		GLuint VAO,
 		GLsizei Count);
 
-	static void Cleanup(GLuint* ShaderProgramId,
+	static void CleanupProgram(GLuint* ShaderProgramId,
 		GLuint* VertexShaderId,
 		GLuint* FragmentShaderId,
-		GLuint* VBOs,
-		GLuint* VAOs,
+		GLuint* VAOs);
+
+	static void CleanupMesh(GLuint* VBOs,
 		GLuint* EBOs);
 
-	static bool ImportMesh(char const* File,
-		void*& Dest,
-		std::size_t& MemblockSize);
+	static void ImportMesh(char const* File,
+		FObject* Object);
 };

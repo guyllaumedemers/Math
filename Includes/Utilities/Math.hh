@@ -63,6 +63,9 @@ struct FMath
 
 	template<typename T>
 	static T Sqrt(T In);
+
+	template<typename T, std::size_t N, std::size_t M>
+	static std::array<T, N> GramSchmidt(std::array<T, N> Vector, std::array<std::array<T, N>, M> Vectors);
 };
 
 template <typename T, std::size_t N>
@@ -192,4 +195,19 @@ T FMath::Sqrt(T In)
 	static_assert(std::is_floating_point_v<T>, "FMath ill format, can only accept floating point types");
 
 	return sqrt(In);
+}
+
+template<typename T, std::size_t N, std::size_t M>
+inline std::array<T, N> FMath::GramSchmidt(std::array<T, N> Vector, std::array<std::array<T, N>, M> Vectors)
+{
+	static_assert(std::is_floating_point_v<T>, "FMath ill format, can only accept floating point types");
+
+	std::array<T, N> Orthogonal = Vector;
+
+	for (std::size_t i = 0; i < Vectors.size(); ++i)
+	{
+		Orthogonal -= FMath::Projection(Vector, Vectors[i]);
+	}
+
+	return Orthogonal;
 }

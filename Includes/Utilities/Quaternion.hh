@@ -20,27 +20,20 @@
 
 #pragma once
 
-#include <cstdint>
-#include <cstddef>
-
-#include "glad/glad.h"
-
-struct FMesh;
-
-// class default object of an opengl entity object from which we would
-// instanced from. handle cached memory performed during mesh loading.
-struct FObject
+struct FQuaternion
 {
-	// buffer ids
-	GLuint VAO = UINT64_MAX;
+	inline FVector4d ToVector() const
+	{
+		return {};
+	}
 
-	// shader id
-	GLuint VertexProgramID = UINT64_MAX;
-	GLuint FragmentProgramID = UINT64_MAX;
-	GLuint ShaderProgramID = UINT64_MAX;
+	FQuaternion& operator=(FVector3d const& In)
+	{
+		return *this;
+	}
 
-	unsigned int NumMeshes = 0;
-
-	// array meshes
-	FMesh* Meshes;
+	FQuaternion& operator=(FVector4d const& In)
+	{
+		return *this;
+	}
 };
