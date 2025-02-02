@@ -81,7 +81,8 @@ bool FMemory::IsPowerOfTwo(std::size_t Bytes)
 
 FArenaAllocator::FArenaAllocator()
 {
-	Allocate(0);
+	std::memset(MemoryBuffer, 0, ARENA_ALLOCATOR_SIZE);
+	CurrOffset = 0;
 }
 
 FArenaAllocator::~FArenaAllocator()
@@ -99,12 +100,12 @@ void* FArenaAllocator::Allocate(std::size_t Bytes)
 	if ((BytesDiff + Bytes) <= sizeof(MemoryBuffer))
 	{
 		CurrOffset = BytesDiff + Bytes;
-		printf("Allocation:%zu, Padding:%zu, Remainder:%zu\n", Bytes, Padding, sizeof(MemoryBuffer) - CurrOffset);
+		printf("Arena - Allocation:%zu, Padding:%zu, Remainder:%zu\n", Bytes, Padding, sizeof(MemoryBuffer) - CurrOffset);
 		return std::memset(&MemoryBuffer[BytesDiff], 0, Bytes);
 	}
 	else
 	{
-		printf("Allocation failed\n");
+		printf("Arena - Allocation failed\n");
 		return nullptr;
 	}
 }
@@ -116,13 +117,15 @@ void FArenaAllocator::Deallocate(std::size_t Bytes)
 
 void FArenaAllocator::DeallocateAll()
 {
-	printf("Deallocate All\n");
+	printf("Arena - Deallocate All\n");
 	std::memset(MemoryBuffer, 0, ARENA_ALLOCATOR_SIZE);
+	CurrOffset = 0;
 }
 
 FStackAllocator::FStackAllocator()
 {
-	Allocate(0);
+	std::memset(MemoryBuffer, 0, STACK_ALLOCATOR_SIZE);
+	CurrOffset = 0;
 }
 
 FStackAllocator::~FStackAllocator()
@@ -135,7 +138,6 @@ void* FStackAllocator::Allocate(std::size_t Bytes)
 	auto const Head = reinterpret_cast<std::size_t>(MemoryBuffer + CurrOffset);
 
 	std::size_t Padding = FMemory::MemAlign(Head, DEFAULT_ALIGNMENT) - Head;
-	std::size_t const BytesDiff = ((Head + Padding) - reinterpret_cast<std::size_t>(MemoryBuffer));
 	std::size_t const HeaderPadding = sizeof(FStackAllocatorHeader);
 
 	if (Padding < HeaderPadding)
@@ -155,28 +157,35 @@ void* FStackAllocator::Allocate(std::size_t Bytes)
 		}
 	}
 
+	std::size_t const BytesDiff = ((Head + Padding) - reinterpret_cast<std::size_t>(MemoryBuffer));
 	if ((BytesDiff + Bytes) <= sizeof(MemoryBuffer))
 	{
-		auto* Header = reinterpret_cast<FStackAllocatorHeader*>(Head + Padding - HeaderPadding);
+		auto* Header = reinterpret_cast<FStackAllocatorHeader*>(&MemoryBuffer[BytesDiff - HeaderPadding]);
 		Header->Padding = Padding;
 
 		CurrOffset = BytesDiff + Bytes;
-		printf("Allocation:%zu, Padding:%zu, Remainder:%zu\n", Bytes, Padding, sizeof(MemoryBuffer) - CurrOffset);
+		printf("Stack - Allocation:%zu, Padding:%zu, Remainder:%zu, Offset:%zu\n", Bytes, Padding, sizeof(MemoryBuffer) - CurrOffset, CurrOffset);
 		return std::memset(&MemoryBuffer[BytesDiff], 0, Bytes);
 	}
 	else
 	{
-		printf("Allocation failed\n");
+		printf("Stack - Allocation failed\n");
 		return nullptr;
 	}
 }
 
 void FStackAllocator::Deallocate(std::size_t Bytes)
 {
+	printf("Stack - Before Deallocate Bytes:%zu, CurrenOffset:%zu\n", Bytes, CurrOffset);
+	auto* Header = reinterpret_cast<FStackAllocatorHeader*>(&MemoryBuffer[CurrOffset - Bytes - sizeof(FStackAllocatorHeader)]);
+	CurrOffset = CurrOffset - Header->Padding - Bytes;
+	printf("Stack - After Deallocate Bytes:%zu, Padding:%zu, CurrenOffset:%zu\n", Bytes, Header->Padding, CurrOffset);
+	std::memset(&MemoryBuffer[CurrOffset], 0, Header->Padding + Bytes);
 }
 
 void FStackAllocator::DeallocateAll()
 {
-	printf("Deallocate All\n");
+	printf("Stack - Deallocate All\n");
 	std::memset(&MemoryBuffer, 0, STACK_ALLOCATOR_SIZE);
+	CurrOffset = 0;
 }
