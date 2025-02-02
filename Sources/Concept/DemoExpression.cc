@@ -68,6 +68,7 @@ void UDemoExpression::Init()
 	std::stringstream ss;
 	ss << SDL_GetCurrentDirectory() << "\\..\\..\\" << "Res/Cube2.gltf";
 	FOpenGlUtils::ImportMesh(ss.str().c_str(), DemoCube);
+	ss.clear();
 
 	assert(DemoCube->Meshes != nullptr && DemoCube->NumMeshes > 0);
 
