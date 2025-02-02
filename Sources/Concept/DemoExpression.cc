@@ -20,6 +20,8 @@
 
 #include "Concept/DemoExpression.hh"
 
+#include <sstream>
+
 #include "imgui.h"
 #include "glad/glad.h"
 #include "SDL3/SDL.h"
@@ -63,10 +65,11 @@ void UDemoExpression::Init()
 
 	assert(DemoCube != nullptr);
 
-	const char* File = "";
-	FOpenGlUtils::ImportMesh(File, DemoCube);
+	std::stringstream ss;
+	ss << SDL_GetCurrentDirectory() << "\\..\\..\\" << "Res/Cube2.gltf";
+	FOpenGlUtils::ImportMesh(ss.str().c_str(), DemoCube);
 
-	assert(DemoCube->NumMeshes > 0);
+	assert(DemoCube->Meshes != nullptr && DemoCube->NumMeshes > 0);
 
 	FOpenGlUtils::SetupVertexArrayObject(&DemoCube->VAO);
 

@@ -33,7 +33,6 @@ struct FVertex
 {
 	std::vector<FVector3d> Positions;
 	std::vector<FVector3d> Normals;
-	std::vector<FVector3d> Tangeant;
 };
 
 // POD Class. Represent a single Mesh object.

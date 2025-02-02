@@ -55,14 +55,13 @@ void FAssimpUtils::ConvertMeshes(std::vector<aiMesh const*> const& Meshes,
 	auto const PushVertex = [](aiMesh const* Target,
 		std::size_t i)
 		{
-			auto aiVertex = *(Target->mVertices + i);
-			auto aiNormal = *(Target->mNormals + i);
-			auto aiTangeant = *(Target->mTangents + i);
+			auto const& aiVertex = *(Target->mVertices + i);
+			auto const& aiNormal = *(Target->mNormals + i);
+			auto const& aiTangeant = *(Target->mTangents + i);
 
 			FVertex Vertex;
 			Vertex.Positions.push_back(FVector3d(aiVertex.x, aiVertex.y, aiVertex.z));
 			Vertex.Normals.push_back(FVector3d(aiNormal.x, aiNormal.y, aiNormal.z));
-			Vertex.Tangeant.push_back(FVector3d(aiTangeant.x, aiTangeant.y, aiTangeant.z));
 			return Vertex;
 		};
 
