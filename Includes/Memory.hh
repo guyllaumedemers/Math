@@ -20,8 +20,16 @@
 
 #pragma once
 
+#ifndef ARENA_ALLOCATOR_SIZE
+#define ARENA_ALLOCATOR_SIZE 1024
+#endif
+
 #ifndef STACK_ALLOCATOR_SIZE
 #define STACK_ALLOCATOR_SIZE 1024
+#endif
+
+#ifndef DEFAULT_ALIGNMENT
+#define DEFAULT_ALIGNMENT 16
 #endif
 
 #include <cstddef>
@@ -44,6 +52,7 @@ struct FAllocator
 	virtual ~FAllocator() = default;
 	virtual void* Allocate(std::size_t) = 0;
 	virtual void Deallocate(std::size_t) = 0;
+	virtual void DeallocateAll() = 0;
 };
 
 // memory system handling resource allocation/deallocation
@@ -54,16 +63,41 @@ struct FMemory
 	static FMemoryBlock MemCpy(FMemoryBlock&&, void*);
 	static void Free(FAllocator*, FMemoryBlock&);
 	static void Free(FAllocator*, FMemoryBlock&&);
+	static void FreeAll(FAllocator*);
+	static std::size_t MemAlign(std::size_t, std::size_t);
+	static bool IsPowerOfTwo(std::size_t);
 };
 
+// linear allocation
+struct FArenaAllocator : public FAllocator
+{
+	FArenaAllocator();
+	~FArenaAllocator();
+	virtual void* Allocate(std::size_t) override;
+	virtual void Deallocate(std::size_t) override;
+	virtual void DeallocateAll() override;
+
+private:
+	char MemoryBuffer[ARENA_ALLOCATOR_SIZE];
+	std::size_t CurrOffset = 0;
+};
+
+// header allocated before a memory aligned block
+struct FStackAllocatorHeader
+{
+	uint8_t Padding = 0;
+};
+
+// similar but allow releasing chunks via its header layout
 struct FStackAllocator : public FAllocator
 {
 	FStackAllocator();
+	~FStackAllocator();
 	virtual void* Allocate(std::size_t) override;
 	virtual void Deallocate(std::size_t) override;
+	virtual void DeallocateAll() override;
 
 private:
-	char ReservedMemory[STACK_ALLOCATOR_SIZE];
-	char* Head = nullptr;
-	char* Tail = nullptr;
+	char MemoryBuffer[STACK_ALLOCATOR_SIZE];
+	std::size_t CurrOffset = 0;
 };

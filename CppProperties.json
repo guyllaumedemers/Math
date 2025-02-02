@@ -8,6 +8,7 @@
       "includePath": [
         "${env.INCLUDE}",
         "${workspaceRoot}\\Includes",
+        "${workspaceRoot}\\Vendor\\assimp\\code",
         "${workspaceRoot}\\Vendor\\assimp\\include",
         "${workspaceRoot}\\Out\\Vendor\\assimp\\include",
         "${workspaceRoot}\\Vendor\\imgui",

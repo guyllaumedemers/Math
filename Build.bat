@@ -53,6 +53,7 @@ SET assimpDir="%~dp0Vendor/assimp/include"
 
 :: assimp generate assimp/config.h during cmake generation based on config.h.in
 SET assimpOutDir="%~dp0Out/Vendor/assimp/include"
+SET assimpCodeDir="%~dp0Out/Vendor/assimp/code"
 
 :: imgui source files we care about
 SET ImguiSrc="%imguiDir%/imgui.cpp" "%imguiDir%/imgui_draw.cpp" "%imguiDir%/imgui_tables.cpp" "%imguiDir%/imgui_widgets.cpp" "%imguiDir%/backends/imgui_impl_opengl3.cpp" "%imguiDir%/backends/imgui_impl_sdl3.cpp"
@@ -61,7 +62,7 @@ SET cppFilenames=!cppFilenames! %ImguiSrc% %GladSrc%
 
 :: compiler flags
 :: https://learn.microsoft.com/en-us/cpp/build/reference/compiler-options-listed-by-category?view=msvc-170
-SET cflags=/std:c++20 /EHsc /MT /Od /I"%projDir%" /I"%assimpDir%" /I"%assimpOutDir%" /I"%imguibackendsDir%" /I"%imguiDir%" /I"%gladDir%/include" /I"%sdl2Dir%" /Fe"%buildDir%/Sandbox.exe" /Fo"%buildDir%/" /Zi
+SET cflags=/std:c++20 /EHsc /MT /Od /I"%projDir%" /I"%assimpDir%" /I"%assimpOutDir%" /I"%assimpCodeDir%" /I"%imguibackendsDir%" /I"%imguiDir%" /I"%gladDir%/include" /I"%sdl2Dir%" /Fe"%buildDir%/Sandbox.exe" /Fo"%buildDir%/" /Zi
 
 :: libraries
 SET languagelibs=libucrt.lib libvcruntime.lib libcmt.lib libcpmt.lib
