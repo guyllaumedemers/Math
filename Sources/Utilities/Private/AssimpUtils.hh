@@ -22,6 +22,8 @@
 
 #include <vector>
 
+#include "Mesh.hh"
+
 struct aiMesh;
 struct aiNode;
 struct aiScene;
@@ -32,6 +34,5 @@ struct FAssimpUtils
 		aiNode const* Node,
 		std::vector<aiMesh const*>& Out);
 
-	static void ConvertMeshes(std::vector<aiMesh const*> const& Meshes,
-		void*& MemoryBlock);
+	static std::vector<FMesh> ConvertMeshes(std::vector<aiMesh const*> const& Meshes);
 };

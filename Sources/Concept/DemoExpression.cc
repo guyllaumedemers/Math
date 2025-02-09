@@ -32,6 +32,7 @@
 
 extern FArenaAllocator gArenaAllocator;
 extern FStackAllocator gStackAllocator;
+extern FPoolAllocator gPoolAllocator;
 
 std::size_t UDemoExpression::Size() const
 {
@@ -63,14 +64,12 @@ void UDemoExpression::Init()
 	FMemoryBlock const Payload = FMemory::Malloc(&gStackAllocator, sizeof(FObject));
 	DemoCube = reinterpret_cast<FObject*>(Payload.Payload);
 
-	assert(DemoCube != nullptr);
-
 	std::stringstream ss;
 	ss << SDL_GetCurrentDirectory() << "\\..\\..\\" << "Res/Cube2.gltf";
-	FOpenGlUtils::ImportMesh(ss.str().c_str(), DemoCube);
+	FOpenGlUtils::ImportMesh(ss.str().c_str(), DemoCube, &gPoolAllocator);
 	ss.clear();
 
-	assert(DemoCube->Meshes != nullptr && DemoCube->NumMeshes > 0);
+	assert(DemoCube != nullptr && DemoCube->Meshes != nullptr && DemoCube->NumMeshes > 0);
 
 	FOpenGlUtils::SetupVertexArrayObject(&DemoCube->VAO);
 
@@ -113,7 +112,7 @@ void UDemoExpression::Init()
 
 void UDemoExpression::Cleanup()
 {
-	assert(DemoCube != nullptr);
+	assert(DemoCube != nullptr && DemoCube->Meshes != nullptr && DemoCube->NumMeshes > 0);
 
 	FOpenGlUtils::CleanupProgram(&DemoCube->ShaderProgramID,
 		&DemoCube->VertexProgramID,
@@ -126,6 +125,9 @@ void UDemoExpression::Cleanup()
 
 		FOpenGlUtils::CleanupMesh(&Mesh.VBO,
 			&Mesh.EBO);
+
+		FMemory::Free(&gPoolAllocator,
+			FMemoryBlock{ sizeof(FMesh), &Mesh });
 	}
 
 	FMemory::Free(&gStackAllocator,

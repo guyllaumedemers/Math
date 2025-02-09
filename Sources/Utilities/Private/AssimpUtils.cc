@@ -26,7 +26,7 @@
 #include "assimp/mesh.h"
 #include "assimp/scene.h"
 
-#include "Mesh.hh"
+#include "Memory.hh"
 
 void FAssimpUtils::GetMeshes(aiScene const* Scene,
 	aiNode const* Node,
@@ -49,8 +49,7 @@ void FAssimpUtils::GetMeshes(aiScene const* Scene,
 	}
 }
 
-void FAssimpUtils::ConvertMeshes(std::vector<aiMesh const*> const& Meshes,
-	void*& MemoryBlock)
+std::vector<FMesh> FAssimpUtils::ConvertMeshes(std::vector<aiMesh const*> const& Meshes)
 {
 	auto const PushVertex = [](aiMesh const* Target,
 		std::size_t i)
@@ -71,6 +70,7 @@ void FAssimpUtils::ConvertMeshes(std::vector<aiMesh const*> const& Meshes,
 			return *(Target->mFaces + i)->mIndices;
 		};
 
+	std::vector<FMesh> OutResult;
 	for (std::size_t i = 0; i < Meshes.size(); ++i)
 	{
 		aiMesh const* Target = Meshes[i];
@@ -85,8 +85,9 @@ void FAssimpUtils::ConvertMeshes(std::vector<aiMesh const*> const& Meshes,
 		{
 			Mesh.Indices.push_back(PushFace(Target, i));
 		};
+
+		OutResult.push_back(Mesh);
 	}
 
-	// TODO allocate memory on a pool allocator
-	MemoryBlock = nullptr;
+	return OutResult;
 }

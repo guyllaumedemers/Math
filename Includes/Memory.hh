@@ -28,8 +28,16 @@
 #define STACK_ALLOCATOR_SIZE 1024
 #endif
 
+#ifndef POOL_ALLOCATOR_SIZE
+#define POOL_ALLOCATOR_SIZE 4096
+#endif
+
 #ifndef DEFAULT_ALIGNMENT
 #define DEFAULT_ALIGNMENT 16
+#endif
+
+#ifndef CHUNK_SIZE
+#define CHUNK_SIZE 64
 #endif
 
 #include <cstddef>
@@ -102,4 +110,33 @@ private:
 	char MemoryBuffer[STACK_ALLOCATOR_SIZE];
 	std::size_t PrevOffset = 0;
 	std::size_t CurrOffset = 0;
+};
+
+// similar to the stack allocator but track both end of the memory buffer to allocate memory
+struct FDoubleEndStackAllocator : public FAllocator
+{
+	// TODO @gdemers Do Impl
+};
+
+// free list node pointing to available memory space
+struct FPoolAllocatorFreeNode
+{
+	FPoolAllocatorFreeNode* Next = nullptr;
+};
+
+// memory layout segmented in chunks/bin of user defined size
+struct FPoolAllocator : public FAllocator
+{
+	FPoolAllocator() = default;
+	FPoolAllocator(std::size_t);
+	~FPoolAllocator();
+	virtual void* Allocate(std::size_t) override;
+	virtual void Deallocate(void*) override;
+	virtual void DeallocateAll() override;
+
+private:
+	char MemoryBuffer[POOL_ALLOCATOR_SIZE];
+	std::size_t ChunkSize = CHUNK_SIZE;
+
+	FPoolAllocatorFreeNode* FreeList = nullptr;
 };

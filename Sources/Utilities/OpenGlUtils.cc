@@ -31,6 +31,7 @@
 
 #include "Object.hh"
 #include "Private/AssimpUtils.hh"
+#include <Memory.hh>
 
 void FOpenGlUtils::SetupVertexArrayObject(GLuint* BufferId)
 {
@@ -139,19 +140,20 @@ void FOpenGlUtils::CleanupMesh(GLuint* VBOs,
 }
 
 void FOpenGlUtils::ImportMesh(char const* File,
-	FObject* Object)
+	FObject* Object,
+	FAllocator* Alloc)
 {
 	aiScene const* Scene = aiImportFile(File, 0);
 	if (Scene != nullptr && Scene->HasMeshes())
 	{
-		std::vector<aiMesh const*> OutResult;
-		void* OutMemory = nullptr;
+		std::vector<aiMesh const*> OutaiMeshes;
 
-		FAssimpUtils::GetMeshes(Scene, Scene->mRootNode, OutResult);
-		FAssimpUtils::ConvertMeshes(OutResult, OutMemory);
+		FAssimpUtils::GetMeshes(Scene, Scene->mRootNode, OutaiMeshes);
+		std::vector<FMesh> OutMeshes = FAssimpUtils::ConvertMeshes(OutaiMeshes);
 
-		Object->Meshes = reinterpret_cast<FMesh*>(OutMemory);
-		Object->NumMeshes = OutResult.size();
+		FMemoryBlock MemBlock = FMemory::Malloc({ Alloc, sizeof(FMesh) * OutMeshes.size() }, &OutMeshes);
+		Object->Meshes = reinterpret_cast<FMesh*>(MemBlock.Payload);
+		Object->NumMeshes = OutMeshes.size();
 	}
 
 	// use the cached importer pimp, on the scene, to clear resources

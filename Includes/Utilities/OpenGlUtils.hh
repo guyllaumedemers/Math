@@ -24,6 +24,7 @@
 
 #include <cstddef>
 
+struct FAllocator;
 struct FObject;
 
 struct FOpenGlUtils
@@ -62,5 +63,6 @@ struct FOpenGlUtils
 		GLuint* EBOs);
 
 	static void ImportMesh(char const* File,
-		FObject* Object);
+		FObject* Object,
+		FAllocator* Alloc);
 };
