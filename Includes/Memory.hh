@@ -51,7 +51,7 @@ struct FAllocator
 {
 	virtual ~FAllocator() = default;
 	virtual void* Allocate(std::size_t) = 0;
-	virtual void Deallocate(std::size_t) = 0;
+	virtual void Deallocate(void*) = 0;
 	virtual void DeallocateAll() = 0;
 };
 
@@ -74,7 +74,7 @@ struct FArenaAllocator : public FAllocator
 	FArenaAllocator();
 	~FArenaAllocator();
 	virtual void* Allocate(std::size_t) override;
-	virtual void Deallocate(std::size_t) override;
+	virtual void Deallocate(void*) override;
 	virtual void DeallocateAll() override;
 
 private:
@@ -85,7 +85,8 @@ private:
 // header allocated before a memory aligned block
 struct FStackAllocatorHeader
 {
-	uint8_t Padding = 0;
+	std::size_t PrevOffset = 0;
+	std::size_t Padding = 0;
 };
 
 // similar but allow releasing chunks via its header layout
@@ -94,10 +95,11 @@ struct FStackAllocator : public FAllocator
 	FStackAllocator();
 	~FStackAllocator();
 	virtual void* Allocate(std::size_t) override;
-	virtual void Deallocate(std::size_t) override;
+	virtual void Deallocate(void*) override;
 	virtual void DeallocateAll() override;
 
 private:
 	char MemoryBuffer[STACK_ALLOCATOR_SIZE];
+	std::size_t PrevOffset = 0;
 	std::size_t CurrOffset = 0;
 };

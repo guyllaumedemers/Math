@@ -40,8 +40,8 @@ FMemoryBlock FMemory::Malloc(FAllocatorInfo const& Info, void* Data)
 
 FMemoryBlock FMemory::MemCpy(FMemoryBlock&& MemoryBlock, void* Data)
 {
-	auto* const Dest = reinterpret_cast<char*>(MemoryBlock.Payload);
-	auto* const Src = reinterpret_cast<char*>(Data);
+	auto* Dest = reinterpret_cast<char*>(MemoryBlock.Payload);
+	auto* Src = reinterpret_cast<char*>(Data);
 	for (std::size_t i = 0; i < MemoryBlock.Size; ++i) { Dest[i] = Src[i]; }
 	return MemoryBlock;
 }
@@ -49,7 +49,7 @@ FMemoryBlock FMemory::MemCpy(FMemoryBlock&& MemoryBlock, void* Data)
 void FMemory::Free(FAllocator* Allocator, FMemoryBlock& MemoryBlock)
 {
 	assert(!!Allocator);
-	Allocator->Deallocate(MemoryBlock.Size);
+	Allocator->Deallocate(MemoryBlock.Payload);
 	MemoryBlock = FMemoryBlock();
 }
 
@@ -68,7 +68,7 @@ std::size_t FMemory::MemAlign(std::size_t Address, std::size_t Alignment)
 {
 	assert(FMemory::IsPowerOfTwo(Alignment));
 
-	std::size_t AlignedAddress = Address;
+	auto AlignedAddress = Address;
 	auto const Remainder = (Address % Alignment);
 	if (Remainder > 0) { AlignedAddress += (Alignment - Remainder); }
 	return AlignedAddress;
@@ -110,7 +110,7 @@ void* FArenaAllocator::Allocate(std::size_t Bytes)
 	}
 }
 
-void FArenaAllocator::Deallocate(std::size_t Bytes)
+void FArenaAllocator::Deallocate(void* Ptr)
 {
 	// @gdemers remains empty
 }
@@ -125,7 +125,7 @@ void FArenaAllocator::DeallocateAll()
 FStackAllocator::FStackAllocator()
 {
 	std::memset(MemoryBuffer, 0, STACK_ALLOCATOR_SIZE);
-	CurrOffset = 0;
+	PrevOffset = CurrOffset = 0;
 }
 
 FStackAllocator::~FStackAllocator()
@@ -143,10 +143,9 @@ void* FStackAllocator::Allocate(std::size_t Bytes)
 	if (Padding < HeaderPadding)
 	{
 		std::size_t const Diff = HeaderPadding - Padding;
-		if (FMemory::IsPowerOfTwo(Diff))
+		if ((Diff & (DEFAULT_ALIGNMENT - 1)) == 0)
 		{
 			// @gdemers if (Diff / DEFAULT_ALIGNMENT) < 1, then it resolve to 0, unless the diff is bigger than the default alignment.
-			// our header will then sit at the lower bound of the previous cache line, so accessing our header will require two cache line access.
 			Padding += (DEFAULT_ALIGNMENT * (Diff / DEFAULT_ALIGNMENT));
 		}
 		else
@@ -161,8 +160,10 @@ void* FStackAllocator::Allocate(std::size_t Bytes)
 	if ((BytesDiff + Bytes) <= sizeof(MemoryBuffer))
 	{
 		auto* Header = reinterpret_cast<FStackAllocatorHeader*>(&MemoryBuffer[BytesDiff - HeaderPadding]);
+		Header->PrevOffset = CurrOffset;
 		Header->Padding = Padding;
 
+		PrevOffset = CurrOffset;
 		CurrOffset = BytesDiff + Bytes;
 		printf("Stack - Allocation:%zu, Padding:%zu, Remainder:%zu, Offset:%zu\n", Bytes, Padding, sizeof(MemoryBuffer) - CurrOffset, CurrOffset);
 		return std::memset(&MemoryBuffer[BytesDiff], 0, Bytes);
@@ -174,18 +175,27 @@ void* FStackAllocator::Allocate(std::size_t Bytes)
 	}
 }
 
-void FStackAllocator::Deallocate(std::size_t Bytes)
+void FStackAllocator::Deallocate(void* Ptr)
 {
-	auto* Header = reinterpret_cast<FStackAllocatorHeader*>(&MemoryBuffer[CurrOffset - Bytes - sizeof(FStackAllocatorHeader)]);
-	CurrOffset = CurrOffset - Header->Padding - Bytes;
+	auto const Head = reinterpret_cast<std::size_t>(MemoryBuffer + CurrOffset);
+	auto const DeallocTarget = reinterpret_cast<std::size_t>(Ptr);
 
-	printf("Stack - Deallocate Bytes:%zu, Padding:%zu, CurrenOffset:%zu\n", Bytes, Header->Padding, CurrOffset);
-	std::memset(&MemoryBuffer[CurrOffset], 0, Header->Padding + Bytes);
+	assert((Head > DeallocTarget) && (DeallocTarget >= reinterpret_cast<std::size_t>(MemoryBuffer)));
+
+	auto const BytesDiff = Head - DeallocTarget;
+	auto* Header = reinterpret_cast<FStackAllocatorHeader*>(&MemoryBuffer[CurrOffset - BytesDiff - sizeof(FStackAllocatorHeader)]);
+
+	assert((Header != nullptr) && (Header->PrevOffset == PrevOffset));
+
+	CurrOffset = CurrOffset - BytesDiff - Header->Padding;
+
+	printf("Stack - Deallocation:%zu, Padding:%zu, Remainder:%zu, Offset:%zu\n", BytesDiff, Header->Padding, sizeof(MemoryBuffer) - CurrOffset, CurrOffset);
+	std::memset(&MemoryBuffer[CurrOffset], 0, Header->Padding + BytesDiff);
 }
 
 void FStackAllocator::DeallocateAll()
 {
 	printf("Stack - Deallocate All\n");
 	std::memset(&MemoryBuffer, 0, STACK_ALLOCATOR_SIZE);
-	CurrOffset = 0;
+	PrevOffset = CurrOffset = 0;
 }
