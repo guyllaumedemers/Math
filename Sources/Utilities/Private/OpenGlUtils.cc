@@ -18,7 +18,7 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 
-#include "Utilities/OpenGlUtils.hh"
+#include "OpenGlUtils.hh"
 
 #include <cassert>
 #include <functional>
@@ -29,9 +29,9 @@
 #include "assimp/scene.h"
 #include "SDL3/SDL.h"
 
+#include "AssimpUtils.hh"
+#include "Memory.hh"
 #include "Object.hh"
-#include "Private/AssimpUtils.hh"
-#include <Memory.hh>
 
 void FOpenGlUtils::SetupVertexArrayObject(GLuint* BufferId)
 {

@@ -28,7 +28,7 @@
 
 #include "Mesh.hh"
 #include "Object.hh"
-#include "Utilities/OpenGlUtils.hh"
+#include "../Utilities/Private/OpenGlUtils.hh"
 
 extern FArenaAllocator gArenaAllocator;
 extern FStackAllocator gStackAllocator;

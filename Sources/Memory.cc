@@ -204,14 +204,15 @@ FPoolAllocator::FPoolAllocator(std::size_t Bytes)
 {
 	std::memset(&MemoryBuffer, 0, POOL_ALLOCATOR_SIZE);
 
-	FreeList = reinterpret_cast<FPoolAllocatorFreeNode*>(&MemoryBuffer);
+	std::size_t AlignedAddress = FMemory::MemAlign(reinterpret_cast<std::size_t>(MemoryBuffer), DEFAULT_ALIGNMENT);
+	FreeList = reinterpret_cast<FPoolAllocatorFreeNode*>(AlignedAddress);
 	ChunkSize = FMemory::MemAlign(Bytes, DEFAULT_ALIGNMENT);
 
 	FPoolAllocatorFreeNode* Head = FreeList;
 
 	for (std::size_t i = 1; i < (sizeof(MemoryBuffer) / ChunkSize); ++i)
 	{
-		Head->Next = reinterpret_cast<FPoolAllocatorFreeNode*>(&MemoryBuffer[i * ChunkSize]);
+		Head->Next = reinterpret_cast<FPoolAllocatorFreeNode*>((FreeList + (i * ChunkSize)));
 		Head = Head->Next;
 	}
 }
@@ -234,7 +235,7 @@ void* FPoolAllocator::Allocate(std::size_t Bytes)
 
 void FPoolAllocator::Deallocate(void* Ptr)
 {
-	assert(Ptr >= MemoryBuffer && Ptr < &MemoryBuffer[sizeof(MemoryBuffer)]);
+	assert(Ptr >= MemoryBuffer && Ptr <= &MemoryBuffer[sizeof(MemoryBuffer) - ChunkSize]);
 
 	auto* DeallocNode = reinterpret_cast<FPoolAllocatorFreeNode*>(Ptr);
 
