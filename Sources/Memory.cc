@@ -82,8 +82,7 @@ bool FMemory::IsPowerOfTwo(std::size_t Bytes)
 
 FArenaAllocator::FArenaAllocator()
 {
-	std::memset(&MemoryBuffer[0], 0, ARENA_ALLOCATOR_SIZE);
-	CurrOffset = 0;
+	DeallocateAll();
 }
 
 FArenaAllocator::~FArenaAllocator()
@@ -125,8 +124,7 @@ void FArenaAllocator::DeallocateAll()
 
 FStackAllocator::FStackAllocator()
 {
-	std::memset(&MemoryBuffer[0], 0, STACK_ALLOCATOR_SIZE);
-	PrevOffset = CurrOffset = 0;
+	DeallocateAll();
 }
 
 FStackAllocator::~FStackAllocator()
@@ -249,14 +247,18 @@ void FPoolAllocator::DeallocateAll()
 
 	FreeList = reinterpret_cast<FPoolAllocatorFreeNode*>(&MemoryBuffer[Padding]);
 
+	// @gdemers for some weird reason FreeList is being written to during forloop and would assert
+	FPoolAllocatorFreeNode* BackupFrontNode = &*FreeList;
 	FPoolAllocatorFreeNode* FreeNode = &*FreeList;
 
 	std::size_t const NumChunks = ((sizeof(MemoryBuffer) - Padding) / ChunkSize);
 	for (std::size_t i = 1; i < NumChunks; ++i)
 	{
-		FreeNode->Next = reinterpret_cast<FPoolAllocatorFreeNode*>((&*FreeList + (i * ChunkSize)));
-		// @gdemers this is evil! FreeList is being written to during this linked list initialization. FreeNode->Next becomes FreeList and create recursive add when i=4
-		assert(&*FreeNode->Next != &*FreeList);
+		FreeNode->Next = reinterpret_cast<FPoolAllocatorFreeNode*>((&*BackupFrontNode + (i * ChunkSize)));
+		assert(&*FreeNode->Next != &*BackupFrontNode);
 		FreeNode = &*FreeNode->Next;
 	}
+
+	// @gdemers reset ptr value to the padded front to ensure proper handle on the linked list
+	FreeList = BackupFrontNode;
 }

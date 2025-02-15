@@ -119,7 +119,7 @@ void UDemoExpression::Cleanup()
 		&DemoCube->FragmentProgramID,
 		&DemoCube->VAO);
 
-	for (std::size_t i = DemoCube->NumMeshes - 1; i >= 0; --i)
+	for (std::size_t i = 0; i < DemoCube->NumMeshes; ++i)
 	{
 		FMesh& Mesh = DemoCube->Meshes[i];
 
