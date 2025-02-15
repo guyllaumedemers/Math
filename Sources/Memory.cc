@@ -82,7 +82,7 @@ bool FMemory::IsPowerOfTwo(std::size_t Bytes)
 
 FArenaAllocator::FArenaAllocator()
 {
-	std::memset(MemoryBuffer, 0, ARENA_ALLOCATOR_SIZE);
+	std::memset(&MemoryBuffer[0], 0, ARENA_ALLOCATOR_SIZE);
 	CurrOffset = 0;
 }
 
@@ -93,10 +93,10 @@ FArenaAllocator::~FArenaAllocator()
 
 void* FArenaAllocator::Allocate(std::size_t Bytes)
 {
-	auto const Head = reinterpret_cast<std::size_t>(MemoryBuffer + CurrOffset);
+	auto const Head = reinterpret_cast<std::size_t>(&MemoryBuffer[0] + CurrOffset);
 
 	std::size_t const Padding = FMemory::MemAlign(Head, DEFAULT_ALIGNMENT) - Head;
-	std::size_t const BytesDiff = ((Head + Padding) - reinterpret_cast<std::size_t>(MemoryBuffer));
+	std::size_t const BytesDiff = ((Head + Padding) - reinterpret_cast<std::size_t>(&MemoryBuffer[0]));
 
 	if ((BytesDiff + Bytes) <= sizeof(MemoryBuffer))
 	{
@@ -119,13 +119,13 @@ void FArenaAllocator::Deallocate(void* Ptr)
 void FArenaAllocator::DeallocateAll()
 {
 	printf("Arena - Deallocate All\n");
-	std::memset(MemoryBuffer, 0, ARENA_ALLOCATOR_SIZE);
+	std::memset(&MemoryBuffer[0], 0, ARENA_ALLOCATOR_SIZE);
 	CurrOffset = 0;
 }
 
 FStackAllocator::FStackAllocator()
 {
-	std::memset(MemoryBuffer, 0, STACK_ALLOCATOR_SIZE);
+	std::memset(&MemoryBuffer[0], 0, STACK_ALLOCATOR_SIZE);
 	PrevOffset = CurrOffset = 0;
 }
 
@@ -136,7 +136,7 @@ FStackAllocator::~FStackAllocator()
 
 void* FStackAllocator::Allocate(std::size_t Bytes)
 {
-	auto const Head = reinterpret_cast<std::size_t>(MemoryBuffer + CurrOffset);
+	auto const Head = reinterpret_cast<std::size_t>(&MemoryBuffer[0] + CurrOffset);
 
 	std::size_t Padding = FMemory::MemAlign(Head, DEFAULT_ALIGNMENT) - Head;
 	std::size_t const HeaderPadding = sizeof(FStackAllocatorHeader);
@@ -157,7 +157,7 @@ void* FStackAllocator::Allocate(std::size_t Bytes)
 		}
 	}
 
-	std::size_t const BytesDiff = ((Head + Padding) - reinterpret_cast<std::size_t>(MemoryBuffer));
+	std::size_t const BytesDiff = ((Head + Padding) - reinterpret_cast<std::size_t>(&MemoryBuffer[0]));
 	if ((BytesDiff + Bytes) <= sizeof(MemoryBuffer))
 	{
 		auto* Header = reinterpret_cast<FStackAllocatorHeader*>(&MemoryBuffer[BytesDiff - HeaderPadding]);
@@ -178,11 +178,11 @@ void* FStackAllocator::Allocate(std::size_t Bytes)
 
 void FStackAllocator::Deallocate(void* Ptr)
 {
-	auto const Head = reinterpret_cast<std::size_t>(MemoryBuffer + CurrOffset);
+	assert(Ptr >= &MemoryBuffer[0] && Ptr < (&MemoryBuffer[0] + CurrOffset));
+
+	auto const Head = reinterpret_cast<std::size_t>(&MemoryBuffer[0] + CurrOffset);
 	auto const DeallocTarget = reinterpret_cast<std::size_t>(Ptr);
 	auto const BytesDiff = Head - DeallocTarget;
-
-	assert(Head > DeallocTarget && DeallocTarget >= reinterpret_cast<std::size_t>(MemoryBuffer));
 
 	auto* Header = reinterpret_cast<FStackAllocatorHeader*>(&MemoryBuffer[CurrOffset - BytesDiff - sizeof(FStackAllocatorHeader)]);
 	assert(Header->PrevOffset == PrevOffset);
@@ -196,15 +196,15 @@ void FStackAllocator::Deallocate(void* Ptr)
 void FStackAllocator::DeallocateAll()
 {
 	printf("Stack - Deallocate All\n");
-	std::memset(&MemoryBuffer, 0, STACK_ALLOCATOR_SIZE);
+	std::memset(&MemoryBuffer[0], 0, STACK_ALLOCATOR_SIZE);
 	PrevOffset = CurrOffset = 0;
 }
 
 FPoolAllocator::FPoolAllocator(std::size_t Bytes)
 {
-	std::memset(&MemoryBuffer, 0, POOL_ALLOCATOR_SIZE);
+	std::memset(&MemoryBuffer[0], 0, POOL_ALLOCATOR_SIZE);
 
-	std::size_t AlignedAddress = FMemory::MemAlign(reinterpret_cast<std::size_t>(MemoryBuffer), DEFAULT_ALIGNMENT);
+	std::size_t AlignedAddress = FMemory::MemAlign(reinterpret_cast<std::size_t>(&MemoryBuffer[0]), DEFAULT_ALIGNMENT);
 	FreeList = reinterpret_cast<FPoolAllocatorFreeNode*>(AlignedAddress);
 	ChunkSize = FMemory::MemAlign(Bytes, DEFAULT_ALIGNMENT);
 
@@ -235,7 +235,7 @@ void* FPoolAllocator::Allocate(std::size_t Bytes)
 
 void FPoolAllocator::Deallocate(void* Ptr)
 {
-	assert(Ptr >= MemoryBuffer && Ptr <= &MemoryBuffer[sizeof(MemoryBuffer) - ChunkSize]);
+	assert(Ptr >= &MemoryBuffer[0] && Ptr < (&MemoryBuffer[0] + sizeof(MemoryBuffer)));
 
 	auto* DeallocNode = reinterpret_cast<FPoolAllocatorFreeNode*>(Ptr);
 
@@ -250,15 +250,15 @@ void FPoolAllocator::Deallocate(void* Ptr)
 void FPoolAllocator::DeallocateAll()
 {
 	printf("Pool - Deallocate All\n");
-	std::memset(&MemoryBuffer, 0, POOL_ALLOCATOR_SIZE);
+	std::memset(&MemoryBuffer[0], 0, POOL_ALLOCATOR_SIZE);
 
-	FreeList = reinterpret_cast<FPoolAllocatorFreeNode*>(&MemoryBuffer);
+	FreeList = reinterpret_cast<FPoolAllocatorFreeNode*>(&MemoryBuffer[0]);
 	FPoolAllocatorFreeNode* Head = FreeList;
 
 	auto const NumChunks = sizeof(MemoryBuffer) / ChunkSize;
 	for (std::size_t i = 1; i < NumChunks; ++i)
 	{
-		Head->Next = reinterpret_cast<FPoolAllocatorFreeNode*>(&MemoryBuffer[i * ChunkSize]);
+		Head->Next = reinterpret_cast<FPoolAllocatorFreeNode*>((FreeList + (i * ChunkSize)));
 		Head = Head->Next;
 	}
 }
