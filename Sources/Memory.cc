@@ -226,7 +226,7 @@ void* FPoolAllocator::Allocate(std::size_t Bytes)
 
 void FPoolAllocator::Deallocate(void* Ptr)
 {
-	assert(Ptr >= &MemoryBuffer[0] && Ptr <= &MemoryBuffer[sizeof(MemoryBuffer) - 1]);
+	assert(Ptr >= &MemoryBuffer[0] && Ptr <= &MemoryBuffer[sizeof(MemoryBuffer) - ChunkSize]);
 
 	auto* DeallocNode = reinterpret_cast<FPoolAllocatorFreeNode*>(Ptr);
 
@@ -255,7 +255,7 @@ void FPoolAllocator::DeallocateAll()
 	for (std::size_t i = 1; i < NumChunks; ++i)
 	{
 		FreeNode->Next = reinterpret_cast<FPoolAllocatorFreeNode*>((&*FreeList + (i * ChunkSize)));
-		// @gdemers this is evil! FreeList is being written to during this linked list initialization and so FreeNode->Next equals the Head when i=4
+		// @gdemers this is evil! FreeList is being written to during this linked list initialization. FreeNode->Next becomes FreeList and create recursive add when i=4
 		assert(&*FreeNode->Next != &*FreeList);
 		FreeNode = &*FreeNode->Next;
 	}
