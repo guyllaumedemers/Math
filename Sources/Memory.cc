@@ -217,8 +217,8 @@ void* FPoolAllocator::Allocate(std::size_t Bytes)
 {
 	assert(FreeList != nullptr && Bytes <= ChunkSize);
 
-	FPoolAllocatorFreeNode* CurrFreeNode = FreeList;
-	FreeList = FreeList->Next;
+	FPoolAllocatorFreeNode* CurrFreeNode = &*FreeList;
+	FreeList = &*FreeList->Next;
 
 	// @gdemers return full size chunk without header node to the user
 	return std::memset(CurrFreeNode, 0, ChunkSize);
@@ -226,14 +226,14 @@ void* FPoolAllocator::Allocate(std::size_t Bytes)
 
 void FPoolAllocator::Deallocate(void* Ptr)
 {
-	assert(Ptr >= &MemoryBuffer[0] && Ptr < (&MemoryBuffer[0] + sizeof(MemoryBuffer)));
+	assert(Ptr >= &MemoryBuffer[0] && Ptr <= &MemoryBuffer[sizeof(MemoryBuffer) - 1]);
 
 	auto* DeallocNode = reinterpret_cast<FPoolAllocatorFreeNode*>(Ptr);
 
 	std::memset(DeallocNode, 0, ChunkSize);
 
-	DeallocNode->Next = FreeList;
-	FreeList = DeallocNode;
+	DeallocNode->Next = &*FreeList;
+	FreeList = &*DeallocNode;
 
 	printf("Pool - Deallocation:%zu\n", ChunkSize);
 }
@@ -255,6 +255,8 @@ void FPoolAllocator::DeallocateAll()
 	for (std::size_t i = 1; i < NumChunks; ++i)
 	{
 		FreeNode->Next = reinterpret_cast<FPoolAllocatorFreeNode*>((&*FreeList + (i * ChunkSize)));
-		FreeNode = FreeNode->Next;
+		// @gdemers this is evil! FreeList is being written to during this linked list initialization and so FreeNode->Next equals the Head when i=4
+		assert(&*FreeNode->Next != &*FreeList);
+		FreeNode = &*FreeNode->Next;
 	}
 }

@@ -151,7 +151,7 @@ void FOpenGlUtils::ImportMesh(char const* File,
 		FAssimpUtils::GetMeshes(Scene, Scene->mRootNode, OutaiMeshes);
 		std::vector<FMesh> OutMeshes = FAssimpUtils::ConvertMeshes(OutaiMeshes);
 
-		FMemoryBlock MemBlock = FMemory::Malloc({ Alloc, sizeof(FMesh) * OutMeshes.size() }, &OutMeshes);
+		FMemoryBlock MemBlock = FMemory::Malloc({ Alloc, sizeof(FMesh) * OutMeshes.size() }, &OutMeshes[0]);
 		Object->Meshes = reinterpret_cast<FMesh*>(MemBlock.Payload);
 		Object->NumMeshes = OutMeshes.size();
 	}
