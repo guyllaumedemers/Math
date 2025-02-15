@@ -202,19 +202,10 @@ void FStackAllocator::DeallocateAll()
 
 FPoolAllocator::FPoolAllocator(std::size_t Bytes)
 {
-	std::memset(&MemoryBuffer[0], 0, POOL_ALLOCATOR_SIZE);
+	assert(Bytes > sizeof(FPoolAllocatorFreeNode));
 
-	std::size_t AlignedAddress = FMemory::MemAlign(reinterpret_cast<std::size_t>(&MemoryBuffer[0]), DEFAULT_ALIGNMENT);
-	FreeList = reinterpret_cast<FPoolAllocatorFreeNode*>(AlignedAddress);
 	ChunkSize = FMemory::MemAlign(Bytes, DEFAULT_ALIGNMENT);
-
-	FPoolAllocatorFreeNode* Head = FreeList;
-
-	for (std::size_t i = 1; i < (sizeof(MemoryBuffer) / ChunkSize); ++i)
-	{
-		Head->Next = reinterpret_cast<FPoolAllocatorFreeNode*>((FreeList + (i * ChunkSize)));
-		Head = Head->Next;
-	}
+	DeallocateAll();
 }
 
 FPoolAllocator::~FPoolAllocator()
@@ -250,15 +241,20 @@ void FPoolAllocator::Deallocate(void* Ptr)
 void FPoolAllocator::DeallocateAll()
 {
 	printf("Pool - Deallocate All\n");
+
 	std::memset(&MemoryBuffer[0], 0, POOL_ALLOCATOR_SIZE);
 
-	FreeList = reinterpret_cast<FPoolAllocatorFreeNode*>(&MemoryBuffer[0]);
-	FPoolAllocatorFreeNode* Head = FreeList;
+	auto const Head = reinterpret_cast<std::size_t>(&MemoryBuffer[0]);
+	std::size_t Padding = FMemory::MemAlign(Head, DEFAULT_ALIGNMENT) - Head;
 
-	auto const NumChunks = sizeof(MemoryBuffer) / ChunkSize;
+	FreeList = reinterpret_cast<FPoolAllocatorFreeNode*>(&MemoryBuffer[Padding]);
+
+	FPoolAllocatorFreeNode* FreeNode = &*FreeList;
+
+	std::size_t const NumChunks = ((sizeof(MemoryBuffer) - Padding) / ChunkSize);
 	for (std::size_t i = 1; i < NumChunks; ++i)
 	{
-		Head->Next = reinterpret_cast<FPoolAllocatorFreeNode*>((FreeList + (i * ChunkSize)));
-		Head = Head->Next;
+		FreeNode->Next = reinterpret_cast<FPoolAllocatorFreeNode*>((&*FreeList + (i * ChunkSize)));
+		FreeNode = FreeNode->Next;
 	}
 }
