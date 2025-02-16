@@ -31,8 +31,8 @@
 // POD Class. Represent a single Vertex object.
 struct FVertex
 {
-	std::vector<FVector3d> Positions;
-	std::vector<FVector3d> Normals;
+	FVector3d Position;
+	FVector3d Normal;
 };
 
 // POD Class. Represent a single Mesh object.
