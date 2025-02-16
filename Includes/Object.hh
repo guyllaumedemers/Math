@@ -31,9 +31,6 @@ struct FMesh;
 // instanced from. handle cached memory performed during mesh loading.
 struct FObject
 {
-	// buffer ids
-	GLuint VAO = UINT64_MAX;
-
 	// shader id
 	GLuint VertexProgramID = UINT64_MAX;
 	GLuint FragmentProgramID = UINT64_MAX;

@@ -101,19 +101,21 @@ void FOpenGlUtils::SetupShaderProgram(GLuint* ShaderProgramId,
 	glDeleteShader(FragmentShaderId);
 }
 
-void FOpenGlUtils::UseProgram(GLuint ShaderProgramId,
-	GLuint VAO,
-	GLsizei Count)
+void FOpenGlUtils::UseProgram(GLuint ShaderProgramId)
 {
 	glUseProgram(ShaderProgramId);
+}
+
+void FOpenGlUtils::BindObject(GLuint VAO,
+	GLsizei Count)
+{
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, Count, GL_UNSIGNED_INT, 0);
 }
 
 void FOpenGlUtils::CleanupProgram(GLuint* ShaderProgramId,
 	GLuint* VertexShaderId,
-	GLuint* FragmentShaderId,
-	GLuint* VAOs)
+	GLuint* FragmentShaderId)
 {
 	glUseProgram(0);
 	glBindVertexArray(0);
@@ -122,7 +124,6 @@ void FOpenGlUtils::CleanupProgram(GLuint* ShaderProgramId,
 	glDetachShader(*ShaderProgramId, *VertexShaderId);
 	glDetachShader(*ShaderProgramId, *FragmentShaderId);
 	glDeleteProgram(*ShaderProgramId);
-	glDeleteVertexArrays(1, VAOs);
 
 	// clear cached variables
 	*VertexShaderId = 0;
@@ -130,9 +131,11 @@ void FOpenGlUtils::CleanupProgram(GLuint* ShaderProgramId,
 	*ShaderProgramId = 0;
 }
 
-void FOpenGlUtils::CleanupMesh(GLuint* VBOs,
+void FOpenGlUtils::CleanupMesh(GLuint* VAOs,
+	GLuint* VBOs,
 	GLuint* EBOs)
 {
+	glDeleteVertexArrays(1, VAOs);
 	glDeleteBuffers(1, VBOs);
 	glDeleteBuffers(1, EBOs);
 	*VBOs = 0;

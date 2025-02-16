@@ -41,7 +41,13 @@ std::size_t UDemoExpression::Size() const
 void UDemoExpression::ApplicationDraw()
 {
 	assert(DemoCube != nullptr);
-	FOpenGlUtils::UseProgram(DemoCube->ShaderProgramID, DemoCube->VAO, 6);
+
+	FOpenGlUtils::UseProgram(DemoCube->ShaderProgramID);
+	for (std::size_t i = 0; i < DemoCube->NumMeshes; ++i)
+	{
+		FMesh& Mesh = DemoCube->Meshes[i];
+		FOpenGlUtils::BindObject(Mesh.VAO, Mesh.Indices.size());
+	}
 }
 
 void UDemoExpression::ImGuiDraw()
@@ -70,11 +76,11 @@ void UDemoExpression::Init()
 
 	assert(DemoCube != nullptr && DemoCube->Meshes != nullptr && DemoCube->NumMeshes > 0);
 
-	FOpenGlUtils::SetupVertexArrayObject(&DemoCube->VAO);
-
 	for (std::size_t i = 0; i < DemoCube->NumMeshes; ++i)
 	{
 		FMesh& Mesh = DemoCube->Meshes[i];
+		FOpenGlUtils::SetupVertexArrayObject(&Mesh.VAO);
+
 		FOpenGlUtils::SetupBufferObject(&Mesh.VBO,
 			&Mesh.Vertices[0] /*data*/,
 			Mesh.Vertices.size() * sizeof(FVertex) /*size*/,
@@ -89,7 +95,7 @@ void UDemoExpression::Init()
 
 		// Note to self : VertexAttributePointer are configured based on the currently bound VBO (which is attached to the active VAO context)
 		// failing to configure VertexAttributePointer AFTER VBO binding will result in glDrawArrays throwing!
-		FOpenGlUtils::SetupVertexAttributePointer(0, 3 /*count*/, 3 * sizeof(float) /*stride*/, NULL/*offset*/);
+		FOpenGlUtils::SetupVertexAttributePointer(0, 3 /*count*/, 6 * sizeof(float) /*stride*/, NULL/*offset*/);
 	}
 
 	{
@@ -115,14 +121,14 @@ void UDemoExpression::Cleanup()
 
 	FOpenGlUtils::CleanupProgram(&DemoCube->ShaderProgramID,
 		&DemoCube->VertexProgramID,
-		&DemoCube->FragmentProgramID,
-		&DemoCube->VAO);
+		&DemoCube->FragmentProgramID);
 
 	for (std::size_t i = 0; i < DemoCube->NumMeshes; ++i)
 	{
 		FMesh& Mesh = DemoCube->Meshes[i];
 
-		FOpenGlUtils::CleanupMesh(&Mesh.VBO,
+		FOpenGlUtils::CleanupMesh(&Mesh.VAO,
+			&Mesh.VBO,
 			&Mesh.EBO);
 
 		FMemory::Free(&gPoolAllocator,

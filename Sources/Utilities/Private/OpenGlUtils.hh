@@ -50,16 +50,17 @@ struct FOpenGlUtils
 		GLuint VertextShaderId,
 		GLuint FragmentShaderId);
 
-	static void UseProgram(GLuint ShaderProgramId,
-		GLuint VAO,
+	static void UseProgram(GLuint ShaderProgramId);
+
+	static void BindObject(GLuint VAO,
 		GLsizei Count);
 
 	static void CleanupProgram(GLuint* ShaderProgramId,
 		GLuint* VertexShaderId,
-		GLuint* FragmentShaderId,
-		GLuint* VAOs);
+		GLuint* FragmentShaderId);
 
-	static void CleanupMesh(GLuint* VBOs,
+	static void CleanupMesh(GLuint* VAOs,
+		GLuint* VBOs,
 		GLuint* EBOs);
 
 	static void ImportMesh(char const* File,

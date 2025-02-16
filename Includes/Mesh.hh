@@ -41,6 +41,8 @@ struct FMesh
 	std::vector<FVertex> Vertices;
 	std::vector<std::size_t> Indices;
 
+	// buffer ids
+	GLuint VAO = UINT64_MAX;
 	GLuint VBO = UINT64_MAX;
 	GLuint EBO = UINT64_MAX;
 };
