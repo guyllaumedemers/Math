@@ -25,6 +25,5 @@ struct FViewport
 {
 	float Top, Bottom, Left, Right, AspectRatio = 0.f;
 
-	FViewport static Application;
 	FViewport static Default;
 };

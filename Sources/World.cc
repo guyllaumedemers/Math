@@ -25,6 +25,21 @@
 
 extern FArenaAllocator gArenaAllocator;
 
+void FWorld::Draw()
+{
+	WorldContext.ApplicationDraw(Viewport, Camera);
+}
+
+void FWorld::DrawImGui()
+{
+	WorldContext.ImGuiDraw();
+}
+
+void FWorld::Tick()
+{
+	WorldContext.Tick();
+}
+
 FWorld FWorld::Factory(IBatchResource&& BatchResource)
 {
 	return FWorldContext{ std::move(BatchResource) };
@@ -38,8 +53,6 @@ FWorld::FWorld(FWorldContext&& WorldContext)
 
 FWorld::FWorldContext& FWorld::FWorldContext::operator=(FWorld::FWorldContext&& WorldContext)
 {
-	this->Viewport = std::move(WorldContext.Viewport);
-	this->Camera = std::move(WorldContext.Camera);
 	this->Handle = std::move(WorldContext.Handle);
 	WorldContext.Handle = {};
 	return *this;
@@ -68,7 +81,7 @@ FWorld::FWorldContext::~FWorldContext()
 	FMemory::Free(&gArenaAllocator, Handle.MemoryBlock);
 }
 
-void FWorld::FWorldContext::ApplicationDraw()
+void FWorld::FWorldContext::ApplicationDraw(FViewport const& Viewport, FCamera const& Camera)
 {
 	// https://lukasatkinson.de/2018/interface-dispatch/
 	// https://stackoverflow.com/questions/24067594/how-does-a-c-compiler-handle-offsets-with-multiple-inheritance
@@ -77,7 +90,7 @@ void FWorld::FWorldContext::ApplicationDraw()
 	if (Handle.MemoryBlock.Payload == nullptr) { return; }
 	auto* const Payload = static_cast<UDemoExpression*>(Handle.MemoryBlock.Payload);
 	assert(!!Payload);
-	Payload->ApplicationDraw();
+	Payload->ApplicationDraw(Viewport, Camera);
 }
 
 void FWorld::FWorldContext::ImGuiDraw()

@@ -24,6 +24,6 @@ class IDrawable
 {
 public:
 	virtual ~IDrawable() = default;
-	virtual void ApplicationDraw() = 0;
+	virtual void ApplicationDraw(struct FViewport const&, struct FCamera const&) = 0;
 	virtual void ImGuiDraw() = 0;
 };

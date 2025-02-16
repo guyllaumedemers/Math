@@ -24,7 +24,7 @@ void UDotProduct::Tick()
 {
 }
 
-void UDotProduct::ApplicationDraw()
+void UDotProduct::ApplicationDraw(FViewport const& Viewport, FCamera const& Camera)
 {
 	// TODO Open a new ImGui window context for layout specific to this demo
 }

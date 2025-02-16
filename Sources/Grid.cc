@@ -20,7 +20,7 @@
 
 #include "Grid.hh"
 
-void FGrid::ApplicationDraw()
+void FGrid::ApplicationDraw(FViewport const& Viewport, FCamera const& Camera)
 {
 }
 

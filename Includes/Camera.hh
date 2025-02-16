@@ -41,17 +41,21 @@ struct FCamera
 
 	inline FMatrix4x4 ModelViewMatrix(FTransform const& Object) const
 	{
-		// TODO double check left-hand side vs right-hand side if weird behaviour occurs
 		return this->Transform.Inverse() * Object.ModelMatrix();
 	}
 
-	inline FMatrix4x4 ProjectionMatrix(FViewport const& Viewport, FTransform const& Object)
+	inline FMatrix4x4 ModelViewProjectionMatrix(FViewport const& Viewport, FTransform const& Object) const
+	{
+		return this->ProjectionMatrix(Viewport, Object) * this->ModelViewMatrix(Object);
+	}
+
+	inline FMatrix4x4 ProjectionMatrix(FViewport const& Viewport, FTransform const& Object) const
 	{
 		float const X = ((2 * Object.Position[0]/*Pw(x)*/) - Viewport.Left) / ((Viewport.Right - Viewport.Left) * tan(Fov * 0.5f));
 		float const Y = ((2 * Object.Position[1]/*Pw(y)*/) - Viewport.Bottom) / ((Viewport.Top - Viewport.Bottom) * tan(Fov * 0.5f));
 		float const Z = ((2 * Object.Position[2]/*Pw(z)*/) - FarPlane) / ((NearPlane - FarPlane));
 
-		auto const ProjectionMatrix = FMatrix4x4
+		return FMatrix4x4
 		{
 			Private::TMatrix<float, 4, 4>
 			{
@@ -61,8 +65,6 @@ struct FCamera
 				Private::TVector<float, 4>{0,0,-1,0}
 			}
 		};
-
-		return ProjectionMatrix * this->ModelViewMatrix(Object);
 	}
 
 	void Reset();

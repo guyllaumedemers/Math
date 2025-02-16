@@ -32,7 +32,7 @@ struct FGrid :
 {
 	inline FGrid static& Get() { return Singleton; }
 
-	virtual void ApplicationDraw() override;
+	virtual void ApplicationDraw(struct FViewport const&, struct FCamera const&) override;
 	virtual void ImGuiDraw() override;
 
 protected:

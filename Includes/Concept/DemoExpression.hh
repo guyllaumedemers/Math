@@ -39,7 +39,7 @@ public:
 	UDemoExpression& operator=(UDemoExpression const&) = delete;
 	UDemoExpression& operator=(UDemoExpression&&) = default;
 	virtual std::size_t Size() const override;
-	virtual void ApplicationDraw() override;
+	virtual void ApplicationDraw(struct FViewport const&, struct FCamera const&) override;
 	virtual void ImGuiDraw() override;
 	virtual void Tick() override;
 

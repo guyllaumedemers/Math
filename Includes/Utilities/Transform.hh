@@ -70,7 +70,7 @@ struct FTransform
 		{
 			// TODO determine if assertion is the correct approach as in some case, we may want to actually return and continue
 			// the execution
-			assert(false);
+			//assert(false);
 			return FMatrix4x4::Zero();
 		}
 		else

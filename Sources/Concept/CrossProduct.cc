@@ -26,7 +26,7 @@ void UCrossProduct::Tick()
 {
 }
 
-void UCrossProduct::ApplicationDraw()
+void UCrossProduct::ApplicationDraw(FViewport const& Viewport, FCamera const& Camera)
 {
 	/*auto& Builder = FImGuiBuilder::Get();
 	Builder.PushWindow();*/

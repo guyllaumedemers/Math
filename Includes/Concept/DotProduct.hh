@@ -97,6 +97,6 @@ class UDotProduct : public UDemoExpression
 public:
 	virtual std::size_t Size() const override { return sizeof(UDotProduct); };
 	virtual void Tick() override;
-	virtual void ApplicationDraw() override;
+	virtual void ApplicationDraw(struct FViewport const&, struct FCamera const&) override;
 	virtual void ImGuiDraw() override;
 };

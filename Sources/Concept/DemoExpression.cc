@@ -20,11 +20,13 @@
 
 #include "Concept/DemoExpression.hh"
 
+#include <fstream>
 #include <sstream>
 
 #include "imgui.h"
 #include "SDL3/SDL.h"
 
+#include "Camera.hh"
 #include "Mesh.hh"
 #include "Object.hh"
 #include "../Utilities/Private/OpenGlUtils.hh"
@@ -38,24 +40,41 @@ std::size_t UDemoExpression::Size() const
 	return sizeof(UDemoExpression);
 }
 
-void UDemoExpression::ApplicationDraw()
+void UDemoExpression::ApplicationDraw(FViewport const& Viewport, FCamera const& Pov /*User*/)
 {
 	assert(DemoCube != nullptr);
 
 	FOpenGlUtils::UseProgram(DemoCube->ShaderProgramID);
+
+	// get our parent object in View space (or Camera space)
+	FMatrix4x4 const ModelViewMatrix = Pov.ModelViewMatrix(DemoCube->Transform);
+
+	// get out parent object Projection matrix
+	FMatrix4x4 const ProjectionMatrix = Pov.ProjectionMatrix(Viewport, DemoCube->Transform);
+
 	for (std::size_t i = 0; i < DemoCube->NumMeshes; ++i)
 	{
 		FMesh& Mesh = DemoCube->Meshes[i];
 
-		// @gdemers doing it on the cpu side to showcase math implemntation defined for this project.
-		// since this project is suppose to prove the comprehension of math principles usefull to game programming,
-		// all calculation are done with our custom api and defined on the cpu side instead of gpu.
-		// IMPORTANT : This is obviously WAYY less efficient.
-		auto const NumVertices = Mesh.Vertices.size();
-		for (std::size_t j = 0; j < NumVertices; ++j)
-		{
-			FVector4d PointInWorld = (DemoCube->Transform.ModelMatrix() * FVector4d { Mesh.Vertices[j].Position });
-		}
+		// @gdemers doing 3d point conversion to 2d here to showcase math implemntation defined for this project. However,
+		// implementation cannot forward converted vertices to the gpu as the VBO would have to be written to with the updated data, imply targeting
+		// GL_DYNAMIC_DRAW.
+		// 
+		// - This is purely for educational purpose! -
+		// 
+		//	auto const NumVertices = Mesh.Vertices.size();
+		//	for (std::size_t j = 0; j < NumVertices; ++j)
+		//	{
+		//		// convert object space vertice (or local space) into Camera space
+		//		FVector4d PointInCameraSpace = (ModelViewMatrix * FVector4d{ Mesh.Vertices[j].Position });
+
+		//		// project point from Camera space onto the screen using frustum projection calculation
+		//		FVector4d PointOnScreen = (ProjectionMatrix * PointInCameraSpace);
+		// 
+		//		// now depending on the projection type used, we can either do Orthographic or Perspective projection
+		//		// note however that since we use opengl, perspective division is handled on the gpu so we dont have control
+		//		// over it.
+		//	}
 
 		FOpenGlUtils::DrawObject(Mesh.VAO, Mesh.Indices.size());
 	}
@@ -85,10 +104,11 @@ void UDemoExpression::Init()
 	FMemoryBlock const Payload = FMemory::Malloc(&gStackAllocator, sizeof(FObject));
 	DemoCube = reinterpret_cast<FObject*>(Payload.Payload);
 
-	std::stringstream ss;
-	ss << SDL_GetCurrentDirectory() << "\\..\\..\\" << "Res/Cube2.gltf";
-	FOpenGlUtils::ImportMesh(ss.str().c_str(), DemoCube, &gPoolAllocator);
-	ss.clear();
+	{
+		std::stringstream ss;
+		ss << SDL_GetCurrentDirectory() << "\\..\\..\\" << "Res/Cube2.gltf";
+		FOpenGlUtils::ImportMesh(ss.str().c_str(), DemoCube, &gPoolAllocator);
+	}
 
 	assert(DemoCube != nullptr && DemoCube->Meshes != nullptr && DemoCube->NumMeshes > 0);
 
@@ -115,20 +135,42 @@ void UDemoExpression::Init()
 	}
 
 	{
-		char const* VertexShader = "#version 460 core\nlayout (location = 0) in vec3 aPos;\nvoid main()\n{\n\tgl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n}";
+		std::stringstream filedir;
+		filedir << SDL_GetCurrentDirectory() << "\\..\\..\\" << "Res/DemoExpression.vshader";
+
+		std::ifstream fs;
+		fs.open(filedir.str().c_str());
+
+		std::stringstream vertshader;
+		vertshader << fs.rdbuf();
+
 		FOpenGlUtils::SetupShader(&DemoCube->VertexProgramID,
-			VertexShader,
+			vertshader.str().c_str(),
 			GL_VERTEX_SHADER);
 
-		char const* FragmentShader = "#version 460 core\nout vec4 fragColor;\nvoid main()\n{\n\tfragColor = vec4(1.0, 0.0, 0.0, 1.0);\n}";
+		fs.close();
+	}
+
+	{
+		std::stringstream filedir;
+		filedir << SDL_GetCurrentDirectory() << "\\..\\..\\" << "Res/DemoExpression.fshader";
+
+		std::ifstream fs;
+		fs.open(filedir.str().c_str());
+
+		std::stringstream fragshader;
+		fragshader << fs.rdbuf();
+
 		FOpenGlUtils::SetupShader(&DemoCube->FragmentProgramID,
-			FragmentShader,
+			fragshader.str().c_str(),
 			GL_FRAGMENT_SHADER);
 
-		FOpenGlUtils::SetupShaderProgram(&DemoCube->ShaderProgramID,
-			DemoCube->VertexProgramID,
-			DemoCube->FragmentProgramID);
+		fs.close();
 	}
+
+	FOpenGlUtils::SetupShaderProgram(&DemoCube->ShaderProgramID,
+		DemoCube->VertexProgramID,
+		DemoCube->FragmentProgramID);
 }
 
 void UDemoExpression::Cleanup()

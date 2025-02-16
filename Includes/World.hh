@@ -36,8 +36,9 @@ public:
 	FWorld& operator=(FWorld const&) = default;
 	FWorld& operator=(FWorld&&) = default;
 
-	IDrawable& Drawable() { return static_cast<IDrawable&>(WorldContext); }
-	ITickable& Tickable() { return static_cast<ITickable&>(WorldContext); }
+	void Draw();
+	void DrawImGui();
+	void Tick();
 
 	// factory
 	static FWorld Factory(IBatchResource&&);
@@ -57,14 +58,10 @@ protected:
 		FWorldContext(IBatchResource&&);
 		~FWorldContext();
 
-		virtual void ApplicationDraw() override;
+		virtual void ApplicationDraw(struct FViewport const&, struct FCamera const&) override;
 		virtual void ImGuiDraw() override;
 		virtual void Tick() override;
 
-		// viewport target
-		FViewport Viewport = FViewport::Default;
-		// user point of view
-		FCamera Camera = FCamera::Default;
 		// resources handle
 		FBatchResourceHandle Handle;
 	};
@@ -79,4 +76,10 @@ protected:
 
 	// world resources
 	FWorldContext WorldContext;
+
+	// viewport target
+	FViewport Viewport = FViewport::Default;
+
+	// user point of view
+	FCamera Camera = FCamera::Default;
 };

@@ -20,5 +20,4 @@
 
 #include "Utilities/Viewport.hh"
 
-FViewport FViewport::Application;
 FViewport FViewport::Default;

@@ -31,6 +31,7 @@
 // application headers
 #include "World.hh"
 #include "Concept/DemoExpression.hh"
+#include "Utilities/Viewport.hh"
 #include "Concept/ImGui/ImGuiBuilder.hh"
 
 // macro for application process closure
@@ -144,7 +145,7 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 	// world tick
 	auto const ApplicationTick = [](FWorld& World)
 		{
-			World.Tickable().Tick();
+			World.Tick();
 		};
 
 	//	*******
@@ -164,7 +165,7 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 	// imgui content drawing
 	auto const ImGuiDraw = [&](FWorld& World, FImGuiBuilder& Builder)
 		{
-			World.Drawable().ImGuiDraw();
+			World.DrawImGui();
 			ImGui::Render();
 		};
 
@@ -186,7 +187,7 @@ int main(int argc /*arg count*/, char* argv[] /*arg values*/)
 	// world render
 	auto const ApplicationDraw = [](FWorld& World)
 		{
-			World.Drawable().ApplicationDraw();
+			World.Draw();
 		};
 
 	//	*******
