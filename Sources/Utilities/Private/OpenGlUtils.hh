@@ -52,7 +52,7 @@ struct FOpenGlUtils
 
 	static void UseProgram(GLuint ShaderProgramId);
 
-	static void BindObject(GLuint VAO,
+	static void DrawObject(GLuint VAO,
 		GLsizei Count);
 
 	static void CleanupProgram(GLuint* ShaderProgramId,

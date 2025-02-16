@@ -46,7 +46,18 @@ void UDemoExpression::ApplicationDraw()
 	for (std::size_t i = 0; i < DemoCube->NumMeshes; ++i)
 	{
 		FMesh& Mesh = DemoCube->Meshes[i];
-		FOpenGlUtils::BindObject(Mesh.VAO, Mesh.Indices.size());
+
+		// @gdemers doing it on the cpu side to showcase math implemntation defined for this project.
+		// since this project is suppose to prove the comprehension of math principles usefull to game programming,
+		// all calculation are done with our custom api and defined on the cpu side instead of gpu.
+		// IMPORTANT : This is obviously WAYY less efficient.
+		auto const NumVertices = Mesh.Vertices.size();
+		for (std::size_t j = 0; j < NumVertices; ++j)
+		{
+			FVector4d PointInWorld = (DemoCube->Transform.ModelMatrix() * FVector4d { Mesh.Vertices[j].Position });
+		}
+
+		FOpenGlUtils::DrawObject(Mesh.VAO, Mesh.Indices.size());
 	}
 }
 
@@ -61,7 +72,12 @@ void UDemoExpression::ImGuiDraw()
 
 void UDemoExpression::Tick()
 {
-	// TODO do more here if required!
+	assert(DemoCube != nullptr);
+
+	for (std::size_t i = 0; i < DemoCube->NumMeshes; ++i)
+	{
+		FMesh& Mesh = DemoCube->Meshes[i];
+	}
 }
 
 void UDemoExpression::Init()

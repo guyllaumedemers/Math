@@ -33,41 +33,10 @@ namespace Private
 		static_assert(std::is_floating_point_v<T>, "TMatrix ill format, can only accept floating point types");
 
 		template<std::size_t K, std::size_t L>
-		TMatrix<T, M, L> operator*(TMatrix<T, K, L> const& Rhs) const
-		{
-			static_assert(N == K, "TMatrix size is ill format. Matrix product can only happen if Mat_A nbCol == Mat_B nbRow");
-
-			TMatrix<T, M, L> Result{};
-			for (std::size_t i = 0; i < GetRows(); ++i)
-			{
-				for (std::size_t j = 0; j < Rhs.GetCols(); ++j)
-				{
-					for (std::size_t k = 0; k < Rhs.GetRows(); ++k)
-					{
-						Result(i, j) += (RowsCols[i][k] * Rhs(k, j));
-					}
-				}
-			}
-
-			return Result;
-		}
+		TMatrix<T, M, L> operator*(TMatrix<T, K, L> const& Rhs) const;
 
 		template<std::size_t K>
-		TVector<T, M> operator*(TVector<T, K> const& Rhs) const
-		{
-			static_assert(N == K, "TMatrix size is ill format. Matrix product can only happen if Mat_A nbCol == Mat_B nbRow");
-
-			TVector<T, M> Result{};
-			for (std::size_t i = 0; i < GetRows(); ++i)
-			{
-				for (std::size_t j = 0; j < Rhs.GetRows() /*j = Rhs Row[index] AND Matrix Cols[index]*/; ++j)
-				{
-					Result[i] += (RowsCols[i][j] * Rhs[j]);
-				}
-			}
-
-			return Result;
-		}
+		TVector<T, M> operator*(TVector<T, K> const& Rhs) const;
 
 		TMatrix operator*(float In) const
 		{
@@ -144,6 +113,45 @@ namespace Private
 				T const B = RowsCols[j][i];
 				Result(i, j) = B;
 				Result(j, i) = A;
+			}
+		}
+
+		return Result;
+	}
+
+	template<typename T, std::size_t M, std::size_t N>
+	template<std::size_t K, std::size_t L>
+	inline TMatrix<T, M, L> TMatrix<T, M, N>::operator*(TMatrix<T, K, L> const& Rhs) const
+	{
+		static_assert(N == K, "TMatrix size is ill format. Matrix product can only happen if Mat_A nbCol == Mat_B nbRow");
+
+		TMatrix<T, M, L> Result{};
+		for (std::size_t i = 0; i < GetRows(); ++i)
+		{
+			for (std::size_t j = 0; j < Rhs.GetCols(); ++j)
+			{
+				for (std::size_t k = 0; k < Rhs.GetRows(); ++k)
+				{
+					Result(i, j) += (RowsCols[i][k] * Rhs(k, j));
+				}
+			}
+		}
+
+		return Result;
+	}
+
+	template<typename T, std::size_t M, std::size_t N>
+	template<std::size_t K>
+	inline TVector<T, M> TMatrix<T, M, N>::operator*(TVector<T, K> const& Rhs) const
+	{
+		static_assert(N == K, "TMatrix size is ill format. Matrix product can only happen if Mat_A nbCol == Mat_B nbRow");
+
+		TVector<T, M> Result{};
+		for (std::size_t i = 0; i < GetRows(); ++i)
+		{
+			for (std::size_t j = 0; j < Rhs.GetRows() /*j = Rhs Row[index] AND Matrix Cols[index]*/; ++j)
+			{
+				Result[i] += (RowsCols[i][j] * Rhs[j]);
 			}
 		}
 
@@ -297,17 +305,17 @@ struct FMatrix4x4
 
 	FMatrix4x4 operator*(FMatrix4x4 const& In) const
 	{
-		return { };
+		return FMatrix4x4{ Matrix * In.Matrix };
 	}
 
 	FVector4d operator*(FVector4d const& In) const
 	{
-		return { };
+		return FVector4d{ Matrix * In.Vector };
 	}
 
 	FMatrix4x4 operator*(float In) const
 	{
-		return { };
+		return FMatrix4x4{ Matrix * In };
 	}
 
 	inline float Determinant() const

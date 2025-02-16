@@ -27,11 +27,6 @@ FCamera const FCamera::Default =
 	0.f, 0.f, 0.f
 };
 
-void FCamera::Modify(FTransform const& In)
-{
-	this->Transform *= In;
-}
-
 void FCamera::Reset()
 {
 	*this = FCamera::Default;

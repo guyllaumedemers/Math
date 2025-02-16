@@ -41,14 +41,6 @@ struct FTransform
 		this->Scale = Scale;
 	}
 
-	FTransform& operator*=(FTransform const& In)
-	{
-		Position = FMatrix4x4::Translate(In.Position) * Position;
-		Rotation = FMatrix4x4::Rotate(In.Rotation.ToVector()) * Rotation.ToVector();
-		Scale = FMatrix4x4::Scale(In.Scale) * Scale;
-		return *this;
-	}
-
 	FMatrix4x4 ModelMatrix() const
 	{
 		// TODO double check left-hand side vs right-hand side if weird behaviour occurs

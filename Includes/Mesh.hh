@@ -26,6 +26,7 @@
 
 #include "glad/glad.h"
 
+#include "Utilities/Transform.hh"
 #include "Utilities/Vector.hh"
 
 // POD Class. Represent a single Vertex object.
@@ -38,11 +39,14 @@ struct FVertex
 // POD Class. Represent a single Mesh object.
 struct FMesh
 {
-	std::vector<FVertex> Vertices;
-	std::vector<std::size_t> Indices;
-
 	// buffer ids
 	GLuint VAO = UINT64_MAX;
 	GLuint VBO = UINT64_MAX;
 	GLuint EBO = UINT64_MAX;
+
+	// how triangles are built based on indexed drawing
+	std::vector<std::size_t> Indices;
+
+	// object space data (or local space)
+	std::vector<FVertex> Vertices;
 };

@@ -65,7 +65,6 @@ struct FCamera
 		return ProjectionMatrix * this->ModelViewMatrix(Object);
 	}
 
-	void Modify(FTransform const& In);
 	void Reset();
 
 	FTransform Transform = FTransform::Default;

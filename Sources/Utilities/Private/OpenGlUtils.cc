@@ -106,7 +106,7 @@ void FOpenGlUtils::UseProgram(GLuint ShaderProgramId)
 	glUseProgram(ShaderProgramId);
 }
 
-void FOpenGlUtils::BindObject(GLuint VAO,
+void FOpenGlUtils::DrawObject(GLuint VAO,
 	GLsizei Count)
 {
 	glBindVertexArray(VAO);
@@ -138,6 +138,7 @@ void FOpenGlUtils::CleanupMesh(GLuint* VAOs,
 	glDeleteVertexArrays(1, VAOs);
 	glDeleteBuffers(1, VBOs);
 	glDeleteBuffers(1, EBOs);
+	*VAOs = 0;
 	*VBOs = 0;
 	*EBOs = 0;
 }

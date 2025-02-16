@@ -199,19 +199,9 @@ struct FVector4d
 	FVector4d(FVector4d&&) = default;
 	FVector4d& operator=(FVector4d const&) = default;
 
-	FVector4d operator*(float In) const
+	explicit FVector4d(Private::TVector<float, 4> const& Vector)
 	{
-		return FVector4d{};
-	}
-
-	float& operator[](std::size_t Index)
-	{
-		return Vector[Index];
-	}
-
-	float const& operator[](std::size_t Index) const
-	{
-		return Vector[Index];
+		this->Vector = Vector;
 	}
 
 	FVector4d(float X, float Y, float Z, float W)
@@ -228,6 +218,28 @@ struct FVector4d
 		this->Vector[1] = In.Vector[1];
 		this->Vector[2] = In.Vector[2];
 		this->Vector[3] = 1.f;
+	}
+
+	FVector4d operator*(float In) const
+	{
+		// @gdemers we can argue on if we want allow scaling of the W component later
+		return FVector4d
+		{
+			Vector[0] * In,
+			Vector[1] * In,
+			Vector[2] * In,
+			1.f,
+		};
+	}
+
+	float& operator[](std::size_t Index)
+	{
+		return Vector[Index];
+	}
+
+	float const& operator[](std::size_t Index) const
+	{
+		return Vector[Index];
 	}
 
 	Private::TVector<float, 4> Vector{};
