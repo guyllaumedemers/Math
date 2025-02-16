@@ -31,7 +31,7 @@ FPoolAllocator gPoolAllocator(128);
 FMemoryBlock FMemory::Malloc(FAllocator* Allocator, std::size_t Bytes)
 {
 	assert(!!Allocator);
-	return FMemoryBlock{ Bytes, Allocator->Allocate(Bytes) };
+	return FMemoryBlock{ Allocator->Allocate(Bytes), Bytes };
 }
 
 FMemoryBlock FMemory::Malloc(FAllocatorInfo const& Info, void* Data)
@@ -200,7 +200,7 @@ void FStackAllocator::DeallocateAll()
 
 FPoolAllocator::FPoolAllocator(std::size_t Bytes)
 {
-	assert(Bytes > sizeof(FPoolAllocatorFreeNode));
+	assert(FMemory::IsPowerOfTwo(Bytes) && Bytes > sizeof(FPoolAllocatorFreeNode));
 
 	ChunkSize = FMemory::MemAlign(Bytes, DEFAULT_ALIGNMENT);
 	DeallocateAll();
@@ -217,6 +217,8 @@ void* FPoolAllocator::Allocate(std::size_t Bytes)
 
 	FPoolAllocatorFreeNode* CurrFreeNode = &*FreeList;
 	FreeList = &*FreeList->Next;
+
+	printf("Pool - Allocation:%zu, Padding:%zu, Wasted Memory:%zu, Remainder:%s\n", Bytes, 0, ChunkSize - Bytes, "N/A");
 
 	// @gdemers return full size chunk without header node to the user
 	return std::memset(CurrFreeNode, 0, ChunkSize);
@@ -248,6 +250,9 @@ void FPoolAllocator::DeallocateAll()
 	FreeList = reinterpret_cast<FPoolAllocatorFreeNode*>(&MemoryBuffer[Padding]);
 
 	// @gdemers for some weird reason FreeList is being written to during forloop and would assert
+	// UPDATED : Compiler padding applied to struct will have various effect here. Property Ordering will throw various error.
+	// Usually, packing fields imply organizing properties by their Byte size to reduce the amount of padding applied by the Compiler. Here,
+	// shuffling around properties may even overwrite the vtable address and corrupt the underline behaviour of the Allocator type.
 	FPoolAllocatorFreeNode* BackupFrontNode = &*FreeList;
 	FPoolAllocatorFreeNode* FreeNode = &*FreeList;
 

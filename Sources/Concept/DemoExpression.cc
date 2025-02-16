@@ -23,7 +23,6 @@
 #include <sstream>
 
 #include "imgui.h"
-#include "glad/glad.h"
 #include "SDL3/SDL.h"
 
 #include "Mesh.hh"
@@ -127,9 +126,9 @@ void UDemoExpression::Cleanup()
 			&Mesh.EBO);
 
 		FMemory::Free(&gPoolAllocator,
-			FMemoryBlock{ sizeof(FMesh), &Mesh });
+			FMemoryBlock{ &Mesh, sizeof(FMesh) });
 	}
 
 	FMemory::Free(&gStackAllocator,
-		FMemoryBlock{ sizeof(FObject), DemoCube });
+		FMemoryBlock{ DemoCube, sizeof(FObject) });
 }

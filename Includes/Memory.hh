@@ -51,8 +51,8 @@ struct FAllocatorInfo
 
 struct FMemoryBlock
 {
-	std::size_t Size = 0;
 	void* Payload = nullptr;
+	std::size_t Size = 0;
 };
 
 struct FAllocator
@@ -135,8 +135,18 @@ struct FPoolAllocator : public FAllocator
 	virtual void DeallocateAll() override;
 
 private:
+	// @gdemers Shuffle properties and test the various outcome.
+	//
+	// #1 - cause ChunkSize to be written to during the forloop problem discussed in the source file.
+	// char MemoryBuffer[POOL_ALLOCATOR_SIZE];
+	// FPoolAllocatorFreeNode* FreeList = nullptr;
+	// std::size_t ChunkSize = CHUNK_SIZE;
+	//
+	// #2 - cause the vtable addressed to be corrupt.
+	// FPoolAllocatorFreeNode* FreeList = nullptr;
+	// std::size_t ChunkSize = CHUNK_SIZE;
+	// char MemoryBuffer[POOL_ALLOCATOR_SIZE];
 	char MemoryBuffer[POOL_ALLOCATOR_SIZE];
 	std::size_t ChunkSize = CHUNK_SIZE;
-
 	FPoolAllocatorFreeNode* FreeList = nullptr;
 };
