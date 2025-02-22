@@ -71,7 +71,7 @@ If we look at the View frustum from the side, we see that we are forming a right
 
 Projection & Perspective Divide - solving for Ps(y)
 
-* Ps(y) = (Pw(y) *g) / Pw(z)
+* Ps(y) = (Pw(y) * g) / Pw(z)
 
 Notes : Pw(z) perform perspective division to account for object being farther way appearaing smaller on the screen. 
 Notes : Projected point should be between the following bounds of our projection plane to be displayed within the bounds of our screen.
@@ -90,17 +90,23 @@ legend :
 
 Perspective Scaling - solving for Ps(y), [-1,1]
 
-* b - b <= (Ps(y) - b) <= t - b equals 0 <= (Ps(y) - b) <= t - b
+* b - b <= Ps(y) - b <= t - b equals 0 <= Ps(y) - b <= t - b
 
-* 0 / (t - b) <= (Ps(y) - b) / (t - b)) <= (t - b) / (t - b) equals 0 <= (Ps(y) - b) / (t - b)) <= 1
+* 0 / (t - b) <= (Ps(y) / (t - b)) - (b / (t - b)) <= (t - b) / (t - b) equals 0 <= (Ps(y) / (t - b)) - (b / (t - b)) <= 1
 
-* 0 *2 <= ((Ps(y) - b) *2) / (t - b)) <= 1 *2 equals 0 <= ((Ps(y) - b) *2) / (t - b)) <= 2
+* 0 * 2 <= (2Ps(y) / (t - b)) - (2b / (t - b)) <= 1 * 2 equals 0 <= (2Ps(y) / (t - b)) - (2b / (t - b)) <= 2
 
-* 0 - 1 <= ((Ps(y) - b) *2) / (t - b)) - 1 <= 2 - 1 equals -1 <= ((Ps(y) - b) *2) / (t - b)) - 1 <= 1
+* 0 - 1 <= (2Ps(y) / (t - b)) - (2b / (t - b)) - 1 <= 2 - 1 equals -1 <= (2Ps(y) / (t - b)) - (2b / (t - b)) - ((t - b) / (t - b)) <= 1
+
+* (2Ps(y) / (t - b)) - (2b / (t - b)) - ((t - b) / (t - b)) is equivalent to  (2Ps(y) / (t - b)) + (-2b / (t - b)) + ((-t + b) / (t - b)) or (2Ps(y) / (t - b)) + (-t - b / (t - b))
+
+finally...
+
+* -1 <= (2Ps(y) / (t - b)) - ((t + b) / (t - b))
 
 Now, through substitution of Ps(y), we can say that to project a point 'P' in world, onto a 2d plane, we have to :
 
-* ((2* ((Pw(y) *g) - b)) / (Pw(z) * (t - b))) - 1
+* (2Pw(y) / (Pw(z) * (t - b))) - ((t + b) / (t - b))
 
 However, we do not currently know 'g'.
 
@@ -117,7 +123,7 @@ solving for g
 
 and from there, we can determine the distance based on fov. But also, complete the previous equation for Ps(y).
 
-* ((2* (Pw(y) *1) - b) / (Pw(z) * (t - b) * tan(angle/2))) - 1
+* (2Pw(y) / (tan(fov/2) * Pw(z) * (t - b))) - ((t + b) / (t - b))
 
 ```
 
