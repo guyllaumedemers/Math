@@ -12,13 +12,13 @@ tbd
 
 tbd
 
-* Object
+* Object (Local)
 * World
-* Camera (Object)
-* Clip (NDC)
-* Screen
+* View (Camera)
+* Screen (NDC or Clip)
+* Raster
 
-#### Object Space
+#### Object Space (Local Space)
 
 tbd
 
@@ -26,15 +26,15 @@ tbd
 
 tbd
 
-#### Camera Space (Object)
+#### View Space (Camera Space)
 
 tbd
 
-#### Clip Space (Normalize Device Coordinate)
+#### Screen Space (Normalize Device Coordinate or Clip Space)
 
 tbd
 
-#### View Space (Screen)
+#### Raster Space (Pixel Space)
 
 tbd
 
@@ -102,7 +102,7 @@ Perspective Scaling - solving for Ps(y), [-1,1]
 
 finally...
 
-* -1 <= (2Ps(y) / (t - b)) - ((t + b) / (t - b))
+* -1 <= (2Ps(y) / (t - b)) - ((t + b) / (t - b)) <= 1
 
 Now, through substitution of Ps(y), we can say that to project a point 'P' in world, onto a 2d plane, we have to :
 
@@ -132,3 +132,28 @@ and from there, we can determine the distance based on fov. But also, complete t
 tbd
 
 ![view-frustum](https://github.com/guyllaumedemers/Math/blob/master/Res/ViewFrustum.png)
+
+#### Post-projection Task handled by Graphic Pipeline
+
+tbd
+
+* Clipping
+* Perspective divide
+* Viewport transform
+* Rasterization
+
+#### Clipping
+
+tbd
+
+#### Perspective divide
+
+tbd
+
+#### Viewport transform
+
+tbd
+
+#### Rasterization
+
+tbd
