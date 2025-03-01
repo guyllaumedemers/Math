@@ -26,6 +26,8 @@ SETLOCAL enabledelayedexpansion
 SET vendorDir="%~dp0Out/Vendor"
 SET buildDir="%~dp0Out/Build"
 
+IF NOT EXIST %buildDir% (mkdir %buildDir%)
+
 :: retrieve all translation units
 SET cppFilenames=
 FOR /f usebackq %%i in (`DIR /ad /b %~dp0`) do (

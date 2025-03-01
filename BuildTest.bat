@@ -25,6 +25,8 @@ SETLOCAL enabledelayedexpansion
 :: build path executable
 SET buildDir="%~dp0Out/Build"
 
+IF NOT EXIST %buildDir%/Test (mkdir %buildDir%/Test)
+
 :: retrieve all translation units
 SET cppFilenames=
 FOR /f usebackq %%i in (`DIR /ad /b %~dp0`) do (
