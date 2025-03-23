@@ -46,36 +46,14 @@ void UDemoExpression::ApplicationDraw(FViewport const& Viewport, FCamera const& 
 
 	FOpenGlUtils::UseProgram(DemoCube->ShaderProgramID);
 
-	// get our parent object in View space (or Camera space)
-	FMatrix4x4 const ModelViewMatrix = Pov.ModelViewMatrix(DemoCube->Transform);
-
-	// get out parent object Projection matrix
-	FMatrix4x4 const ProjectionMatrix = Pov.ProjectionMatrix(Viewport, DemoCube->Transform);
-
+	// @gdemers draw object vertices by sending each position to the vertex shader (programable pipeline)
+	// note : here, we will be providing the already process projection matrix to the vertex shader (which isnt an optimized solution), this is simply
+	// to prove that the implementation details are correctly defined in our api.
 	for (std::size_t i = 0; i < DemoCube->NumMeshes; ++i)
 	{
 		FMesh& Mesh = DemoCube->Meshes[i];
 
-		// @gdemers doing 3d point conversion to 2d here to showcase math implemntation defined for this project. However,
-		// implementation cannot forward converted vertices to the gpu as the VBO would have to be written to with the updated data, imply targeting
-		// GL_DYNAMIC_DRAW.
-		// 
-		// - This is purely for educational purpose! -
-		// 
-		//	auto const NumVertices = Mesh.Vertices.size();
-		//	for (std::size_t j = 0; j < NumVertices; ++j)
-		//	{
-		//		// convert object space vertice (or local space) into Camera space
-		//		FVector4d PointInCameraSpace = (ModelViewMatrix * FVector4d{ Mesh.Vertices[j].Position });
-
-		//		// project point from Camera space onto the screen using frustum projection calculation
-		//		FVector4d PointOnScreen = (ProjectionMatrix * PointInCameraSpace);
-		// 
-		//		// now depending on the projection type used, we can either do Orthographic or Perspective projection
-		//		// note however that since we use opengl, perspective division is handled on the gpu so we dont have control
-		//		// over it.
-		//	}
-
+		// TODO @gdemers fetch projection matrix and update uniform location in vertex shader, etc...
 		FOpenGlUtils::DrawObject(Mesh.VAO, Mesh.Indices.size());
 	}
 }

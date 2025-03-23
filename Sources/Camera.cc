@@ -24,10 +24,6 @@
 FCamera const FCamera::Default =
 {
 	FTransform{ FVector3d(0.f), FVector3d(0.f), FVector3d(1.f)},
-	0.f, 0.f, 0.f
+	FAxisAlignBoundingBox(),
+	0.f
 };
-
-void FCamera::Reset()
-{
-	*this = FCamera::Default;
-}

@@ -142,6 +142,8 @@ tbd
 * Viewport transform
 * Rasterization
 
+![clipping](https://github.com/guyllaumedemers/Math/blob/master/Res/VertexTransformPipeline.png)
+
 #### Clipping
 
 tbd

@@ -32,6 +32,12 @@ struct FMath
 		return In == 0.f;
 	}
 
+	inline static float Floor(float In)
+	{
+		// TODO @gdemers handle floor properly
+		return (int32_t)In;
+	}
+
 	// src : https://en.wikipedia.org/wiki/Dot_product
 	// description : the dot product or scalar product is an algebraic operation that takes two equal-length sequences of numbers (usually coordinate vectors), and returns a single number.
 	template<typename T, std::size_t N>
