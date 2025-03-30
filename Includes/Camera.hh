@@ -44,7 +44,7 @@ struct FAxisAlignBoundingBox
 		// and not directx [0,1]
 		float const X = (2 / (Right - Left));
 		float const Y = (2 / (Top - Bottom));
-		float const Z = ((2 * Far * Near) / (Far - Near));
+		float const Z = (-(2 * Far * Near) / (Far - Near));
 		float const Xt = ((Right + Left) / (Right - Left));
 		float const Yt = ((Top + Bottom) / (Top - Bottom));
 		float const Zt = ((Far + Near) / (Far - Near));
@@ -96,15 +96,14 @@ struct FCamera
 	{
 		// @gdemers remember that matrix multiplication goes right-to-left as we are in column-major form
 		return this->ViewVolume.CanonicalViewVolume() /*convert 2d point into clip space [-1,1]*/
-			* this->PerspectiveDivide() /*project 3d point onto the image plane*/
+			* this->PerspectiveDivide() /*apply -Pwz to w component before projecting 3d point onto the image plane*/
 			* this->ModelViewMatrix(Object) /*put 3d point in camera space (or view space)*/;
 	}
 
 	inline FMatrix4x4 PerspectiveDivide() const
 	{
 		// @gdemers we set r4,z = -1 due to the perspective division.
-		// Doing so allow the gpu to convert from-homogeneous-to-carthesien during perspective division run in the vertext shader using it's w component (which is set to -PwZ) and
-		// flip our thrid column sign to the correct value.
+		// Doing so allow the gpu to convert from-homogeneous-to-carthesien during perspective division run in the vertext shader using it's w component (which is set to -PwZ)
 		return FMatrix4x4
 		{
 			Private::TMatrix<float, 4, 4>
