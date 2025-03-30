@@ -10,9 +10,9 @@ tbd
 
 #### Resources
 
-[uofm](https://youtube.com/@uofmintroductiontocomputer5167?si=5C0YrTTMzXKvltTH)
-[scratchapixel](https://www.scratchapixel.com/index.html)
-[game engine developtment book](https://a.co/d/irCVusP)
+* [uofm](https://youtube.com/@uofmintroductiontocomputer5167?si=5C0YrTTMzXKvltTH)
+* [scratchapixel](https://www.scratchapixel.com/index.html)
+* [game engine developtment book](https://a.co/d/irCVusP)
 
 ## Coordinate system
 
