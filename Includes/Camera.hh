@@ -38,7 +38,7 @@ struct FAxisAlignBoundingBox
 		this->Far = Far;
 	};
 
-	inline FMatrix4x4 CanonicalViewVolume() const
+	inline FMatrix4x4 CanonicalViewVolume(float const FieldOfView) const
 	{
 		// @gdemers we follow opengl standard here with the cannonical view [-1,1]
 		// and not directx [0,1]
@@ -51,12 +51,18 @@ struct FAxisAlignBoundingBox
 
 		// @gdemers be aware that the canonical view undergo perspective division during the perspective projection process
 		// which imply that w=-Pwz and will be converted from homogeneous coordinate to carthesien when exiting the vertex shader
+
+		// @gdemers zooming in correspond to a decrease in fov and involve multiplying by > 1 as we want to simulate narrowing the scene displayed (i.e pushing points coordinate
+		// outside the view frustum bounds), while zooming out correspond in an increase in fov and involve multiplying by < 1 as we want to simulate widening the scene
+		// displayed (i.e pushing points coordinate inside the view frustum bounds).
+		// note : in cg, the field of view do not modify the image plane ratio if already [-1,1], we can simulate this effect by scaling our points coordinates directly. 
+		float const FovScalingFactor = (1.f / FMath::Tan(FieldOfView/*Degree*/ * 0.5f));
 		return FMatrix4x4
 		{
 			Private::TMatrix<float, 4, 4>
 			{
-				Private::TVector<float, 4>{X,0,Xt,0},
-				Private::TVector<float, 4>{0,Y,Yt,0},
+				Private::TVector<float, 4>{X* FovScalingFactor,0,Xt,0},
+				Private::TVector<float, 4>{0,Y* FovScalingFactor,Yt,0},
 				Private::TVector<float, 4>{0,0,Zt,Z},
 				Private::TVector<float, 4>{0,0,0,1}
 			}
@@ -95,7 +101,7 @@ struct FCamera
 	inline FMatrix4x4 PerspectiveProjection(FTransform const& Object) const
 	{
 		// @gdemers remember that matrix multiplication goes right-to-left as we are in column-major form
-		return this->ViewVolume.CanonicalViewVolume() /*convert 2d point into clip space [-1,1]*/
+		return this->ViewVolume.CanonicalViewVolume(FieldOfView) /*convert 2d point into clip space [-1,1] and apply field of view scaling*/
 			* this->PerspectiveDivide() /*apply -Pwz to w component before projecting 3d point onto the image plane*/
 			* this->ModelViewMatrix(Object) /*put 3d point in camera space (or view space)*/;
 	}

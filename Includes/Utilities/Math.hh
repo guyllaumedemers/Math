@@ -20,22 +20,32 @@
 
 #pragma once
 
+#ifndef M_PI
+#define M_PI 3.141592653589793238463
+#endif
+
 #include <array>
 #include <atomic>
-#include <math.h>
+#include <cmath>
 
 struct FMath
 {
-	inline static bool IsNearlyZero(float In)
+	inline static bool IsNearlyZero(float const In)
 	{
 		// TODO do proper zero check
 		return In == 0.f;
 	}
 
-	inline static float Floor(float In)
+	inline static float Floor(float const In)
 	{
 		// TODO @gdemers handle floor properly
 		return (int32_t)In;
+	}
+
+	inline static float Tan(float const Degree)
+	{
+		float const DegreeToRadian = M_PI / 180.f;
+		return std::tan(Degree * DegreeToRadian);
 	}
 
 	// src : https://en.wikipedia.org/wiki/Dot_product
