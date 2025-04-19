@@ -23,4 +23,5 @@
 SETLOCAL enabledelayedexpansion
 
 :: run executable
-.\Out\Build\Sandbox.exe
+cd .\Out\Build
+.\Sandbox.exe
