@@ -249,21 +249,13 @@ void FPoolAllocator::DeallocateAll()
 
 	FreeList = reinterpret_cast<FPoolAllocatorFreeNode*>(&MemoryBuffer[Padding]);
 
-	// @gdemers for some weird reason FreeList is being written to during forloop and would assert
-	// UPDATED : Compiler padding applied to struct will have various effect here. Property Ordering will throw various error.
-	// Usually, packing fields imply organizing properties by their Byte size to reduce the amount of padding applied by the Compiler. Here,
-	// shuffling around properties may even overwrite the vtable address and corrupt the underline behaviour of the Allocator type.
-	FPoolAllocatorFreeNode* BackupFrontNode = &*FreeList;
 	FPoolAllocatorFreeNode* FreeNode = &*FreeList;
 
 	std::size_t const NumChunks = ((sizeof(MemoryBuffer) - Padding) / ChunkSize);
 	for (std::size_t i = 1; i < NumChunks; ++i)
 	{
-		FreeNode->Next = reinterpret_cast<FPoolAllocatorFreeNode*>((&*BackupFrontNode + (i * ChunkSize)));
-		assert(&*FreeNode->Next != &*BackupFrontNode);
+		FreeNode->Next = reinterpret_cast<FPoolAllocatorFreeNode*>(&MemoryBuffer[(i * ChunkSize) + Padding]);
+		assert(&*FreeNode->Next != &*FreeList);
 		FreeNode = &*FreeNode->Next;
 	}
-
-	// @gdemers reset ptr value to the padded front to ensure proper handle on the linked list
-	FreeList = BackupFrontNode;
 }

@@ -43,6 +43,8 @@
 #include <cstddef>
 #include <cstdint>
 
+// https://learn.microsoft.com/en-us/cpp/cpp/data-type-ranges?view=msvc-170
+
 struct FAllocatorInfo
 {
 	struct FAllocator* Allocator = nullptr;
@@ -86,8 +88,9 @@ struct FArenaAllocator : public FAllocator
 	virtual void DeallocateAll() override;
 
 private:
-	char MemoryBuffer[ARENA_ALLOCATOR_SIZE];
-	std::size_t CurrOffset = 0;
+	char MemoryBuffer[ARENA_ALLOCATOR_SIZE/*1024*/]; // 1024 * 1 byte
+	std::size_t CurrOffset = 0; // 8 bytes
+	char ExplicitPadding[8]; // 8 bytes
 };
 
 // header allocated before a memory aligned block
@@ -107,9 +110,9 @@ struct FStackAllocator : public FAllocator
 	virtual void DeallocateAll() override;
 
 private:
-	char MemoryBuffer[STACK_ALLOCATOR_SIZE];
-	std::size_t PrevOffset = 0;
-	std::size_t CurrOffset = 0;
+	char MemoryBuffer[STACK_ALLOCATOR_SIZE/*1024*/]; // 1024 * 1 byte
+	std::size_t PrevOffset = 0; // 8 bytes
+	std::size_t CurrOffset = 0; // 8 bytes
 };
 
 // similar to the stack allocator but track both end of the memory buffer to allocate memory
@@ -135,18 +138,7 @@ struct FPoolAllocator : public FAllocator
 	virtual void DeallocateAll() override;
 
 private:
-	// @gdemers Shuffle properties and test the various outcome.
-	//
-	// #1 - cause ChunkSize to be written to during the forloop problem discussed in the source file.
-	// char MemoryBuffer[POOL_ALLOCATOR_SIZE];
-	// FPoolAllocatorFreeNode* FreeList = nullptr;
-	// std::size_t ChunkSize = CHUNK_SIZE;
-	//
-	// #2 - cause the vtable addressed to be corrupt.
-	// FPoolAllocatorFreeNode* FreeList = nullptr;
-	// std::size_t ChunkSize = CHUNK_SIZE;
-	// char MemoryBuffer[POOL_ALLOCATOR_SIZE];
-	char MemoryBuffer[POOL_ALLOCATOR_SIZE];
-	std::size_t ChunkSize = CHUNK_SIZE;
-	FPoolAllocatorFreeNode* FreeList = nullptr;
+	char MemoryBuffer[POOL_ALLOCATOR_SIZE/*4096*/]; // 4096 * 1 byte
+	FPoolAllocatorFreeNode* FreeList = nullptr; // 8 bytes
+	std::size_t ChunkSize = CHUNK_SIZE; // 8 bytes
 };
