@@ -40,30 +40,22 @@ struct FAxisAlignBoundingBox
 
 	inline FMatrix4x4 CanonicalViewVolume(float const FieldOfView) const
 	{
-		// @gdemers we follow opengl standard here with the cannonical view [-1,1]
-		// and not directx [0,1]
+		// @gdemers here, we are remapping our view volume defined using (l, r, b, t, f, n) into our canonical view volume.
+		// we follow opengl standard here with the cannonical view [-1,1] and not directx [0,1].
 		float const X = (2 / (Right - Left));
 		float const Y = (2 / (Top - Bottom));
-		float const Z = (-(2 * Far * Near) / (Far - Near));
+		float const Z = (2 / (Far - Near));
 		float const Xt = ((Right + Left) / (Right - Left));
 		float const Yt = ((Top + Bottom) / (Top - Bottom));
 		float const Zt = ((Far + Near) / (Far - Near));
 
-		// @gdemers be aware that the canonical view undergo perspective division during the perspective projection process
-		// which imply that w=-Pwz and will be converted from homogeneous coordinate to carthesien when exiting the vertex shader
-
-		// @gdemers zooming in correspond to a decrease in fov and involve multiplying by > 1 as we want to simulate narrowing the scene displayed (i.e pushing points coordinate
-		// outside the view frustum bounds), while zooming out correspond in an increase in fov and involve multiplying by < 1 as we want to simulate widening the scene
-		// displayed (i.e pushing points coordinate inside the view frustum bounds).
-		// note : in cg, the field of view do not modify the image plane ratio if already [-1,1], we can simulate this effect by scaling our points coordinates directly. 
-		float const FovScalingFactor = (1.f / FMath::Tan(FieldOfView/*Degree*/ * 0.5f));
 		return FMatrix4x4
 		{
 			Private::TMatrix<float, 4, 4>
 			{
-				Private::TVector<float, 4>{X* FovScalingFactor,0,Xt,0},
-				Private::TVector<float, 4>{0,Y* FovScalingFactor,Yt,0},
-				Private::TVector<float, 4>{0,0,Zt,Z},
+				Private::TVector<float, 4>{X,0,0,Xt},
+				Private::TVector<float, 4>{0,Y,0,Yt},
+				Private::TVector<float, 4>{0,0,Z,Zt},
 				Private::TVector<float, 4>{0,0,0,1}
 			}
 		};
@@ -95,28 +87,57 @@ struct FCamera
 
 	inline FMatrix4x4 OrthographicProjection(FTransform const& Object) const
 	{
-		return FMatrix4x4{} *this->ModelViewMatrix(Object);
+		// @gdemers #2 and when you think about it, it makes sense as we expect this projection type to keep true scale.
+		// while we can visuallize our perspective projection frustum as a pyramid, our orthographic view volume is instead a box, whose shape is defined
+		// by the user, and in the end remapped to the canonical view [-1,1].
+		return this->ViewVolume.CanonicalViewVolume(FieldOfView)
+			* this->ModelViewMatrix(Object);
 	}
 
 	inline FMatrix4x4 PerspectiveProjection(FTransform const& Object) const
 	{
-		// @gdemers remember that matrix multiplication goes right-to-left as we are in column-major form
-		return this->ViewVolume.CanonicalViewVolume(FieldOfView) /*convert 2d point into clip space [-1,1] and apply field of view scaling*/
-			* this->PerspectiveDivide() /*apply -Pwz to w component before projecting 3d point onto the image plane*/
-			* this->ModelViewMatrix(Object) /*put 3d point in camera space (or view space)*/;
+		// @gdemers something troubling in my initial understanding of projection as a concept is how the mathematical process from which we remapped
+		// our view volume for both orthographic and perspective differ.
+		// and in reality, they don't!
+		// our perspective projection build on top of the process from which we remap our othrographic view volume to the canonical one.
+		// the difference here lay at the matrix level which encapsulate perspective division through the expression stated in the function below.
+		// our goal here is merely to emulate points converging from 3d space toward a user point of view (something orthographic projection doesn't do)
+		// and create a sense of depth with objects in our fictional world.
+		// goto #2
+		return this->ViewVolume.CanonicalViewVolume(FieldOfView)
+			* this->PerspectiveDivide(FieldOfView, this->ViewVolume.Far, this->ViewVolume.Near)
+			* this->ModelViewMatrix(Object);
 	}
 
-	inline FMatrix4x4 PerspectiveDivide() const
+	inline FMatrix4x4 PerspectiveDivide(float const Distance /*image plane*/, float const Far, float const Near) const
 	{
-		// @gdemers we set r4,z = -1 due to the perspective division.
-		// Doing so allow the gpu to convert from-homogeneous-to-carthesien during perspective division run in the vertext shader using it's w component (which is set to -PwZ)
+		// TODO double check math again, your matrix multiplication may not be right in the end. tbd!
+
+		// @gdemers using our formula for perspective division, we can generate our matrix
+		// for the following expression : Psx = (g * Pwx) / -Pwz & Psy = (g * Pwy) / -Pwz.
+		// additionally, our depth information has to remain in order to run early z-depth calculation
+		// in the fragment shader and handle fragment priority.
+		// furthermore, by setting M[3][2] = -1, our world point w-component will become -Pwz during our matrix-vector multiplication
+		// which confirm the above expression.
+		// however, our world point z-component will lose it's property and z-depth calculation won't be possible as
+		// perspective division will be executed in the vertex shader output.
+		// to account for this, our world point z-component has to equal z^2 which imply that the equation for our two unknowns (A & B)
+		// is as follow : Az + Bw = z^2. like Obi-Wan kenobi says: Hello there! (it's a quadratic equation)
+		// to solve this equation, we have to setup rule from which we stipulate : z=n, z=f;
+		// note : that the following realization raise the problem of "perspective correctness", from which we state that points laying elsewhere, other than
+		// the near and far plane are non-linear.
+		// A*n + B*w = n^2
+		// A*f + B*w = f^2
+		// after solving for both: A= -(f + n), B= -(fn)
+		const float A = -(Far + Near);
+		const float B = -(Far * Near);
 		return FMatrix4x4
 		{
 			Private::TMatrix<float, 4, 4>
 			{
-				Private::TVector<float, 4>{1,0,0,0},
-				Private::TVector<float, 4>{0,1,0,0},
-				Private::TVector<float, 4>{0,0,1,0},
+				Private::TVector<float, 4>{Distance,0,0,0},
+				Private::TVector<float, 4>{0,Distance,0,0},
+				Private::TVector<float, 4>{0,0,A,B},
 				Private::TVector<float, 4>{0,0,-1,0}
 			}
 		};
