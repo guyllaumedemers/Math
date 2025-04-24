@@ -38,7 +38,7 @@ struct FAxisAlignBoundingBox
 		this->Far = Far;
 	};
 
-	inline FMatrix4x4 CanonicalViewVolume(float const FieldOfView) const
+	inline FMatrix4x4 CanonicalViewVolume() const
 	{
 		// @gdemers here, we are remapping our view volume defined using (l, r, b, t, f, n) into our canonical view volume.
 		// we follow opengl standard here with the cannonical view [-1,1] and not directx [0,1].
@@ -90,7 +90,7 @@ struct FCamera
 		// @gdemers #2 and when you think about it, it makes sense as we expect this projection type to keep true scale.
 		// while we can visuallize our perspective projection frustum as a pyramid, our orthographic view volume is instead a box, whose shape is defined
 		// by the user, and in the end remapped to the canonical view [-1,1].
-		return this->ViewVolume.CanonicalViewVolume(FieldOfView)
+		return this->ViewVolume.CanonicalViewVolume()
 			* this->ModelViewMatrix(Object);
 	}
 
@@ -104,12 +104,12 @@ struct FCamera
 		// our goal here is merely to emulate points converging from 3d space toward a user point of view (something orthographic projection doesn't do)
 		// and create a sense of depth with objects in our fictional world.
 		// goto #2
-		return this->ViewVolume.CanonicalViewVolume(FieldOfView)
-			* this->PerspectiveDivide(FieldOfView, this->ViewVolume.Far, this->ViewVolume.Near)
+		return this->ViewVolume.CanonicalViewVolume()
+			* this->PerspectiveDivide(this->ViewVolume.Far, this->ViewVolume.Near)
 			* this->ModelViewMatrix(Object);
 	}
 
-	inline FMatrix4x4 PerspectiveDivide(float const Distance /*image plane*/, float const Far, float const Near) const
+	inline FMatrix4x4 PerspectiveDivide(float const Far, float const Near) const
 	{
 		// TODO double check math again, your matrix multiplication may not be right in the end. tbd!
 
@@ -135,8 +135,8 @@ struct FCamera
 		{
 			Private::TMatrix<float, 4, 4>
 			{
-				Private::TVector<float, 4>{Distance,0,0,0},
-				Private::TVector<float, 4>{0,Distance,0,0},
+				Private::TVector<float, 4>{FocalLength /*distance to image plane*/,0,0,0},
+				Private::TVector<float, 4>{0,FocalLength,0,0},
 				Private::TVector<float, 4>{0,0,A,B},
 				Private::TVector<float, 4>{0,0,-1,0}
 			}
