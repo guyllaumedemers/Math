@@ -123,13 +123,15 @@ struct FCamera
 		// perspective division will be executed in the vertex shader output.
 		// to account for this, our world point z-component has to equal z^2 which imply that the equation for our two unknowns (A & B)
 		// is as follow : Az + Bw = z^2. like Obi-Wan kenobi says: Hello there! (it's a quadratic equation)
-		// to solve this equation, we have to setup rule from which we stipulate : z=n, z=f;
+		// to solve this equation, we have to setup rule from which we stipulate : z=-n, z=-f;
 		// note : that the following realization raise the problem of "perspective correctness", from which we state that points laying elsewhere, other than
 		// the near and far plane are non-linear.
-		// A*n + B*w = n^2
-		// A*f + B*w = f^2
-		// after solving for both: A= -(f + n), B= -(fn)
-		const float A = -(Far + Near);
+		// 
+		// reminder that w-component equals 1 unit here.
+		// A*-f + B*w = -f^2 (smallest value)
+		// A*-n + B*w = -n^2 (biggest  value)
+		// after solving for both: A= (f - n), B= -(fn)
+		const float A = (Far - Near);
 		const float B = -(Far * Near);
 		return FMatrix4x4
 		{
