@@ -20,6 +20,18 @@
 
 #include "Grid.hh"
 
+FGrid FGrid::Singleton;
+
+FGrid& FGrid::Get()
+{
+	return Singleton;
+}
+
+std::size_t FGrid::Size() const
+{
+	return sizeof(FGrid);
+}
+
 void FGrid::ApplicationDraw(FViewport const& Viewport, FCamera const& Camera)
 {
 }

@@ -33,24 +33,24 @@ namespace Private
 		static_assert(std::is_floating_point_v<T>, "TVector ill format, can only accept floating point types");
 
 		// left-hand side of operator=
-		inline T& operator[](std::size_t Index)
+		T& operator[](std::size_t Index)
 		{
 			return Components[Index];
 		}
 
 		// right-hand side of operator=
-		inline T const& operator[](std::size_t Index) const
+		T const& operator[](std::size_t Index) const
 		{
 			return Components[Index];
 		}
 
-		inline TVector& operator=(TVector<T, N> const& Rhs)
+		TVector& operator=(TVector<T, N> const& Rhs)
 		{
 			this->Components = Rhs.Components;
 			return *this;
 		}
 
-		inline TVector operator+(TVector<T, N> const& Rhs) const
+		TVector operator+(TVector<T, N> const& Rhs) const
 		{
 			TVector<T, N> Result{};
 
@@ -62,13 +62,13 @@ namespace Private
 			return Result;
 		}
 
-		inline TVector& operator+=(TVector<T, N> const& Rhs)
+		TVector& operator+=(TVector<T, N> const& Rhs)
 		{
 			*this = (*this + Rhs);
 			return *this;
 		}
 
-		inline TVector operator-(TVector<T, N> const& Rhs) const
+		TVector operator-(TVector<T, N> const& Rhs) const
 		{
 			TVector<T, N> Result{};
 
@@ -80,53 +80,53 @@ namespace Private
 			return Result;
 		}
 
-		inline TVector& operator-=(TVector<T, N> const& Rhs)
+		TVector& operator-=(TVector<T, N> const& Rhs)
 		{
 			*this = (*this - Rhs);
 			return *this;
 		}
 
-		inline bool operator==(TVector<T, N> const& Rhs) const
+		bool operator==(TVector<T, N> const& Rhs) const
 		{
 			return (this->Components == Rhs.Components);
 		}
 
-		inline T DotProduct(TVector<T, N> const& In) const
+		T DotProduct(TVector<T, N> const& In) const
 		{
 			return FMath::DotProduct<T, N>(Components, In.Components);
 		}
 
-		inline TVector CrossProduct(TVector<T, N> const& In) const
+		TVector CrossProduct(TVector<T, N> const& In) const
 		{
 			return TVector{ FMath::CrossProduct<T, N>(Components, In.Components) };
 		}
 
-		inline TVector Projection(TVector<T, N> const& In) const
+		TVector Projection(TVector<T, N> const& In) const
 		{
 			return TVector{ FMath::Projection<T, N>(Components, In.Components) };
 		}
 
-		inline TVector Rejection(TVector<T, N> const& In) const
+		TVector Rejection(TVector<T, N> const& In) const
 		{
 			return TVector{ FMath::Rejection<T, N>(Components, In.Components) };
 		}
 
-		inline TVector Normalize() const
+		TVector Normalize() const
 		{
 			return TVector{ FMath::Normalize<T, N>(Components) };
 		}
 
-		inline T SquaredMagnitude() const
+		T SquaredMagnitude() const
 		{
 			return FMath::SquaredMagnitude<T, N>(Components);
 		}
 
-		inline T Magnitude() const
+		T Magnitude() const
 		{
 			return FMath::Magnitude<T, N>(Components);
 		}
 
-		inline std::size_t GetRows() const
+		std::size_t GetRows() const
 		{
 			return Components.size();
 		}
@@ -142,17 +142,8 @@ struct FVector2d
 	FVector2d(FVector2d&&) = default;
 	FVector2d& operator=(FVector2d const&) = default;
 
-	inline FVector2d(float In)
-	{
-		this->Vector[0] = In;
-		this->Vector[1] = In;
-	}
-
-	inline FVector2d(float X, float Y)
-	{
-		this->Vector[0] = X;
-		this->Vector[1] = Y;
-	}
+	FVector2d(float X, float Y);
+	FVector2d(float In);
 
 	FVector2d const static Zero;
 	FVector2d const static One;
@@ -166,26 +157,9 @@ struct FVector3d
 	FVector3d(FVector3d&&) = default;
 	FVector3d& operator=(FVector3d const&) = default;
 
-	inline FVector3d(float In)
-	{
-		this->Vector[0] = In;
-		this->Vector[1] = In;
-		this->Vector[2] = In;
-	}
-
-	inline FVector3d(float X, float Y, float Z)
-	{
-		this->Vector[0] = X;
-		this->Vector[1] = Y;
-		this->Vector[2] = Z;
-	}
-
-	inline FVector3d(FVector2d const& In)
-	{
-		this->Vector[0] = In.Vector[0];
-		this->Vector[1] = In.Vector[1];
-		this->Vector[2] = 1.f;
-	}
+	explicit FVector3d(FVector2d const& In);
+	FVector3d(float X, float Y, float Z);
+	FVector3d(float In);
 
 	FVector3d const static Zero;
 	FVector3d const static One;
@@ -199,48 +173,14 @@ struct FVector4d
 	FVector4d(FVector4d&&) = default;
 	FVector4d& operator=(FVector4d const&) = default;
 
-	explicit FVector4d(Private::TVector<float, 4> const& Vector)
-	{
-		this->Vector = Vector;
-	}
+	explicit FVector4d(Private::TVector<float, 4> const& Vector);
+	FVector4d(float X, float Y, float Z, float W);
+	FVector4d(FVector3d const& In);
 
-	FVector4d(float X, float Y, float Z, float W)
-	{
-		this->Vector[0] = X;
-		this->Vector[1] = Y;
-		this->Vector[2] = Z;
-		this->Vector[3] = W;
-	}
+	FVector4d operator*(float In) const;
 
-	FVector4d(FVector3d const& In)
-	{
-		this->Vector[0] = In.Vector[0];
-		this->Vector[1] = In.Vector[1];
-		this->Vector[2] = In.Vector[2];
-		this->Vector[3] = 1.f;
-	}
-
-	FVector4d operator*(float In) const
-	{
-		// @gdemers we can argue on if we want allow scaling of the W component later
-		return FVector4d
-		{
-			Vector[0] * In,
-			Vector[1] * In,
-			Vector[2] * In,
-			1.f,
-		};
-	}
-
-	float& operator[](std::size_t Index)
-	{
-		return Vector[Index];
-	}
-
-	float const& operator[](std::size_t Index) const
-	{
-		return Vector[Index];
-	}
+	float const& operator[](std::size_t Index) const;
+	float& operator[](std::size_t Index);
 
 	Private::TVector<float, 4> Vector{};
 };

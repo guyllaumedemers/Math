@@ -30,23 +30,11 @@
 
 struct FMath
 {
-	inline static bool IsNearlyZero(float const In)
-	{
-		// TODO do proper zero check
-		return In == 0.f;
-	}
+	static bool IsNearlyZero(float const In);
 
-	inline static float Floor(float const In)
-	{
-		// TODO @gdemers handle floor properly
-		return (int32_t)In;
-	}
+	static float Floor(float const In);
 
-	inline static float Tan(float const Degree)
-	{
-		float const DegreeToRadian = M_PI / 180.f;
-		return std::tan(Degree * DegreeToRadian);
-	}
+	static float Tan(float const Degree);
 
 	// src : https://en.wikipedia.org/wiki/Dot_product
 	// description : the dot product or scalar product is an algebraic operation that takes two equal-length sequences of numbers (usually coordinate vectors), and returns a single number.
@@ -214,16 +202,17 @@ T FMath::Sqrt(T In)
 }
 
 template<typename T, std::size_t N, std::size_t M>
-inline std::array<T, N> FMath::GramSchmidt(std::array<T, N> Vector, std::array<std::array<T, N>, M> Vectors)
+std::array<T, N> FMath::GramSchmidt(std::array<T, N> Vector, std::array<std::array<T, N>, M> Vectors)
 {
 	static_assert(std::is_floating_point_v<T>, "FMath ill format, can only accept floating point types");
 
 	std::array<T, N> Orthogonal = Vector;
 
-	for (std::size_t i = 0; i < Vectors.size(); ++i)
+	// TODO @gdemers
+	/*for (std::size_t i = 0; i < Vectors.size(); ++i)
 	{
 		Orthogonal -= FMath::Projection(Vector, Vectors[i]);
-	}
+	}*/
 
 	return Orthogonal;
 }

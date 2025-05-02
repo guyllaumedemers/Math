@@ -28,21 +28,9 @@ struct FViewport
 {
 	FViewport() = default;
 
-	explicit FViewport(float const Width, float const Height)
-	{
-		this->Width = Width;
-		this->Height = Height;
-		this->ResolutionGateRatio = (Width / Height);
-	};
+	explicit FViewport(float const Width, float const Height);
 
-	inline FVector2d ViewportTransform(FVector2d const& Ps /*Point in screen space*/) const
-	{
-		// @gdemers convert point defined in canonical view [-1,1] to NDC [0,1].
-		float const X = (1 + Ps.Vector[0]) * 0.5f; // x
-		float const Y = (1 - Ps.Vector[1]) * 0.5f; // y (0 start at top-left - like CRT tv emitting photon during raster scanning)
-		// @gdemers convert NDC point to raster space
-		return FVector2d{ FMath::Floor(X * this->Width), FMath::Floor(Y * this->Height) };
-	}
+	FVector2d ViewportTransform(FVector2d const& Ps /*Point in screen space*/) const;
 
 	// @gdemers data specific to the raster target (display)
 	float Width, Height, ResolutionGateRatio = 0.f;

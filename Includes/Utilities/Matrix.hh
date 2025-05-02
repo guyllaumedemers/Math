@@ -62,12 +62,12 @@ namespace Private
 			return RowsCols[Row][Col];
 		}
 
-		inline std::size_t GetRows() const
+		std::size_t GetRows() const
 		{
 			return RowsCols.size();
 		}
 
-		inline std::size_t GetCols() const
+		std::size_t GetCols() const
 		{
 			return RowsCols[0].Components.size();
 		}
@@ -121,7 +121,7 @@ namespace Private
 
 	template<typename T, std::size_t M, std::size_t N>
 	template<std::size_t K, std::size_t L>
-	inline TMatrix<T, M, L> TMatrix<T, M, N>::operator*(TMatrix<T, K, L> const& Rhs) const
+	TMatrix<T, M, L> TMatrix<T, M, N>::operator*(TMatrix<T, K, L> const& Rhs) const
 	{
 		static_assert(N == K, "TMatrix size is ill format. Matrix product can only happen if Mat_A nbCol == Mat_B nbRow");
 
@@ -142,7 +142,7 @@ namespace Private
 
 	template<typename T, std::size_t M, std::size_t N>
 	template<std::size_t K>
-	inline TVector<T, M> TMatrix<T, M, N>::operator*(TVector<T, K> const& Rhs) const
+	TVector<T, M> TMatrix<T, M, N>::operator*(TVector<T, K> const& Rhs) const
 	{
 		static_assert(N == K, "TMatrix size is ill format. Matrix product can only happen if Mat_A nbCol == Mat_B nbRow");
 
@@ -297,36 +297,16 @@ struct FMatrix4x4
 	FMatrix4x4() = default;
 	FMatrix4x4(FMatrix4x4 const&) = default;
 	FMatrix4x4(FMatrix4x4&&) = default;
+	FMatrix4x4& operator=(FMatrix4x4 const&) = default;
 
-	explicit FMatrix4x4(Private::TMatrix<float, 4, 4> const& Matrix)
-	{
-		this->Matrix = Matrix;
-	}
+	explicit FMatrix4x4(Private::TMatrix<float, 4, 4> const& Matrix);
 
-	FMatrix4x4 operator*(FMatrix4x4 const& In) const
-	{
-		return FMatrix4x4{ Matrix * In.Matrix };
-	}
+	FMatrix4x4 operator*(float In) const;
+	FMatrix4x4 operator*(FMatrix4x4 const& In) const;
+	FVector4d operator*(FVector4d const& In) const;
 
-	FVector4d operator*(FVector4d const& In) const
-	{
-		return FVector4d{ Matrix * In.Vector };
-	}
-
-	FMatrix4x4 operator*(float In) const
-	{
-		return FMatrix4x4{ Matrix * In };
-	}
-
-	inline float Determinant() const
-	{
-		return Matrix.CalculateDeterminant();
-	}
-
-	inline FMatrix4x4 Adjugate() const
-	{
-		return FMatrix4x4{ Matrix.CalculateAdjugate() };
-	}
+	inline FMatrix4x4 Adjugate() const;
+	inline float Determinant() const;
 
 	// custom matrix function exposing target mutation applied in vector space
 	static FMatrix4x4 Zero();

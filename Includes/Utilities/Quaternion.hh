@@ -20,20 +20,16 @@
 
 #pragma once
 
+#include "Matrix.hh"
+#include "Vector.hh"
+
 struct FQuaternion
 {
-	inline FVector4d ToVector() const
-	{
-		return {};
-	}
+	FQuaternion() = default;
+	FQuaternion(FQuaternion const&) = default;
+	FQuaternion(FQuaternion&&) = default;
+	FQuaternion& operator=(FQuaternion const&) = default;
 
-	FQuaternion& operator=(FVector3d const& In)
-	{
-		return *this;
-	}
-
-	FQuaternion& operator=(FVector4d const& In)
-	{
-		return *this;
-	}
+	static FMatrix4x4 ToMatrix(FQuaternion const&);
+	static FVector4d ToVector(FVector4d const&);
 };

@@ -19,3 +19,21 @@
 //SOFTWARE.
 
 #include "Utilities/Math.hh"
+
+bool FMath::IsNearlyZero(float const In)
+{
+	// TODO do proper zero check
+	return In == 0.f;
+}
+
+float FMath::Floor(float const In)
+{
+	// TODO @gdemers handle floor properly
+	return (int32_t)In;
+}
+
+float FMath::Tan(float const Degree)
+{
+	float const DegreeToRadian = M_PI / 180.f;
+	return std::tan(Degree * DegreeToRadian);
+}

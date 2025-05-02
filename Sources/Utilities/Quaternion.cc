@@ -18,29 +18,14 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 
-#pragma once
+#include "Utilities/Quaternion.hh"
 
-#include "IDrawable.hh"
-#include "IBatchResource.hh"
-#include "ITickable.hh"
-#include "Utilities/Transform.hh"
-
-// define a system handling a 2d/3d space layout
-struct FGrid :
-	public IBatchResource,
-	public IDrawable
+FMatrix4x4 FQuaternion::ToMatrix(FQuaternion const& In)
 {
-	FGrid() = default;
-	FGrid static& Get();
+	return FMatrix4x4();
+}
 
-	virtual std::size_t Size() const;
-	virtual void ApplicationDraw(struct FViewport const&, struct FCamera const&) override;
-	virtual void ImGuiDraw() override;
-
-protected:
-	FTransform Transform = FTransform::Default;
-	std::size_t NumRows = 0;
-	std::size_t NumCols = 0;
-
-	FGrid static Singleton;
-};
+FVector4d FQuaternion::ToVector(FVector4d const& In)
+{
+	return FVector4d();
+}

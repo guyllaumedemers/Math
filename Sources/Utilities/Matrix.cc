@@ -20,6 +20,36 @@
 
 #include "Utilities/Matrix.hh"
 
+FMatrix4x4::FMatrix4x4(Private::TMatrix<float, 4, 4> const& Matrix)
+{
+	this->Matrix = Matrix;
+}
+
+FMatrix4x4 FMatrix4x4::operator*(float In) const
+{
+	return FMatrix4x4{ Matrix * In };
+}
+
+FMatrix4x4 FMatrix4x4::operator*(FMatrix4x4 const& In) const
+{
+	return FMatrix4x4{ Matrix * In.Matrix };
+}
+
+FVector4d FMatrix4x4::operator*(FVector4d const& In) const
+{
+	return FVector4d{ Matrix * In.Vector };
+}
+
+FMatrix4x4 FMatrix4x4::Adjugate() const
+{
+	return FMatrix4x4{ Matrix.CalculateAdjugate() };
+}
+
+float FMatrix4x4::Determinant() const
+{
+	return Matrix.CalculateDeterminant();
+}
+
 FMatrix4x4 FMatrix4x4::Zero()
 {
 	return FMatrix4x4
@@ -48,10 +78,10 @@ FMatrix4x4 FMatrix4x4::Translate(FVector4d const& Translate)
 	{
 		Private::TMatrix<float, 4, 4>
 		{
-			Private::TVector<float, 4>{1,0,0,0},
-			Private::TVector<float, 4>{0,1,0,0},
-			Private::TVector<float, 4>{0,0,1,0},
-			Private::TVector<float, 4>{Translate[0],Translate[1],Translate[2],1}
+			Private::TVector<float, 4>{1,0,0,Translate[0]},
+			Private::TVector<float, 4>{0,1,0,Translate[1]},
+			Private::TVector<float, 4>{0,0,1,Translate[2]},
+			Private::TVector<float, 4>{0,0,0,1}
 		}
 	};
 }

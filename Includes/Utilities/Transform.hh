@@ -24,8 +24,8 @@
 
 #include "Math.hh"
 #include "Matrix.hh"
-#include "Vector.hh"
 #include "Quaternion.hh"
+#include "Vector.hh"
 
 struct FTransform
 {
@@ -34,54 +34,12 @@ struct FTransform
 	FTransform(FTransform&&) = default;
 	FTransform& operator=(FTransform const&) = default;
 
-	FTransform(FVector3d const& Position, FVector3d const& Rotation, FVector3d const& Scale)
-	{
-		this->Position = Position;
-		this->Rotation = Rotation;
-		this->Scale = Scale;
-	}
+	FTransform(FVector3d const& Position, FQuaternion const& Rotation, FVector3d const& Scale);
 
-	FMatrix4x4 ModelMatrix() const
-	{
-		// TODO double check left-hand side vs right-hand side if weird behaviour occurs
-		return (FMatrix4x4::Translate(Position) * (FMatrix4x4::Rotate(Rotation.ToVector()) * FMatrix4x4::Scale(Scale)));
-	}
+	FMatrix4x4 getModelMatrix() const;
+	FMatrix4x4 OrthoNormal() const;
+	inline FMatrix4x4 Inverse() const;
 
-	FMatrix4x4 OrthoNormal() const
-	{
-		// we have to provide a vector, which represent the orthogonal vector (i.e basis from which other vector are defered from)
-
-		// a second vector is provided and does vector rejection to become orthogonal from A
-
-		// ... n is repeated
-
-		// we normalize
-
-		// we return our new basis
-		return {};
-	}
-
-	FMatrix4x4 Inverse() const
-	{
-		FMatrix4x4 const& Matrix = ModelMatrix();
-
-		float const Determinant = Matrix.Determinant();
-		if (FMath::IsNearlyZero(Determinant))
-		{
-			// TODO determine if assertion is the correct approach as in some case, we may want to actually return and continue
-			// the execution
-			//assert(false);
-			return FMatrix4x4::Zero();
-		}
-		else
-		{
-			return Matrix.Adjugate() * (1.f / Matrix.Determinant());
-		}
-	}
-
-	FVector4d Position{};
-	// TODO update for quaternions later, if you ever understand them
-	FQuaternion Rotation{};
-	FVector4d Scale{};
+	FMatrix4x4 ModelMatrix = FMatrix4x4::Identity();
 	FTransform const static Default;
 };

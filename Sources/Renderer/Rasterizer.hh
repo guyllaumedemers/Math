@@ -20,27 +20,15 @@
 
 #pragma once
 
-#include "IDrawable.hh"
-#include "IBatchResource.hh"
-#include "ITickable.hh"
-#include "Utilities/Transform.hh"
+#include "Utilities/Vector.hh"
 
-// define a system handling a 2d/3d space layout
-struct FGrid :
-	public IBatchResource,
-	public IDrawable
+struct FRasterizer
 {
-	FGrid() = default;
-	FGrid static& Get();
+	FRasterizer() = default;
 
-	virtual std::size_t Size() const;
-	virtual void ApplicationDraw(struct FViewport const&, struct FCamera const&) override;
-	virtual void ImGuiDraw() override;
-
-protected:
-	FTransform Transform = FTransform::Default;
-	std::size_t NumRows = 0;
-	std::size_t NumCols = 0;
-
-	FGrid static Singleton;
+	// @gdemers overlap test between triangle and pixel
+	inline bool Coverage(FVector2d const& Ps /*Point in screen space*/, FVector2d const& Pixel) const
+	{
+		return true;
+	}
 };

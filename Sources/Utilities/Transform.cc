@@ -21,4 +21,46 @@
 #include "Utilities/Transform.hh"
 
 // static
-FTransform const FTransform::Default = { FVector3d(0.f), FVector3d(0.f), FVector3d(1.f) };
+FTransform const FTransform::Default = FTransform{ FVector3d(0.f), FQuaternion(), FVector3d(1.f) };
+
+FTransform::FTransform(FVector3d const& Position, FQuaternion const& Rotation, FVector3d const& Scale)
+{
+	this->ModelMatrix = FMatrix4x4::Scale(Scale) * FQuaternion::ToMatrix(Rotation) * FMatrix4x4::Translate(Position);
+}
+
+FMatrix4x4 FTransform::getModelMatrix() const
+{
+	return ModelMatrix;
+}
+
+FMatrix4x4 FTransform::OrthoNormal() const
+{
+	// we have to provide a vector, which represent the orthogonal vector (i.e basis from which other vector are defered from)
+
+	// a second vector is provided and does vector rejection to become orthogonal from A
+
+	// ... n is repeated
+
+	// we normalize
+
+	// we return our new basis
+	return {};
+}
+
+FMatrix4x4 FTransform::Inverse() const
+{
+	FMatrix4x4 const& Matrix = getModelMatrix();
+
+	float const Determinant = Matrix.Determinant();
+	if (FMath::IsNearlyZero(Determinant))
+	{
+		// TODO determine if assertion is the correct approach as in some case, we may want to actually return and continue
+		// the execution
+		//assert(false);
+		return FMatrix4x4::Zero();
+	}
+	else
+	{
+		return Matrix.Adjugate() * (1.f / Matrix.Determinant());
+	}
+}
