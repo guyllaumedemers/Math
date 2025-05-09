@@ -138,9 +138,13 @@ and from there, we can determine the distance based on fov. But also, complete t
 
 ```
 
+#### Cannonical View Model
+
+A box where bounds remain parallel to their original direction and have no convergion point due to parallelism.
+
 #### View Frustum
 
-tbd
+A pyramid, with it's top cut off, where bounds converge toward a singular point of interest.
 
 ![view-frustum](https://github.com/guyllaumedemers/Math/blob/master/Res/ViewFrustum.png)
 
