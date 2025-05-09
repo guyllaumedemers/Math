@@ -142,9 +142,11 @@ and from there, we can determine the distance based on fov. But also, complete t
 
 A box where bounds remain parallel to their original direction and have no convergion point due to parallelism.
 
+![Cannonical View Volume](https://github.com/guyllaumedemers/Math/blob/master/Res/CannonicalViewVolume.png)
+
 #### View Frustum
 
-A pyramid, with it's top cut off, where bounds converge toward a singular point of interest.
+A pyramid, with it's top cut off, where bounds converge toward a singular point of interest. Note : Extend from the Cannonical View Volume. What I mean here is that a 3d point are still remapped into the Cannonical View Volume before being projected toward our center point of interest. (See **FCamera.cc** for additional comments)
 
 ![view-frustum](https://github.com/guyllaumedemers/Math/blob/master/Res/ViewFrustum.png)
 
