@@ -2,11 +2,11 @@
 
 #### Project
 
-A `Sandbox` project built for visualizing mathematical functions using Opengl rendering library.
+A `Sandbox` project built for visualizing mathematical functions using Opengl rendering library. In this project, I lay core knowledge about mathematics and it's usage in the context of game development. As you may suspect, most of the content defined in code is accompany by comments/thoughts, as **I am learning these concepts myself**. This project is **purely educational** and has **no time limit!** Books, Pen and paper are my best friend here.
 
 #### What this README.md is not
 
-tbd
+What you will find in this project may not always be the most optimized approach and it's alright! More often than not, I will make my how implementation of existing api handled by third-party library just to prove myself that I understand the concept I am interacting with. I haven't found a better way of learning something new and strongly believe that this is the right approach!
 
 #### Resources
 
@@ -19,7 +19,7 @@ tbd
 
 ## Coordinate system
 
-tbd
+A set of coordinate systems to be used in order to create a 3d World and render it's content on a 2d screen.
 
 * Object (Local)
 * World
@@ -29,23 +29,25 @@ tbd
 
 #### Object Space (Local Space)
 
-tbd
+Define an OrthoNormal set of axis rooting the **Model** pivot point to it's Origin. Usually defined by 3d Modeling software in which the **Model** was created in.
 
 #### World Space
 
-tbd
+Define an imaginary position, usually the zero vector, from which every other **Objects** are rooted to. When defining the transforms of an **Object**, we more often than not, refer to it in regards to the World and like in **Object Space**, the World define an OrthoNormal set of axis where the pivot point and it's Origin are identical.
 
 #### View Space (Camera Space)
 
-tbd
+Define the coordinate space of an Object, i.e the **Camera Object**. Like any other Object, it's rooted to the World and define an OrthoNormal set of axis where the pivot point and it's Origin are identical. Camera space is particularly important when rendering our 3d world onto a 2d surface. Using basic trigonometry, we can project 3d points onto a 2d surface and visuallize a representation of a **virtual** world. (We will further extend as we go - see **FCamera.cc** for implementation details. Or do like me and take a pen and paper to do the calculation yourself!)
 
 #### Screen Space (Normalize Device Coordinate or Clip Space)
 
-tbd
+Define a coordinate space on a 2d surface that remaps points inside an **imaginary** view volume, used to define limits and prevent rendering to infinity, into Normalized Device Coordinate, i.e [-1, 1]. Doing so allow us to : A) Discard any information that is outside these **user-provided** limits and B) Remaps normalized position to our Viewport in the Raster space stage.
+
+Note : As you may have notice, people use different names for this coordinate system. Personnaly, I would rather use **Image Space** or **NDC**. It's more explicit and inline with the operation executed. Explanation : Our 3d points are projected onto the 2d **Image plane** and remapped to the range [-1, 1] (into **Normalized Device Coordinate**).
 
 #### Raster Space (Pixel Space)
 
-tbd
+Define a coordinate space on a 2d surface that match the aspect ratio of your **Viewport** screen. A 3d point, projected onto a 2d surface will occupy a region of pixels from which color information will be outputed. Depth information are taken into account for each pixel and give priority to the projected point that is closer to the Image plane.
 
 ## How to convert from 3d to 2d
 
