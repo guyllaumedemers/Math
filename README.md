@@ -152,7 +152,7 @@ A pyramid, with it's top cut off, where bounds converge toward a singular point 
 
 #### Post-projection Task handled by Graphic Pipeline
 
-tbd
+We can explain the lack of control over the rendering pipeline by comparing how GPU processing vs CPU processing benchmark perform. Operations like Clipping, Perspective divide and more are nowaday handled on the GPU which remove some of the tedious work off our hands. It's however still relevant to understand what the graphic pipeline does under the hood as it's a step toward learning more about graphic programming (which is really just the end goal of all of this!).
 
 * Clipping
 * Perspective divide
