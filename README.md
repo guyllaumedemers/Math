@@ -142,15 +142,17 @@ and from there, we can determine the distance based on fov. But also, complete t
 
 A box where bounds remain parallel to their original direction and have no convergion point due to parallelism.
 
+![Cannonical View Volume](https://github.com/guyllaumedemers/Math/blob/master/Res/CannonicalViewVolume.png)
+
 #### View Frustum
 
-A pyramid, with it's top cut off, where bounds converge toward a singular point of interest.
+A pyramid, with it's top cut off, where bounds converge toward a singular point of interest. Note : Extend from the Cannonical View Volume. What I mean here is that a 3d point are still remapped into the Cannonical View Volume before being projected toward our center point of interest. (See **FCamera.cc** for additional comments)
 
 ![view-frustum](https://github.com/guyllaumedemers/Math/blob/master/Res/ViewFrustum.png)
 
 #### Post-projection Task handled by Graphic Pipeline
 
-tbd
+We can explain the lack of control over the rendering pipeline by comparing how GPU processing vs CPU processing benchmark perform. Operations like Clipping, Perspective divide and more are nowaday handled on the GPU which remove some of the tedious work off our hands. It's however still relevant to understand what the graphic pipeline does under the hood as it's a step toward learning more about graphic programming (which is really just the end goal of all of this!).
 
 * Clipping
 * Perspective divide
