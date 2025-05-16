@@ -25,6 +25,10 @@
 
 #include "glad/glad.h"
 
+#include "Utilities/Transform.hh"
+
+struct FMesh;
+
 // class default object of an opengl entity object from which we would
 // instanced from. handle cached memory performed during mesh loading.
 struct FObject
@@ -35,9 +39,9 @@ struct FObject
 	GLuint ShaderProgramID = UINT64_MAX;
 
 	// object position in world
-	FTransform Transform;
+	FTransform Transform = FTransform::Default;
 
 	// array meshes
 	unsigned int NumMeshes = 0;
-	struct FMesh* Meshes;
+	FMesh* Meshes = nullptr;
 };

@@ -29,6 +29,9 @@
 #include "Camera.hh"
 #include "Mesh.hh"
 #include "Object.hh"
+#include "Utilities/Matrix.hh"
+#include "Utilities/Transform.hh"
+#include "Utilities/Viewport.hh"
 #include "../Utilities/Private/OpenGlUtils.hh"
 
 extern FArenaAllocator gArenaAllocator;
@@ -44,7 +47,9 @@ void UDemoExpression::ApplicationDraw(FViewport const& Viewport, FCamera const& 
 {
 	assert(DemoCube != nullptr);
 
-	FOpenGlUtils::UseProgram(DemoCube->ShaderProgramID);
+	GLuint const ShaderProgramId = DemoCube->ShaderProgramID;
+	FOpenGlUtils::UseProgram(ShaderProgramId);
+	FOpenGlUtils::SetProjectionMatrix(ShaderProgramId, Pov.OrthographicProjection(DemoCube->Transform));
 
 	// @gdemers draw object vertices by sending each position to the vertex shader (programable pipeline)
 	// note : here, we will be providing the already process projection matrix to the vertex shader (which isnt an optimized solution), this is simply
@@ -81,6 +86,8 @@ void UDemoExpression::Init()
 {
 	FMemoryBlock const Payload = FMemory::Malloc(&gStackAllocator, sizeof(FObject));
 	DemoCube = reinterpret_cast<FObject*>(Payload.Payload);
+	// @gdemers adding missing explicit call to  default constructor of the newly allocated resource.
+	new (DemoCube) FObject;
 
 	{
 		std::stringstream ss;

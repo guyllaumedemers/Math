@@ -25,7 +25,9 @@ FTransform const FTransform::Default = FTransform{ FVector3d(0.f), FQuaternion()
 
 FTransform::FTransform(FVector3d const& Position, FQuaternion const& Rotation, FVector3d const& Scale)
 {
-	this->ModelMatrix = FMatrix4x4::Scale(Scale) * FQuaternion::ToMatrix(Rotation) * FMatrix4x4::Translate(Position);
+	//this->ModelMatrix = FMatrix4x4::Scale(Scale) * FQuaternion::ToMatrix(Rotation) * FMatrix4x4::Translate(Position);
+	// TODO @gdemers temp - just testing orthographic projection with default camera transform. fix above later!
+	this->ModelMatrix = FMatrix4x4::Identity();
 }
 
 FMatrix4x4 FTransform::getModelMatrix() const

@@ -25,6 +25,7 @@
 #include <cstddef>
 
 struct FAllocator;
+struct FMatrix4x4;
 struct FObject;
 
 struct FOpenGlUtils
@@ -51,6 +52,9 @@ struct FOpenGlUtils
 		GLuint FragmentShaderId);
 
 	static void UseProgram(GLuint ShaderProgramId);
+
+	static void SetProjectionMatrix(GLuint ShaderProgramId,
+		FMatrix4x4 const& ProjectionMatrix);
 
 	static void DrawObject(GLuint VAO,
 		GLsizei Count);

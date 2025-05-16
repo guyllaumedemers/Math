@@ -25,6 +25,7 @@
 #include "IBatchResource.hh"
 #include "ITickable.hh"
 #include "Utilities/Transform.hh"
+#include "Utilities/Viewport.hh"
 
 // define a vector space, draw a grid to visual math function behaviours
 class FWorld
@@ -81,5 +82,5 @@ protected:
 	FViewport Viewport = FViewport::Default;
 
 	// user point of view
-	FCamera Camera = FCamera::Default;
+	FCamera Camera = FCamera{ FTransform::Default, FAxisAlignBoundingBox{0, 800, 0, 600, 10, 100}, 45 };
 };

@@ -32,6 +32,7 @@
 #include "AssimpUtils.hh"
 #include "Memory.hh"
 #include "Object.hh"
+#include "Utilities/Matrix.hh"
 
 void FOpenGlUtils::SetupVertexArrayObject(GLuint* BufferId)
 {
@@ -104,6 +105,14 @@ void FOpenGlUtils::SetupShaderProgram(GLuint* ShaderProgramId,
 void FOpenGlUtils::UseProgram(GLuint ShaderProgramId)
 {
 	glUseProgram(ShaderProgramId);
+}
+
+void FOpenGlUtils::SetProjectionMatrix(GLuint ShaderProgramId,
+	FMatrix4x4 const& ProjectionMatrix)
+{
+
+	GLint Location = glGetUniformLocation(ShaderProgramId, "projMat");
+	glUniformMatrix4fv(Location, 1, GL_FALSE, &ProjectionMatrix.Matrix.RowsCols[0][0]);
 }
 
 void FOpenGlUtils::DrawObject(GLuint VAO,

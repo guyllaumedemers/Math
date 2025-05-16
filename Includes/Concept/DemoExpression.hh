@@ -25,6 +25,8 @@
 #include "IMathExpression.hh"
 #include "ITickable.hh"
 
+struct FObject;
+
 // define the default implementation details of a Math expression
 class UDemoExpression :
 	public IBatchResource,
@@ -52,5 +54,5 @@ protected:
 	bool bDisplayGrid = false;
 
 private:
-	struct FObject* DemoCube = nullptr;
+	FObject* DemoCube = nullptr;
 };

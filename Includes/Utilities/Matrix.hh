@@ -305,8 +305,8 @@ struct FMatrix4x4
 	FMatrix4x4 operator*(FMatrix4x4 const& In) const;
 	FVector4d operator*(FVector4d const& In) const;
 
-	inline FMatrix4x4 Adjugate() const;
-	inline float Determinant() const;
+	FMatrix4x4 Adjugate() const;
+	float Determinant() const;
 
 	// custom matrix function exposing target mutation applied in vector space
 	static FMatrix4x4 Zero();

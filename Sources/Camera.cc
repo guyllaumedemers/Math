@@ -68,12 +68,12 @@ FCamera::FCamera(FTransform const& Transform, FAxisAlignBoundingBox const& ViewV
 	this->FieldOfView = FieldOfView;
 }
 
-inline FMatrix4x4 FCamera::ModelViewMatrix(FTransform const& Object) const
+FMatrix4x4 FCamera::ModelViewMatrix(FTransform const& Object) const
 {
 	return this->Transform.Inverse() * Object.getModelMatrix();
 }
 
-inline FMatrix4x4 FCamera::OrthographicProjection(FTransform const& Object) const
+FMatrix4x4 FCamera::OrthographicProjection(FTransform const& Object) const
 {
 	// @gdemers #2 and when you think about it, it makes sense as we expect this projection type to keep true scale.
 	// while we can visuallize our perspective projection frustum as a pyramid, our orthographic view volume is instead a box, whose shape is defined
@@ -82,7 +82,7 @@ inline FMatrix4x4 FCamera::OrthographicProjection(FTransform const& Object) cons
 		* this->ModelViewMatrix(Object);
 }
 
-inline FMatrix4x4 FCamera::PerspectiveProjection(FTransform const& Object) const
+FMatrix4x4 FCamera::PerspectiveProjection(FTransform const& Object) const
 {
 	// @gdemers something troubling in my initial understanding of projection as a concept is how the mathematical process from which we remapped
 	// our view volume for both orthographic and perspective differ.
@@ -97,7 +97,7 @@ inline FMatrix4x4 FCamera::PerspectiveProjection(FTransform const& Object) const
 		* this->ModelViewMatrix(Object);
 }
 
-inline FMatrix4x4 FCamera::PerspectiveDivide(float const Far, float const Near) const
+FMatrix4x4 FCamera::PerspectiveDivide(float const Far, float const Near) const
 {
 	// TODO double check math again, your matrix multiplication may not be right in the end. tbd!
 

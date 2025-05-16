@@ -34,11 +34,11 @@ struct FTransform
 	FTransform(FTransform&&) = default;
 	FTransform& operator=(FTransform const&) = default;
 
-	FTransform(FVector3d const& Position, FQuaternion const& Rotation, FVector3d const& Scale);
+	explicit FTransform(FVector3d const& Position, FQuaternion const& Rotation, FVector3d const& Scale);
 
 	FMatrix4x4 getModelMatrix() const;
 	FMatrix4x4 OrthoNormal() const;
-	inline FMatrix4x4 Inverse() const;
+	FMatrix4x4 Inverse() const;
 
 	FMatrix4x4 ModelMatrix = FMatrix4x4::Identity();
 	FTransform const static Default;
