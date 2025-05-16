@@ -20,6 +20,7 @@
 
 #include "Concept/DemoExpression.hh"
 
+#include <functional>
 #include <fstream>
 #include <sstream>
 
@@ -49,7 +50,9 @@ void UDemoExpression::ApplicationDraw(FViewport const& Viewport, FCamera const& 
 
 	GLuint const ShaderProgramId = DemoCube->ShaderProgramID;
 	FOpenGlUtils::UseProgram(ShaderProgramId);
-	FOpenGlUtils::SetProjectionMatrix(ShaderProgramId, Pov.OrthographicProjection(DemoCube->Transform));
+
+	FMatrix4x4 const ProjectionMatrix = Pov.OrthographicProjection(DemoCube->Transform);
+	FOpenGlUtils::SetProjectionMatrix(ShaderProgramId, ProjectionMatrix);
 
 	// @gdemers draw object vertices by sending each position to the vertex shader (programable pipeline)
 	// note : here, we will be providing the already process projection matrix to the vertex shader (which isnt an optimized solution), this is simply
@@ -116,7 +119,7 @@ void UDemoExpression::Init()
 
 		// Note to self : VertexAttributePointer are configured based on the currently bound VBO (which is attached to the active VAO context)
 		// failing to configure VertexAttributePointer AFTER VBO binding will result in glDrawArrays throwing!
-		FOpenGlUtils::SetupVertexAttributePointer(0, 3 /*count*/, 6 * sizeof(float) /*stride*/, NULL/*offset*/);
+		FOpenGlUtils::SetupVertexAttributePointer(0, 3 /*count*/, 3 * sizeof(float) /*stride*/, NULL/*offset*/);
 	}
 
 	{

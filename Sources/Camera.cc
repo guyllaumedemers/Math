@@ -78,8 +78,9 @@ FMatrix4x4 FCamera::OrthographicProjection(FTransform const& Object) const
 	// @gdemers #2 and when you think about it, it makes sense as we expect this projection type to keep true scale.
 	// while we can visuallize our perspective projection frustum as a pyramid, our orthographic view volume is instead a box, whose shape is defined
 	// by the user, and in the end remapped to the canonical view [-1,1].
-	return this->ViewVolume.CanonicalViewVolume()
-		* this->ModelViewMatrix(Object);
+	FMatrix4x4 const ModelViewMatrix = this->ModelViewMatrix(Object);
+	FMatrix4x4 const CannonicalViewMatrix = this->ViewVolume.CanonicalViewVolume();
+	return CannonicalViewMatrix * ModelViewMatrix;
 }
 
 FMatrix4x4 FCamera::PerspectiveProjection(FTransform const& Object) const
