@@ -82,5 +82,5 @@ protected:
 	FViewport Viewport = FViewport::Default;
 
 	// user point of view
-	FCamera Camera = FCamera{ FTransform::Default, FAxisAlignBoundingBox{0, 800, 0, 600, 10, 100}, 45 };
+	FCamera Camera = FCamera{ FTransform::Default, FAxisAlignBoundingBox{0, 2, 0, 2, 0, 2}, 45 };
 };
