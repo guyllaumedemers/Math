@@ -107,19 +107,22 @@ void UDemoExpression::Init()
 
 		FOpenGlUtils::SetupBufferObject(&Mesh.VBO,
 			&Mesh.Vertices[0] /*data*/,
-			Mesh.Vertices.size() * sizeof(FVertex) /*size*/,
+			Mesh.Vertices.size() * 3 * sizeof(float) /*size*/,
 			GL_ARRAY_BUFFER,
-			GL_STATIC_DRAW);
-
-		FOpenGlUtils::SetupBufferObject(&Mesh.EBO,
-			&Mesh.Indices[0] /*data*/,
-			Mesh.Indices.size() * sizeof(std::size_t) /*size*/,
-			GL_ELEMENT_ARRAY_BUFFER,
 			GL_STATIC_DRAW);
 
 		// Note to self : VertexAttributePointer are configured based on the currently bound VBO (which is attached to the active VAO context)
 		// failing to configure VertexAttributePointer AFTER VBO binding will result in glDrawArrays throwing!
-		FOpenGlUtils::SetupVertexAttributePointer(0, 3 /*count*/, 3 * sizeof(float) /*stride*/, NULL/*offset*/);
+		FOpenGlUtils::SetupVertexAttributePointer(0,
+			3 /*count*/,
+			3 * sizeof(float) /*stride*/,
+			NULL/*offset*/);
+
+		FOpenGlUtils::SetupBufferObject(&Mesh.EBO,
+			&Mesh.Indices[0] /*data*/,
+			Mesh.Indices.size() * sizeof(unsigned int) /*size*/,
+			GL_ELEMENT_ARRAY_BUFFER,
+			GL_STATIC_DRAW);
 	}
 
 	{

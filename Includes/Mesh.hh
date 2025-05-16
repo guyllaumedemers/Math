@@ -32,7 +32,8 @@
 // POD Class. Represent a single Vertex object.
 struct FVertex
 {
-	FVector3d Position = FVector3d::Zero;
+	//FVector3d Position = FVector3d::Zero;
+	float X, Y, Z = 0.f;
 };
 
 // POD Class. Represent a single Mesh object.
@@ -44,7 +45,7 @@ struct FMesh
 	GLuint EBO = UINT64_MAX;
 
 	// how triangles are built based on indexed drawing
-	std::vector<std::size_t> Indices;
+	std::vector<unsigned int> Indices;
 
 	// object space data (or local space)
 	std::vector<FVertex> Vertices;

@@ -119,6 +119,7 @@ void FOpenGlUtils::DrawObject(GLuint VAO,
 {
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, Count, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
 }
 
 void FOpenGlUtils::CleanupProgram(GLuint* ShaderProgramId,
