@@ -28,9 +28,7 @@
 
 #include "Memory.hh"
 
-void FAssimpUtils::GetMeshes(aiScene const* Scene,
-	aiNode const* Node,
-	std::vector<aiMesh const*>& Out)
+void FAssimpUtils::GetMeshes(aiScene const* Scene, aiNode const* Node, std::vector<aiMesh const*>& Out)
 {
 	if (Scene == nullptr || Node == nullptr)
 	{

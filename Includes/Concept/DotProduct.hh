@@ -95,8 +95,8 @@ class UDotProduct : public UDemoExpression
 	// 
 	//				Here, we get our dot product equation from the derivation of the law of cosines without the drawbacks of calculating the sqrt of vector A, B.
 public:
-	virtual std::size_t Size() const override { return sizeof(UDotProduct); };
+	virtual std::size_t const Size() const override { return sizeof(UDotProduct); };
 	virtual void Tick() override;
-	virtual void ApplicationDraw(struct FViewport const&, struct FCamera const&) override;
+	virtual void ApplicationDraw(struct FViewport const& Viewport, struct FCamera const& Camera) override;
 	virtual void ImGuiDraw() override;
 };

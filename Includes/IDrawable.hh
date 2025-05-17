@@ -20,10 +20,13 @@
 
 #pragma once
 
+struct FCamera;
+struct FViewport;
+
 class IDrawable
 {
 public:
 	virtual ~IDrawable() = default;
-	virtual void ApplicationDraw(struct FViewport const&, struct FCamera const&) = 0;
+	virtual void ApplicationDraw(FViewport const& Viewport, FCamera const& Camera) = 0;
 	virtual void ImGuiDraw() = 0;
 };

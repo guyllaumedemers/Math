@@ -30,7 +30,7 @@ struct FViewport
 
 	explicit FViewport(float const Width, float const Height);
 
-	FVector2d ViewportTransform(FVector2d const& Ps /*Point in screen space*/) const;
+	FVector2d const ViewportTransform(FVector2d const& Ps /*Point in screen space*/) const;
 
 	// @gdemers data specific to the raster target (display)
 	float Width, Height, ResolutionGateRatio = 0.f;

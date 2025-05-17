@@ -26,37 +26,29 @@ FVector2d const FVector2d::One = FVector2d(1.f);
 FVector3d const FVector3d::Zero = FVector3d(0.f);
 FVector3d const FVector3d::One = FVector3d(1.f);
 
-FVector2d::FVector2d(float X, float Y)
+FVector2d::FVector2d(float const X, float const Y) :
+	Vector(Private::TVector<float, 2>{X, Y})
 {
-	this->Vector[0] = X;
-	this->Vector[1] = Y;
 }
 
-FVector2d::FVector2d(float In)
+FVector2d::FVector2d(float const Rhs) :
+	Vector(Private::TVector<float, 2>{Rhs, Rhs})
 {
-	this->Vector[0] = In;
-	this->Vector[1] = In;
 }
 
-FVector3d::FVector3d(FVector2d const& In)
+FVector3d::FVector3d(FVector2d const& Rhs) :
+	Vector(Private::TVector<float, 3>{Rhs.Vector[0], Rhs.Vector[1], 1.f})
 {
-	this->Vector[0] = In.Vector[0];
-	this->Vector[1] = In.Vector[1];
-	this->Vector[2] = 1.f;
 }
 
-FVector3d::FVector3d(float X, float Y, float Z)
+FVector3d::FVector3d(float const X, float const Y, float const Z) :
+	Vector(Private::TVector<float, 3>{X, Y, Z})
 {
-	this->Vector[0] = X;
-	this->Vector[1] = Y;
-	this->Vector[2] = Z;
 }
 
-FVector3d::FVector3d(float In)
+FVector3d::FVector3d(float const Rhs) :
+	Vector(Private::TVector<float, 3>{Rhs, Rhs, Rhs})
 {
-	this->Vector[0] = In;
-	this->Vector[1] = In;
-	this->Vector[2] = In;
 }
 
 FVector3d& FVector3d::operator+=(FVector3d const& Rhs)
@@ -67,55 +59,49 @@ FVector3d& FVector3d::operator+=(FVector3d const& Rhs)
 	return *this;
 }
 
-float const& FVector3d::operator[](std::size_t Index) const
+float const& FVector3d::operator[](std::size_t const Rhs) const
 {
-	return Vector[Index];
+	return Vector[Rhs];
 }
 
-float& FVector3d::operator[](std::size_t Index)
+float& FVector3d::operator[](std::size_t const Rhs)
 {
-	return Vector[Index];
+	return Vector[Rhs];
 }
 
-FVector4d::FVector4d(Private::TVector<float, 4> const& Vector)
+FVector4d::FVector4d(Private::TVector<float, 4> const& Rhs) :
+	Vector(Rhs)
 {
-	this->Vector = Vector;
 }
 
-FVector4d::FVector4d(float X, float Y, float Z, float W)
+FVector4d::FVector4d(float const X, float const Y, float const Z, float const W) :
+	Vector(Private::TVector<float, 4>{X, Y, Z, W})
 {
-	this->Vector[0] = X;
-	this->Vector[1] = Y;
-	this->Vector[2] = Z;
-	this->Vector[3] = W;
 }
 
-FVector4d::FVector4d(FVector3d const& In)
+FVector4d::FVector4d(FVector3d const& Rhs) :
+	Vector(Private::TVector<float, 4>{Rhs.Vector[0], Rhs.Vector[1], Rhs.Vector[2], 1.f})
 {
-	this->Vector[0] = In.Vector[0];
-	this->Vector[1] = In.Vector[1];
-	this->Vector[2] = In.Vector[2];
-	this->Vector[3] = 1.f;
 }
 
-FVector4d FVector4d::operator*(float In) const
+FVector4d const FVector4d::operator*(float const Rhs) const
 {
 	// @gdemers we can argue on if we want allow scaling of the W component later
 	return FVector4d
 	{
-		Vector[0] * In,
-		Vector[1] * In,
-		Vector[2] * In,
+		Vector[0] * Rhs,
+		Vector[1] * Rhs,
+		Vector[2] * Rhs,
 		1.f,
 	};
 }
 
-float const& FVector4d::operator[](std::size_t Index) const
+float const& FVector4d::operator[](std::size_t const Rhs) const
 {
-	return Vector[Index];
+	return Vector[Rhs];
 }
 
-float& FVector4d::operator[](std::size_t Index)
+float& FVector4d::operator[](std::size_t const Rhs)
 {
-	return Vector[Index];
+	return Vector[Rhs];
 }

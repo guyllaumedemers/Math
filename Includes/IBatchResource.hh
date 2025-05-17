@@ -39,5 +39,5 @@ class IBatchResource
 {
 public:
 	virtual ~IBatchResource() = default;
-	virtual std::size_t Size() const = 0;
+	virtual std::size_t const Size() const = 0;
 };

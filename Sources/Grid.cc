@@ -27,7 +27,7 @@ FGrid& FGrid::Get()
 	return Singleton;
 }
 
-std::size_t FGrid::Size() const
+std::size_t const FGrid::Size() const
 {
 	return sizeof(FGrid);
 }

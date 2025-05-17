@@ -33,8 +33,8 @@ struct FGrid :
 	FGrid() = default;
 	FGrid static& Get();
 
-	virtual std::size_t Size() const;
-	virtual void ApplicationDraw(struct FViewport const&, struct FCamera const&) override;
+	virtual std::size_t const Size() const;
+	virtual void ApplicationDraw(FViewport const& Viewport, FCamera const& Camera) override;
 	virtual void ImGuiDraw() override;
 
 protected:

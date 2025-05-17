@@ -30,9 +30,6 @@ struct aiScene;
 
 struct FAssimpUtils
 {
-	static void GetMeshes(aiScene const* Scene,
-		aiNode const* Node,
-		std::vector<aiMesh const*>& Out);
-
+	static void GetMeshes(aiScene const* Scene, aiNode const* Node, std::vector<aiMesh const*>& Out);
 	static std::vector<FMesh> ConvertMeshes(std::vector<aiMesh const*> const& Meshes);
 };

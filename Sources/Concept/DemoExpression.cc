@@ -39,22 +39,23 @@ extern FArenaAllocator gArenaAllocator;
 extern FStackAllocator gStackAllocator;
 extern FPoolAllocator gPoolAllocator;
 
-std::size_t UDemoExpression::Size() const
+std::size_t const UDemoExpression::Size() const
 {
 	return sizeof(UDemoExpression);
 }
 
-void UDemoExpression::ApplicationDraw(FViewport const& Viewport, FCamera const& Pov /*User*/)
+void UDemoExpression::ApplicationDraw(FViewport const& Viewport, FCamera const& Camera)
 {
 	assert(DemoCube != nullptr);
 
 	// @gdemers update opengl state-machine with the program id we target.
 	GLuint const ShaderProgramId = DemoCube->ShaderProgramID;
-	FOpenGlUtils::UseProgram(ShaderProgramId);
+	FMatrix4x4 const ProjectionMatrix = Camera.OrthographicProjection();/*project points in camera space and normalize the AABB (+Pw) for clipping*/
+	FMatrix4x4 const ModelViewMatrix = Camera.ModelViewMatrix(DemoCube->Transform);
 
-	// @gdemers update programmable pipeline uniforms.
-	FOpenGlUtils::PushModelViewMatrix(ShaderProgramId, Pov.ModelViewMatrix(DemoCube->Transform/*cube world transform*/)/*output transform in regard to the camera coord system (orthonormal basis)*/);
-	FOpenGlUtils::PushProjectionMatrix(ShaderProgramId, Pov.OrthographicProjection()/*output cannonical view, used to project points in camera space onto the image plane and normalize for clipping*/);
+	FOpenGlUtils::UseProgram(ShaderProgramId);
+	FOpenGlUtils::PushProjectionMatrix(ShaderProgramId, ProjectionMatrix);
+	FOpenGlUtils::PushModelViewMatrix(ShaderProgramId, ModelViewMatrix);
 
 	for (std::size_t i = 0; i < DemoCube->NumMeshes; ++i)
 	{
@@ -95,7 +96,7 @@ void UDemoExpression::Init()
 	// @gdemers adding missing explicit call to  default constructor of the newly allocated resource.
 	new (DemoCube) FObject;
 
-	DemoCube->Transform.Position += FVector3d{ 0.f, -5.f, 0.f };
+	//DemoCube->Transform.Position += FVector3d{ 5.f, 0.f, 0.f };
 
 	{
 		std::stringstream ss;
@@ -122,7 +123,7 @@ void UDemoExpression::Init()
 			GL_ELEMENT_ARRAY_BUFFER,
 			GL_STATIC_DRAW);
 
-		// Note to self : VertexAttributePointer are configured based on the currently bound VBO (which is attached to the active VAO context)
+		// note : VertexAttributePointer are configured based on the currently bound VBO (which is attached to the active VAO context)
 		// failing to configure VertexAttributePointer AFTER VBO binding will result in glDrawArrays throwing!
 		FOpenGlUtils::SetupVertexAttributePointer(0,
 			3 /*count*/,

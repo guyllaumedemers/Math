@@ -22,12 +22,12 @@
 
 FQuaternion const FQuaternion::Zero;
 
-FMatrix4x4 FQuaternion::ToMatrix(FQuaternion const& In)
+FMatrix4x4 const FQuaternion::ToMatrix(FQuaternion const& Rhs)
 {
 	return FMatrix4x4();
 }
 
-FVector4d FQuaternion::ToVector(FVector4d const& In)
+FVector4d const FQuaternion::ToVector(FVector4d const& Rhs)
 {
 	return FVector4d();
 }

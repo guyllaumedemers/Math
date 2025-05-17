@@ -22,7 +22,6 @@
 
 #include <assert.h>
 
-#include "Math.hh"
 #include "Matrix.hh"
 #include "Quaternion.hh"
 #include "Vector.hh"
@@ -30,15 +29,15 @@
 struct FTransform
 {
 	FTransform() = default;
-	FTransform(FTransform const&) = default;
-	FTransform(FTransform&&) = default;
-	FTransform& operator=(FTransform const&) = default;
+	FTransform(FTransform const& Rhs) = default;
+	FTransform(FTransform&& Rhs) = default;
+	FTransform& operator=(FTransform const& Rhs) = default;
 
-	explicit FTransform(FVector3d const& Position, FQuaternion const& Rotation, FVector3d const& Scale);
+	explicit FTransform(FVector3d const& aPosition, FQuaternion const& aRotation, FVector3d const& aScale);
 
 	FMatrix4x4 const getModelMatrix() const;
-	FMatrix4x4 OrthoNormal() const;
-	FMatrix4x4 Inverse() const;
+	FMatrix4x4 const OrthoNormal() const;
+	FMatrix4x4 const Inverse() const;
 
 	// @gdemers cache properties as such and rebuild matrix based on data.
 	// note : it wouldnt be possible to cache a single matrix and update property fields. matrix multiplication

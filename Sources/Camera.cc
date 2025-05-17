@@ -28,7 +28,12 @@ FCamera const FCamera::Default = FCamera
 	0.f
 };
 
-FAxisAlignBoundingBox::FAxisAlignBoundingBox(float const Left, float const Right, float const Bottom, float const Top, float const Near, float const Far)
+FAxisAlignBoundingBox::FAxisAlignBoundingBox(float const Left,
+	float const Right,
+	float const Bottom,
+	float const Top,
+	float const Near,
+	float const Far)
 {
 	this->Left = Left;
 	this->Right = Right;
@@ -38,7 +43,7 @@ FAxisAlignBoundingBox::FAxisAlignBoundingBox(float const Left, float const Right
 	this->Far = Far;
 }
 
-FMatrix4x4 FAxisAlignBoundingBox::CanonicalViewVolume() const
+FMatrix4x4 const FAxisAlignBoundingBox::CanonicalViewVolume() const
 {
 	// @gdemers here, we are remapping our view volume defined using (l, r, b, t, f, n) into our canonical view volume.
 	// we follow opengl standard here with the cannonical view [-1,1] and not directx [0,1].
@@ -61,19 +66,19 @@ FMatrix4x4 FAxisAlignBoundingBox::CanonicalViewVolume() const
 	};
 }
 
-FCamera::FCamera(FTransform const& Transform, FAxisAlignBoundingBox const& ViewVolume, float FieldOfView)
+FCamera::FCamera(FTransform const& Transform, FAxisAlignBoundingBox const& ViewVolume, float const FieldOfView)
 {
 	this->Transform = Transform;
 	this->ViewVolume = ViewVolume;
 	this->FieldOfView = FieldOfView;
 }
 
-FMatrix4x4 FCamera::ModelViewMatrix(FTransform const& Object) const
+FMatrix4x4 const FCamera::ModelViewMatrix(FTransform const& Object) const
 {
 	return this->Transform.Inverse() * Object.getModelMatrix();
 }
 
-FMatrix4x4 FCamera::OrthographicProjection() const
+FMatrix4x4 const FCamera::OrthographicProjection() const
 {
 	// @gdemers #2 and when you think about it, it makes sense as we expect this projection type to keep true scale.
 	// while we can visuallize our perspective projection frustum as a pyramid, our orthographic view volume is instead a box, whose shape is defined
@@ -81,7 +86,7 @@ FMatrix4x4 FCamera::OrthographicProjection() const
 	return this->ViewVolume.CanonicalViewVolume();
 }
 
-FMatrix4x4 FCamera::PerspectiveProjection() const
+FMatrix4x4 const FCamera::PerspectiveProjection() const
 {
 	// @gdemers something troubling in my initial understanding of projection as a concept is how the mathematical process from which we remapped
 	// our view volume for both orthographic and perspective differ.
@@ -94,7 +99,7 @@ FMatrix4x4 FCamera::PerspectiveProjection() const
 	return this->ViewVolume.CanonicalViewVolume() * this->PerspectiveDivide(this->ViewVolume.Far, this->ViewVolume.Near);
 }
 
-FMatrix4x4 FCamera::PerspectiveDivide(float const Far, float const Near) const
+FMatrix4x4 const FCamera::PerspectiveDivide(float const Far, float const Near) const
 {
 	// TODO double check math again, your matrix multiplication may not be right in the end. tbd!
 

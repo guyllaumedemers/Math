@@ -36,12 +36,12 @@ class UDemoExpression :
 {
 public:
 	UDemoExpression() = default;
-	UDemoExpression(UDemoExpression const&) = delete;
-	UDemoExpression(UDemoExpression&&) = default;
-	UDemoExpression& operator=(UDemoExpression const&) = delete;
-	UDemoExpression& operator=(UDemoExpression&&) = default;
-	virtual std::size_t Size() const override;
-	virtual void ApplicationDraw(struct FViewport const&, struct FCamera const&) override;
+	UDemoExpression(UDemoExpression const& Rhs) = delete;
+	UDemoExpression(UDemoExpression&& Rhs) = default;
+	UDemoExpression& operator=(UDemoExpression const& Rhs) = delete;
+	UDemoExpression& operator=(UDemoExpression&& Rhs) = default;
+	virtual std::size_t const Size() const override;
+	virtual void ApplicationDraw(FViewport const& Viewport, FCamera const& Camera) override;
 	virtual void ImGuiDraw() override;
 	virtual void Tick() override;
 

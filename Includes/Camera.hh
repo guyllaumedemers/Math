@@ -28,9 +28,14 @@ struct FAxisAlignBoundingBox
 {
 	FAxisAlignBoundingBox() = default;
 
-	explicit FAxisAlignBoundingBox(float const Left, float const Right, float const Bottom, float const Top, float const Near, float const Far);
+	explicit FAxisAlignBoundingBox(float const Left,
+		float const Right,
+		float const Bottom,
+		float const Top,
+		float const Near,
+		float const Far);
 
-	inline FMatrix4x4 CanonicalViewVolume() const;
+	FMatrix4x4 const CanonicalViewVolume() const;
 
 	// @gdemers properties that define the bounds of the view volume
 	float Left, Right, Top, Bottom, Near, Far = 0.f;
@@ -40,16 +45,16 @@ struct FAxisAlignBoundingBox
 struct FCamera
 {
 	FCamera() = default;
-	FCamera(FCamera const&) = default;
-	FCamera(FCamera&&) = default;
-	FCamera& operator=(FCamera const&) = default;
+	FCamera(FCamera const& Rhs) = default;
+	FCamera(FCamera&& Rhs) = default;
+	FCamera& operator=(FCamera const& Rhs) = default;
 
-	explicit FCamera(FTransform const& Transform, FAxisAlignBoundingBox const& ViewVolume, float FieldOfView);
+	explicit FCamera(FTransform const& Transform, FAxisAlignBoundingBox const& ViewVolume, float const FieldOfView);
 
-	FMatrix4x4 ModelViewMatrix(FTransform const& Object) const;
-	FMatrix4x4 OrthographicProjection() const;
-	FMatrix4x4 PerspectiveProjection() const;
-	FMatrix4x4 PerspectiveDivide(float const Far, float const Near) const;
+	FMatrix4x4 const ModelViewMatrix(FTransform const& Object) const;
+	FMatrix4x4 const OrthographicProjection() const;
+	FMatrix4x4 const PerspectiveProjection() const;
+	FMatrix4x4 const PerspectiveDivide(float const Far, float const Near) const;
 
 	FTransform Transform = FTransform::Default;
 	FAxisAlignBoundingBox ViewVolume;

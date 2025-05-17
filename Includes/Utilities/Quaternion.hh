@@ -26,12 +26,12 @@
 struct FQuaternion
 {
 	FQuaternion() = default;
-	FQuaternion(FQuaternion const&) = default;
-	FQuaternion(FQuaternion&&) = default;
-	FQuaternion& operator=(FQuaternion const&) = default;
+	FQuaternion(FQuaternion const& Rhs) = default;
+	FQuaternion(FQuaternion&& Rhs) = default;
+	FQuaternion& operator=(FQuaternion const& Rhs) = default;
 
-	static FMatrix4x4 ToMatrix(FQuaternion const&);
-	static FVector4d ToVector(FVector4d const&);
+	static FMatrix4x4 const ToMatrix(FQuaternion const& Rhs);
+	static FVector4d const ToVector(FVector4d const& Rhs);
 
-	FQuaternion static const Zero;
+	FQuaternion const static Zero;
 };

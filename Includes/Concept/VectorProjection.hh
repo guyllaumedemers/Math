@@ -50,8 +50,8 @@ class UVectorProjection : public UDemoExpression
 	// ('b' * (('b' * 'a') / ('b' * 'b'))) == proj[b]a
 
 public:
-	virtual std::size_t Size() const override { return sizeof(UVectorProjection); };
+	virtual std::size_t const Size() const override { return sizeof(UVectorProjection); };
 	virtual void Tick() override;
-	virtual void ApplicationDraw(struct FViewport const&, struct FCamera const&) override;
+	virtual void ApplicationDraw(struct FViewport const& Viewport, struct FCamera const& Camera) override;
 	virtual void ImGuiDraw() override;
 };

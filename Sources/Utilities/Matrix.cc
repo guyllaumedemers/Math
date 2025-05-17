@@ -20,19 +20,24 @@
 
 #include "Utilities/Matrix.hh"
 
-FMatrix4x4::FMatrix4x4(Private::TMatrix<float, 4, 4> const& Rhs)
+FMatrix4x4::FMatrix4x4(Private::TMatrix<float, 4, 4> const& Rhs) :
+	Matrix(Rhs)
 {
-	this->Matrix = Rhs;
 }
 
-FMatrix4x4 FMatrix4x4::operator*(float const Rhs) const
+FMatrix4x4 const FMatrix4x4::operator*(float const Rhs) const
 {
 	return FMatrix4x4{ Matrix * Rhs };
 }
 
-FMatrix4x4 FMatrix4x4::operator*(FMatrix4x4 const& Rhs) const
+FMatrix4x4 const FMatrix4x4::operator*(FMatrix4x4 const& Rhs) const
 {
 	return FMatrix4x4{ Matrix * Rhs.Matrix };
+}
+
+FVector4d const FMatrix4x4::operator*(FVector4d const& Rhs) const
+{
+	return FVector4d{ Matrix * Rhs.Vector };
 }
 
 FMatrix4x4& FMatrix4x4::operator*=(FMatrix4x4 const& Rhs)
@@ -41,32 +46,29 @@ FMatrix4x4& FMatrix4x4::operator*=(FMatrix4x4 const& Rhs)
 	return *this;
 }
 
-FVector4d FMatrix4x4::operator*(FVector4d const& Rhs) const
-{
-	return FVector4d{ Matrix * Rhs.Vector };
-}
-
-FMatrix4x4 FMatrix4x4::Adjugate() const
+FMatrix4x4 const FMatrix4x4::Adjugate() const
 {
 	return FMatrix4x4{ Matrix.CalculateAdjugate() };
 }
 
-float FMatrix4x4::Determinant() const
+float const FMatrix4x4::Determinant() const
 {
 	return Matrix.CalculateDeterminant();
 }
 
-FMatrix4x4 FMatrix4x4::Zero()
+FMatrix4x4 const& FMatrix4x4::Zero()
 {
-	return FMatrix4x4
+	auto const static ZeroMatrix = FMatrix4x4
 	{
 		Private::TMatrix<float, 4, 4>{}
 	};
+
+	return ZeroMatrix;
 }
 
-FMatrix4x4 FMatrix4x4::Identity()
+FMatrix4x4 const& FMatrix4x4::Identity()
 {
-	return FMatrix4x4
+	auto const static  IdentityMatrix = FMatrix4x4
 	{
 		Private::TMatrix<float, 4, 4>
 		{
@@ -76,9 +78,11 @@ FMatrix4x4 FMatrix4x4::Identity()
 			Private::TVector<float, 4>{0,0,0,1}
 		}
 	};
+
+	return IdentityMatrix;
 }
 
-FMatrix4x4 FMatrix4x4::Translate(FVector3d const& Rhs)
+FMatrix4x4 const FMatrix4x4::Translate(FVector3d const& Rhs)
 {
 	return FMatrix4x4
 	{
@@ -92,12 +96,12 @@ FMatrix4x4 FMatrix4x4::Translate(FVector3d const& Rhs)
 	};
 }
 
-FMatrix4x4 FMatrix4x4::Rotate(FVector3d const& Rhs)
+FMatrix4x4 const FMatrix4x4::Rotate(FVector3d const& Rhs)
 {
 	return {};
 }
 
-FMatrix4x4 FMatrix4x4::Scale(FVector3d const& Rhs)
+FMatrix4x4 const FMatrix4x4::Scale(FVector3d const& Rhs)
 {
 	return FMatrix4x4
 	{

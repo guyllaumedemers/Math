@@ -301,20 +301,20 @@ struct FMatrix4x4
 
 	explicit FMatrix4x4(Private::TMatrix<float, 4, 4> const& Rhs);
 
-	FMatrix4x4 operator*(float const Rhs) const;
-	FMatrix4x4 operator*(FMatrix4x4 const& Rhs) const;
+	FMatrix4x4 const operator*(float const Rhs) const;
+	FMatrix4x4 const operator*(FMatrix4x4 const& Rhs) const;
+	FVector4d const operator*(FVector4d const& Rhs) const;
 	FMatrix4x4& operator*=(FMatrix4x4 const& Rhs);
-	FVector4d operator*(FVector4d const& Rhs) const;
 
-	FMatrix4x4 Adjugate() const;
-	float Determinant() const;
+	FMatrix4x4 const Adjugate() const;
+	float const Determinant() const;
 
 	// custom matrix function exposing target mutation applied in vector space
-	static FMatrix4x4 Zero();
-	static FMatrix4x4 Identity();
-	static FMatrix4x4 Translate(FVector3d const& Rhs);
-	static FMatrix4x4 Rotate(FVector3d const& Rhs);
-	static FMatrix4x4 Scale(FVector3d const& Rhs);
+	static FMatrix4x4 const& Zero();
+	static FMatrix4x4 const& Identity();
+	static FMatrix4x4 const Translate(FVector3d const& Rhs);
+	static FMatrix4x4 const Rotate(FVector3d const& Rhs);
+	static FMatrix4x4 const Scale(FVector3d const& Rhs);
 
 	Private::TMatrix<float, 4, 4> Matrix{};
 };

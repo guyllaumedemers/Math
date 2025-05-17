@@ -20,16 +20,12 @@
 
 #include "Concept/CrossProduct.hh"
 
-#include "Concept/ImGui/ImGuiBuilder.hh"
-
 void UCrossProduct::Tick()
 {
 }
 
 void UCrossProduct::ApplicationDraw(FViewport const& Viewport, FCamera const& Camera)
 {
-	/*auto& Builder = FImGuiBuilder::Get();
-	Builder.PushWindow();*/
 }
 
 void UCrossProduct::ImGuiDraw()

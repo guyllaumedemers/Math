@@ -43,8 +43,8 @@ class UCrossProduct : public UDemoExpression
 
 	// {(Ayj * Bzk)i + (Azk * Byj)-i, (Axi * Bzk)j + (Azk * Bxi)-j, (Axi * Byj)k + (Ayj * Bxi)-k}
 public:
-	virtual std::size_t Size() const override { return sizeof(UCrossProduct); };
+	virtual std::size_t const Size() const override { return sizeof(UCrossProduct); };
 	virtual void Tick() override;
-	virtual void ApplicationDraw(struct FViewport const&, struct FCamera const&) override;
+	virtual void ApplicationDraw(FViewport const& Viewport, FCamera const& Camera) override;
 	virtual void ImGuiDraw() override;
 };

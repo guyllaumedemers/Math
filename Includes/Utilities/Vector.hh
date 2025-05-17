@@ -33,15 +33,15 @@ namespace Private
 		static_assert(std::is_floating_point_v<T>, "TVector ill format, can only accept floating point types");
 
 		// left-hand side of operator=
-		T& operator[](std::size_t Index)
+		T& operator[](std::size_t const Rhs)
 		{
-			return Components[Index];
+			return Components[Rhs];
 		}
 
 		// right-hand side of operator=
-		T const& operator[](std::size_t Index) const
+		T const& operator[](std::size_t const Rhs) const
 		{
-			return Components[Index];
+			return Components[Rhs];
 		}
 
 		TVector& operator=(TVector<T, N> const& Rhs)
@@ -91,24 +91,24 @@ namespace Private
 			return (this->Components == Rhs.Components);
 		}
 
-		T DotProduct(TVector<T, N> const& In) const
+		T DotProduct(TVector<T, N> const& Rhs) const
 		{
-			return FMath::DotProduct<T, N>(Components, In.Components);
+			return FMath::DotProduct<T, N>(Components, Rhs.Components);
 		}
 
-		TVector CrossProduct(TVector<T, N> const& In) const
+		TVector CrossProduct(TVector<T, N> const& Rhs) const
 		{
-			return TVector{ FMath::CrossProduct<T, N>(Components, In.Components) };
+			return TVector{ FMath::CrossProduct<T, N>(Components, Rhs.Components) };
 		}
 
-		TVector Projection(TVector<T, N> const& In) const
+		TVector Projection(TVector<T, N> const& Rhs) const
 		{
-			return TVector{ FMath::Projection<T, N>(Components, In.Components) };
+			return TVector{ FMath::Projection<T, N>(Components, Rhs.Components) };
 		}
 
-		TVector Rejection(TVector<T, N> const& In) const
+		TVector Rejection(TVector<T, N> const& Rhs) const
 		{
-			return TVector{ FMath::Rejection<T, N>(Components, In.Components) };
+			return TVector{ FMath::Rejection<T, N>(Components, Rhs.Components) };
 		}
 
 		TVector Normalize() const
@@ -138,12 +138,12 @@ namespace Private
 struct FVector2d
 {
 	FVector2d() = default;
-	FVector2d(FVector2d const&) = default;
-	FVector2d(FVector2d&&) = default;
-	FVector2d& operator=(FVector2d const&) = default;
+	FVector2d(FVector2d const& Rhs) = default;
+	FVector2d(FVector2d&& Rhs) = default;
+	FVector2d& operator=(FVector2d const& Rhs) = default;
 
-	FVector2d(float X, float Y);
-	FVector2d(float In);
+	FVector2d(float const X, float const Y);
+	FVector2d(float const Rhs);
 
 	FVector2d const static Zero;
 	FVector2d const static One;
@@ -153,18 +153,18 @@ struct FVector2d
 struct FVector3d
 {
 	FVector3d() = default;
-	FVector3d(FVector3d const&) = default;
-	FVector3d(FVector3d&&) = default;
-	FVector3d& operator=(FVector3d const&) = default;
+	FVector3d(FVector3d const& Rhs) = default;
+	FVector3d(FVector3d&& Rhs) = default;
+	FVector3d& operator=(FVector3d const& Rhs) = default;
 
-	explicit FVector3d(FVector2d const& In);
-	FVector3d(float X, float Y, float Z);
-	FVector3d(float In);
+	explicit FVector3d(FVector2d const& Rhs);
+	FVector3d(float const X, float const Y, float const Z);
+	FVector3d(float const Rhs);
 
 	FVector3d& operator+=(FVector3d const& Rhs);
 
-	float const& operator[](std::size_t Index) const;
-	float& operator[](std::size_t Index);
+	float const& operator[](std::size_t const Rhs) const;
+	float& operator[](std::size_t const Rhs);
 
 	FVector3d const static Zero;
 	FVector3d const static One;
@@ -174,18 +174,18 @@ struct FVector3d
 struct FVector4d
 {
 	FVector4d() = default;
-	FVector4d(FVector4d const&) = default;
-	FVector4d(FVector4d&&) = default;
-	FVector4d& operator=(FVector4d const&) = default;
+	FVector4d(FVector4d const& Rhs) = default;
+	FVector4d(FVector4d&& Rhs) = default;
+	FVector4d& operator=(FVector4d const& Rhs) = default;
 
-	explicit FVector4d(Private::TVector<float, 4> const& Vector);
-	FVector4d(float X, float Y, float Z, float W);
-	FVector4d(FVector3d const& In);
+	explicit FVector4d(Private::TVector<float, 4> const& Rhs);
+	FVector4d(float const X, float const Y, float const Z, float const W);
+	FVector4d(FVector3d const& Rhs);
 
-	FVector4d operator*(float In) const;
+	FVector4d const operator*(float const Rhs) const;
 
-	float const& operator[](std::size_t Index) const;
-	float& operator[](std::size_t Index);
+	float const& operator[](std::size_t const Rhs) const;
+	float& operator[](std::size_t const Rhs);
 
 	Private::TVector<float, 4> Vector{};
 };
