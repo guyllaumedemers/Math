@@ -82,5 +82,7 @@ protected:
 	FViewport Viewport = FViewport::Default;
 
 	// user point of view
+	// @gdemers
+	// note : if two bounds cancel each other, then it's sitting at the origin for this axis.
 	FCamera Camera = FCamera{ FTransform::Default, FAxisAlignBoundingBox{-10, 10, -10, 10, 0, 2}, 45 };
 };

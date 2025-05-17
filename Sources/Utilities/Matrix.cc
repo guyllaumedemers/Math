@@ -25,7 +25,7 @@ FMatrix4x4::FMatrix4x4(Private::TMatrix<float, 4, 4> const& Matrix)
 	this->Matrix = Matrix;
 }
 
-FMatrix4x4 FMatrix4x4::operator*(float In) const
+FMatrix4x4 FMatrix4x4::operator*(float const In) const
 {
 	return FMatrix4x4{ Matrix * In };
 }
@@ -33,6 +33,12 @@ FMatrix4x4 FMatrix4x4::operator*(float In) const
 FMatrix4x4 FMatrix4x4::operator*(FMatrix4x4 const& In) const
 {
 	return FMatrix4x4{ Matrix * In.Matrix };
+}
+
+FMatrix4x4& FMatrix4x4::operator*=(FMatrix4x4 const& In)
+{
+	this->Matrix = this->Matrix * In.Matrix;
+	return *this;
 }
 
 FVector4d FMatrix4x4::operator*(FVector4d const& In) const

@@ -95,6 +95,8 @@ void UDemoExpression::Init()
 	// @gdemers adding missing explicit call to  default constructor of the newly allocated resource.
 	new (DemoCube) FObject;
 
+	//DemoCube->Transform *= FTransform(FVector3d(5.f), FQuaternion(), FVector3d(1.f));
+
 	{
 		std::stringstream ss;
 		ss << SDL_GetCurrentDirectory() << "\\..\\..\\" << "Res/Cube2.gltf";

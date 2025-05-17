@@ -44,10 +44,10 @@ FMatrix4x4 FAxisAlignBoundingBox::CanonicalViewVolume() const
 	// we follow opengl standard here with the cannonical view [-1,1] and not directx [0,1].
 	float const X = (2 / (Right - Left));
 	float const Y = (2 / (Top - Bottom));
-	float const Z = (2 / (Far - Near));
-	float const Xt = ((Right + Left) / (Right - Left));
-	float const Yt = ((Top + Bottom) / (Top - Bottom));
-	float const Zt = ((Far + Near) / (Far - Near));
+	float const Z = (-2 / (Far - Near));
+	float const Xt = (-(Right + Left) / (Right - Left));
+	float const Yt = (-(Top + Bottom) / (Top - Bottom));
+	float const Zt = (-(Far + Near) / (Far - Near));
 
 	return FMatrix4x4
 	{

@@ -36,7 +36,9 @@ struct FTransform
 
 	explicit FTransform(FVector3d const& Position, FQuaternion const& Rotation, FVector3d const& Scale);
 
-	FMatrix4x4 getModelMatrix() const;
+	FTransform& operator*=(FTransform const& Rhs);
+
+	FMatrix4x4 const& getModelMatrix() const;
 	FMatrix4x4 OrthoNormal() const;
 	FMatrix4x4 Inverse() const;
 

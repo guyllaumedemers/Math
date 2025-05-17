@@ -301,8 +301,9 @@ struct FMatrix4x4
 
 	explicit FMatrix4x4(Private::TMatrix<float, 4, 4> const& Matrix);
 
-	FMatrix4x4 operator*(float In) const;
+	FMatrix4x4 operator*(float const In) const;
 	FMatrix4x4 operator*(FMatrix4x4 const& In) const;
+	FMatrix4x4& operator*=(FMatrix4x4 const& In);
 	FVector4d operator*(FVector4d const& In) const;
 
 	FMatrix4x4 Adjugate() const;
