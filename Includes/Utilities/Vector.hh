@@ -158,9 +158,11 @@ struct FVector3d
 	FVector3d& operator=(FVector3d const& Rhs) = default;
 
 	explicit FVector3d(FVector2d const& Rhs);
+	explicit FVector3d(Private::TVector<float, 3> const& Rhs);
 	FVector3d(float const X, float const Y, float const Z);
 	FVector3d(float const Rhs);
 
+	FVector3d const operator+(FVector3d const& Rhs) const;
 	FVector3d& operator+=(FVector3d const& Rhs);
 
 	float const& operator[](std::size_t const Rhs) const;

@@ -41,6 +41,11 @@ FVector3d::FVector3d(FVector2d const& Rhs) :
 {
 }
 
+FVector3d::FVector3d(Private::TVector<float, 3> const& Rhs) :
+	Vector(Rhs)
+{
+}
+
 FVector3d::FVector3d(float const X, float const Y, float const Z) :
 	Vector(Private::TVector<float, 3>{X, Y, Z})
 {
@@ -49,6 +54,11 @@ FVector3d::FVector3d(float const X, float const Y, float const Z) :
 FVector3d::FVector3d(float const Rhs) :
 	Vector(Private::TVector<float, 3>{Rhs, Rhs, Rhs})
 {
+}
+
+FVector3d const FVector3d::operator+(FVector3d const& Rhs) const
+{
+	return FVector3d{ this->Vector + Rhs.Vector };
 }
 
 FVector3d& FVector3d::operator+=(FVector3d const& Rhs)
