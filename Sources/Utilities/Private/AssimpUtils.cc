@@ -39,7 +39,7 @@ void FAssimpUtils::GetMeshes(aiScene const* Scene,
 
 	for (std::size_t i = 0; i < Node->mNumMeshes; ++i)
 	{
-		int const MeshIndex = *(Node->mMeshes + i);
+		unsigned int const MeshIndex = *(Node->mMeshes + i);
 		Out.push_back(*(Scene->mMeshes + MeshIndex));
 	}
 
@@ -51,19 +51,6 @@ void FAssimpUtils::GetMeshes(aiScene const* Scene,
 
 std::vector<FMesh> FAssimpUtils::ConvertMeshes(std::vector<aiMesh const*> const& Meshes)
 {
-	auto const PushVertex = [](aiMesh const* Target,
-		std::size_t i)
-		{
-			auto const& aiVertex = *(Target->mVertices + i);
-			auto const& aiNormal = *(Target->mNormals + i);
-			auto const& aiTangeant = *(Target->mTangents + i);
-
-			return FVertex
-			{
-				aiVertex.x, aiVertex.y, aiVertex.z
-			};
-		};
-
 	std::vector<FMesh> OutResult;
 	for (std::size_t i = 0; i < Meshes.size(); ++i)
 	{
@@ -72,7 +59,9 @@ std::vector<FMesh> FAssimpUtils::ConvertMeshes(std::vector<aiMesh const*> const&
 
 		for (std::size_t j = 0; j < Target->mNumVertices; ++j)
 		{
-			Mesh.Vertices.push_back(PushVertex(Target, j));
+			aiVector3D const& aiVertex = *(Target->mVertices + j);
+			FVertex const MeshVertex = { FVector3d{ aiVertex.x, aiVertex.y, aiVertex.z } };
+			Mesh.Vertices.push_back(MeshVertex);
 		};
 
 		for (std::size_t k = 0; k < Target->mNumFaces; ++k)
@@ -80,7 +69,8 @@ std::vector<FMesh> FAssimpUtils::ConvertMeshes(std::vector<aiMesh const*> const&
 			aiFace const* Face = (Target->mFaces + k);
 			for (std::size_t m = 0; m < Face->mNumIndices; ++m)
 			{
-				Mesh.Indices.push_back(Face->mIndices[m]);
+				unsigned int const FaceIndex = Face->mIndices[m];
+				Mesh.Indices.push_back(FaceIndex);
 			}
 		};
 

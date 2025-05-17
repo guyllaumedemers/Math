@@ -26,14 +26,12 @@
 
 #include "glad/glad.h"
 
-#include "Utilities/Transform.hh"
 #include "Utilities/Vector.hh"
 
 // POD Class. Represent a single Vertex object.
 struct FVertex
 {
-	//FVector3d Position = FVector3d::Zero;
-	float X, Y, Z = 0.f;
+	FVector3d Position = FVector3d::Zero;
 };
 
 // POD Class. Represent a single Mesh object.
