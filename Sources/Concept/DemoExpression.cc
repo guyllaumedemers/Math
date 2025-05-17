@@ -48,17 +48,23 @@ void UDemoExpression::ApplicationDraw(FViewport const& Viewport, FCamera const& 
 {
 	assert(DemoCube != nullptr);
 
+	// @gdemers update opengl state-machine with the program id we target.
 	GLuint const ShaderProgramId = DemoCube->ShaderProgramID;
 	FOpenGlUtils::UseProgram(ShaderProgramId);
-	FOpenGlUtils::PushProjectionMatrix(ShaderProgramId, Pov.OrthographicProjection());
-	FOpenGlUtils::PushModelViewMatrix(ShaderProgramId, Pov.ModelViewMatrix(DemoCube->Transform));
 
-	// @gdemers draw object vertices by sending each position to the vertex shader (programable pipeline)
-	// note : here, we will be providing the already process projection matrix to the vertex shader (which isnt an optimized solution), this is simply
-	// to prove that the implementation details are correctly defined in our api.
+	// @gdemers update programmable pipeline uniforms.
+	FOpenGlUtils::PushModelViewMatrix(ShaderProgramId, Pov.ModelViewMatrix(DemoCube->Transform/*cube world transform*/)/*output transform in regard to the camera coord system (orthonormal basis)*/);
+	FOpenGlUtils::PushProjectionMatrix(ShaderProgramId, Pov.OrthographicProjection()/*output cannonical view, used to project points in camera space onto the image plane and normalize for clipping*/);
+
 	for (std::size_t i = 0; i < DemoCube->NumMeshes; ++i)
 	{
 		FMesh& Mesh = DemoCube->Meshes[i];
+
+		// @gdemers draw object vertices by sending each position to the vertex shader (programable pipeline)
+		// note : the VAO has the object space (local space) positions cached in the VBO buffer thats bound. using these local space positions, and the above
+		// model-view matrix, we can calculate vertices in regard to the camera coordinate system (view space).
+		// using the projection matrix, we can project points, creating perspective if using perspective divide, onto the image plane which goes from [-inf,inf] and normalize our points using the AABB bounds.
+		// last, we can discard points, during the clipping stage, that are outside the bounds defined by the AABB. (being normalize prior to executing the clipping stage makes things easier for the pipeline)
 		FOpenGlUtils::DrawObject(Mesh.VAO, Mesh.Indices.size());
 	}
 }
