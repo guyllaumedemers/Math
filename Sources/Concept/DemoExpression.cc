@@ -39,14 +39,6 @@ extern FArenaAllocator gArenaAllocator;
 extern FStackAllocator gStackAllocator;
 extern FPoolAllocator gPoolAllocator;
 
-namespace ImGuiTool
-{
-	FTransform Default = FTransform::Default;
-	Private::TVector<float, 3> Translation;
-	bool bHasPropertyChanged = false;
-	bool bDidInit = false;
-}
-
 std::size_t const UDemoExpression::Size() const
 {
 	return sizeof(UDemoExpression);
@@ -55,18 +47,6 @@ std::size_t const UDemoExpression::Size() const
 void UDemoExpression::ApplicationDraw(FViewport const& Viewport, FCamera const& Camera)
 {
 	assert(DemoCube != nullptr);
-
-	if (!ImGuiTool::bDidInit)
-	{
-		ImGuiTool::Default = DemoCube->Transform;
-		ImGuiTool::bDidInit = true;
-	}
-
-	if (ImGuiTool::bHasPropertyChanged)
-	{
-		DemoCube->Transform.Position = ImGuiTool::Default.Position + FVector3d(ImGuiTool::Translation);
-		ImGuiTool::bHasPropertyChanged = false;
-	}
 
 	// @gdemers update opengl state-machine with the program id we target.
 	GLuint const ShaderProgramId = DemoCube->ShaderProgramID;
@@ -92,6 +72,8 @@ void UDemoExpression::ApplicationDraw(FViewport const& Viewport, FCamera const& 
 
 void UDemoExpression::ImGuiDraw()
 {
+	assert(DemoCube != nullptr);
+
 	ImGui::Begin("Demo");
 
 	ImGui::Text("UDemoExpression");
@@ -112,7 +94,7 @@ void UDemoExpression::ImGuiDraw()
 		static char const* const xTitle = "X";
 		int const static xMin = -10;
 		int const static xMax = 10;
-		if (ImGui::SliderInt(xTitle, &xValue, xMin, xMax)) { ImGuiTool::bHasPropertyChanged = true; ImGuiTool::Translation[0] = xValue; }
+		if (ImGui::SliderInt(xTitle, &xValue, xMin, xMax)) { DemoCube->Transform.Position[0] = xValue; }
 
 		ImGui::EndGroup();
 	}
@@ -123,7 +105,7 @@ void UDemoExpression::ImGuiDraw()
 		static char const* const yTitle = "Y";
 		int const static yMin = -10;
 		int const static yMax = 10;
-		if (ImGui::SliderInt(yTitle, &yValue, yMin, yMax)) { ImGuiTool::bHasPropertyChanged = true; ImGuiTool::Translation[1] = yValue; }
+		if (ImGui::SliderInt(yTitle, &yValue, yMin, yMax)) { DemoCube->Transform.Position[1] = yValue; }
 
 		ImGui::EndGroup();
 	}
@@ -134,7 +116,7 @@ void UDemoExpression::ImGuiDraw()
 		static char const* const zTitle = "Z";
 		int const static zMin = -10;
 		int const static zMax = 10;
-		if (ImGui::SliderInt(zTitle, &zValue, zMin, zMax)) { ImGuiTool::bHasPropertyChanged = true; ImGuiTool::Translation[2] = zValue; }
+		if (ImGui::SliderInt(zTitle, &zValue, zMin, zMax)) { DemoCube->Transform.Position[2] = zValue; }
 
 		ImGui::EndGroup();
 	}
@@ -142,8 +124,7 @@ void UDemoExpression::ImGuiDraw()
 	static const char* const ResetTitle = "Reset";
 	if (ImGui::Button(ResetTitle, { ImGui::GetContentRegionAvail().x , 0 }))
 	{
-		ImGuiTool::Translation = Private::TVector<float, 3>();
-		ImGuiTool::bHasPropertyChanged = true;
+		DemoCube->Transform.Position = FVector3d::Zero;
 		xValue = yValue = zValue = 0;
 	}
 
