@@ -161,6 +161,9 @@ struct FVector3d
 	FVector3d(float X, float Y, float Z);
 	FVector3d(float In);
 
+	float const& operator[](std::size_t Index) const;
+	float& operator[](std::size_t Index);
+
 	FVector3d const static Zero;
 	FVector3d const static One;
 	Private::TVector<float, 3> Vector{};

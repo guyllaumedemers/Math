@@ -311,9 +311,9 @@ struct FMatrix4x4
 	// custom matrix function exposing target mutation applied in vector space
 	static FMatrix4x4 Zero();
 	static FMatrix4x4 Identity();
-	static FMatrix4x4 Translate(FVector4d const& Translate);
-	static FMatrix4x4 Rotate(FVector4d const& Rotate);
-	static FMatrix4x4 Scale(FVector4d const& Scale);
+	static FMatrix4x4 Translate(FVector3d const& Translate);
+	static FMatrix4x4 Rotate(FVector3d const& Rotate);
+	static FMatrix4x4 Scale(FVector3d const& Scale);
 
 	Private::TMatrix<float, 4, 4> Matrix{};
 };

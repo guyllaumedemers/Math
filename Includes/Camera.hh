@@ -47,8 +47,8 @@ struct FCamera
 	explicit FCamera(FTransform const& Transform, FAxisAlignBoundingBox const& ViewVolume, float FieldOfView);
 
 	FMatrix4x4 ModelViewMatrix(FTransform const& Object) const;
-	FMatrix4x4 OrthographicProjection(FTransform const& Object) const;
-	FMatrix4x4 PerspectiveProjection(FTransform const& Object) const;
+	FMatrix4x4 OrthographicProjection() const;
+	FMatrix4x4 PerspectiveProjection() const;
 	FMatrix4x4 PerspectiveDivide(float const Far, float const Near) const;
 
 	FTransform Transform = FTransform::Default;

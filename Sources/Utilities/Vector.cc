@@ -59,6 +59,16 @@ FVector3d::FVector3d(float In)
 	this->Vector[2] = In;
 }
 
+float const& FVector3d::operator[](std::size_t Index) const
+{
+	return Vector[Index];
+}
+
+float& FVector3d::operator[](std::size_t Index)
+{
+	return Vector[Index];
+}
+
 FVector4d::FVector4d(Private::TVector<float, 4> const& Vector)
 {
 	this->Vector = Vector;

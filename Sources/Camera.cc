@@ -73,17 +73,15 @@ FMatrix4x4 FCamera::ModelViewMatrix(FTransform const& Object) const
 	return this->Transform.Inverse() * Object.getModelMatrix();
 }
 
-FMatrix4x4 FCamera::OrthographicProjection(FTransform const& Object) const
+FMatrix4x4 FCamera::OrthographicProjection() const
 {
 	// @gdemers #2 and when you think about it, it makes sense as we expect this projection type to keep true scale.
 	// while we can visuallize our perspective projection frustum as a pyramid, our orthographic view volume is instead a box, whose shape is defined
 	// by the user, and in the end remapped to the canonical view [-1,1].
-	FMatrix4x4 const ModelViewMatrix = this->ModelViewMatrix(Object);
-	FMatrix4x4 const CannonicalViewMatrix = this->ViewVolume.CanonicalViewVolume();
-	return CannonicalViewMatrix * ModelViewMatrix;
+	return this->ViewVolume.CanonicalViewVolume();
 }
 
-FMatrix4x4 FCamera::PerspectiveProjection(FTransform const& Object) const
+FMatrix4x4 FCamera::PerspectiveProjection() const
 {
 	// @gdemers something troubling in my initial understanding of projection as a concept is how the mathematical process from which we remapped
 	// our view volume for both orthographic and perspective differ.
@@ -93,9 +91,7 @@ FMatrix4x4 FCamera::PerspectiveProjection(FTransform const& Object) const
 	// our goal here is merely to emulate points converging from 3d space toward a user point of view (something orthographic projection doesn't do)
 	// and create a sense of depth with objects in our fictional world.
 	// goto #2
-	return this->ViewVolume.CanonicalViewVolume()
-		* this->PerspectiveDivide(this->ViewVolume.Far, this->ViewVolume.Near)
-		* this->ModelViewMatrix(Object);
+	return this->ViewVolume.CanonicalViewVolume() * this->PerspectiveDivide(this->ViewVolume.Far, this->ViewVolume.Near);
 }
 
 FMatrix4x4 FCamera::PerspectiveDivide(float const Far, float const Near) const

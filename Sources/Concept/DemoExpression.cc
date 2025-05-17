@@ -50,9 +50,8 @@ void UDemoExpression::ApplicationDraw(FViewport const& Viewport, FCamera const& 
 
 	GLuint const ShaderProgramId = DemoCube->ShaderProgramID;
 	FOpenGlUtils::UseProgram(ShaderProgramId);
-
-	FMatrix4x4 const ProjectionMatrix = Pov.OrthographicProjection(DemoCube->Transform);
-	FOpenGlUtils::SetProjectionMatrix(ShaderProgramId, ProjectionMatrix);
+	FOpenGlUtils::PushProjectionMatrix(ShaderProgramId, Pov.OrthographicProjection());
+	FOpenGlUtils::PushModelViewMatrix(ShaderProgramId, Pov.ModelViewMatrix(DemoCube->Transform));
 
 	// @gdemers draw object vertices by sending each position to the vertex shader (programable pipeline)
 	// note : here, we will be providing the already process projection matrix to the vertex shader (which isnt an optimized solution), this is simply
@@ -60,8 +59,6 @@ void UDemoExpression::ApplicationDraw(FViewport const& Viewport, FCamera const& 
 	for (std::size_t i = 0; i < DemoCube->NumMeshes; ++i)
 	{
 		FMesh& Mesh = DemoCube->Meshes[i];
-
-		// TODO @gdemers fetch projection matrix and update uniform location in vertex shader, etc...
 		FOpenGlUtils::DrawObject(Mesh.VAO, Mesh.Indices.size());
 	}
 }

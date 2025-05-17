@@ -72,7 +72,7 @@ FMatrix4x4 FMatrix4x4::Identity()
 	};
 }
 
-FMatrix4x4 FMatrix4x4::Translate(FVector4d const& Translate)
+FMatrix4x4 FMatrix4x4::Translate(FVector3d const& Translate)
 {
 	return FMatrix4x4
 	{
@@ -86,12 +86,12 @@ FMatrix4x4 FMatrix4x4::Translate(FVector4d const& Translate)
 	};
 }
 
-FMatrix4x4 FMatrix4x4::Rotate(FVector4d const& Rotate)
+FMatrix4x4 FMatrix4x4::Rotate(FVector3d const& Rotate)
 {
 	return {};
 }
 
-FMatrix4x4 FMatrix4x4::Scale(FVector4d const& Scale)
+FMatrix4x4 FMatrix4x4::Scale(FVector3d const& Scale)
 {
 	return FMatrix4x4
 	{

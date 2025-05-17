@@ -107,11 +107,18 @@ void FOpenGlUtils::UseProgram(GLuint ShaderProgramId)
 	glUseProgram(ShaderProgramId);
 }
 
-void FOpenGlUtils::SetProjectionMatrix(GLuint ShaderProgramId,
+void FOpenGlUtils::PushProjectionMatrix(GLuint ShaderProgramId,
 	FMatrix4x4 const& ProjectionMatrix)
 {
 	GLint Location = glGetUniformLocation(ShaderProgramId, "projMat");
 	glUniformMatrix4fv(Location, 1, GL_FALSE, &ProjectionMatrix.Matrix.RowsCols[0][0]);
+}
+
+void FOpenGlUtils::PushModelViewMatrix(GLuint ShaderProgramId,
+	FMatrix4x4 const& ModelViewMatrix)
+{
+	GLint Location = glGetUniformLocation(ShaderProgramId, "modelviewMat");
+	glUniformMatrix4fv(Location, 1, GL_FALSE, &ModelViewMatrix.Matrix.RowsCols[0][0]);
 }
 
 void FOpenGlUtils::DrawObject(GLuint VAO,
