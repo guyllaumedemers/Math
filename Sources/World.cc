@@ -72,7 +72,12 @@ void FWorld::DrawImGui()
 		if (ImGui::Button(ResetTitle, { ImGui::GetContentRegionAvail().x , 0 }))
 		{
 			Camera.ViewVolume = FAxisAlignBoundingBox(-10, 10, -10, 10, -10, 10);
-			left = right = bottom = top = near = far = 0;
+			left = -10;
+			right = 10;
+			bottom = -10;
+			top = 10;
+			near = -10;
+			far = 10;
 		}
 	}
 

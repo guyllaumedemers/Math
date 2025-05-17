@@ -76,7 +76,7 @@ void UDemoExpression::ImGuiDraw()
 
 	ImGui::Begin("Demo");
 
-	ImGui::Text("UDemoExpression");
+	ImGui::Text("Cube");
 	ImGui::Separator();
 
 	ImGui::NewLine();
