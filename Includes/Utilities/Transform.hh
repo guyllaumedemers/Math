@@ -36,12 +36,16 @@ struct FTransform
 
 	explicit FTransform(FVector3d const& Position, FQuaternion const& Rotation, FVector3d const& Scale);
 
-	FTransform& operator*=(FTransform const& Rhs);
-
-	FMatrix4x4 const& getModelMatrix() const;
+	FMatrix4x4 const getModelMatrix() const;
 	FMatrix4x4 OrthoNormal() const;
 	FMatrix4x4 Inverse() const;
 
-	FMatrix4x4 ModelMatrix = FMatrix4x4::Identity();
+	// @gdemers cache properties as such and rebuild matrix based on data.
+	// note : it wouldnt be possible to cache a single matrix and update property fields. matrix multiplication
+	// prevents it.
+	FQuaternion Rotation = FQuaternion::Zero;
+	FVector3d Position = FVector3d::Zero;
+	FVector3d Scale = FVector3d::Zero;
+
 	FTransform const static Default;
 };

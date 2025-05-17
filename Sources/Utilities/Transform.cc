@@ -31,19 +31,16 @@ FTransform::FTransform(FVector3d const& Position,
 	FQuaternion const& Rotation,
 	FVector3d const& Scale)
 {
-	//this->ModelMatrix = FMatrix4x4::Scale(Scale) * FQuaternion::ToMatrix(Rotation) * FMatrix4x4::Translate(Position) * FMatrix4x4::Identity();
-	this->ModelMatrix = FMatrix4x4::Scale(Scale) * FMatrix4x4::Translate(Position) * FMatrix4x4::Identity();
+	this->Position = Position;
+	this->Rotation = Rotation;
+	this->Scale = Scale;
 }
 
-FTransform& FTransform::operator*=(FTransform const& Rhs)
+FMatrix4x4 const FTransform::getModelMatrix() const
 {
-	this->ModelMatrix *= Rhs.ModelMatrix;
-	return *this;
-}
-
-FMatrix4x4 const& FTransform::getModelMatrix() const
-{
-	return ModelMatrix;
+	// TODO @gdemers add missing support for rotation
+	//return FMatrix4x4::Scale(Scale) * FQuaternion::ToMatrix(Rotation) * FMatrix4x4::Translate(Position);
+	return FMatrix4x4::Scale(Scale) * FMatrix4x4::Translate(Position);
 }
 
 FMatrix4x4 FTransform::OrthoNormal() const

@@ -20,30 +20,30 @@
 
 #include "Utilities/Matrix.hh"
 
-FMatrix4x4::FMatrix4x4(Private::TMatrix<float, 4, 4> const& Matrix)
+FMatrix4x4::FMatrix4x4(Private::TMatrix<float, 4, 4> const& Rhs)
 {
-	this->Matrix = Matrix;
+	this->Matrix = Rhs;
 }
 
-FMatrix4x4 FMatrix4x4::operator*(float const In) const
+FMatrix4x4 FMatrix4x4::operator*(float const Rhs) const
 {
-	return FMatrix4x4{ Matrix * In };
+	return FMatrix4x4{ Matrix * Rhs };
 }
 
-FMatrix4x4 FMatrix4x4::operator*(FMatrix4x4 const& In) const
+FMatrix4x4 FMatrix4x4::operator*(FMatrix4x4 const& Rhs) const
 {
-	return FMatrix4x4{ Matrix * In.Matrix };
+	return FMatrix4x4{ Matrix * Rhs.Matrix };
 }
 
-FMatrix4x4& FMatrix4x4::operator*=(FMatrix4x4 const& In)
+FMatrix4x4& FMatrix4x4::operator*=(FMatrix4x4 const& Rhs)
 {
-	this->Matrix = this->Matrix * In.Matrix;
+	this->Matrix = this->Matrix * Rhs.Matrix;
 	return *this;
 }
 
-FVector4d FMatrix4x4::operator*(FVector4d const& In) const
+FVector4d FMatrix4x4::operator*(FVector4d const& Rhs) const
 {
-	return FVector4d{ Matrix * In.Vector };
+	return FVector4d{ Matrix * Rhs.Vector };
 }
 
 FMatrix4x4 FMatrix4x4::Adjugate() const
@@ -78,34 +78,34 @@ FMatrix4x4 FMatrix4x4::Identity()
 	};
 }
 
-FMatrix4x4 FMatrix4x4::Translate(FVector3d const& Translate)
+FMatrix4x4 FMatrix4x4::Translate(FVector3d const& Rhs)
 {
 	return FMatrix4x4
 	{
 		Private::TMatrix<float, 4, 4>
 		{
-			Private::TVector<float, 4>{1,0,0,Translate[0]},
-			Private::TVector<float, 4>{0,1,0,Translate[1]},
-			Private::TVector<float, 4>{0,0,1,Translate[2]},
+			Private::TVector<float, 4>{1,0,0,Rhs[0]},
+			Private::TVector<float, 4>{0,1,0,Rhs[1]},
+			Private::TVector<float, 4>{0,0,1,Rhs[2]},
 			Private::TVector<float, 4>{0,0,0,1}
 		}
 	};
 }
 
-FMatrix4x4 FMatrix4x4::Rotate(FVector3d const& Rotate)
+FMatrix4x4 FMatrix4x4::Rotate(FVector3d const& Rhs)
 {
 	return {};
 }
 
-FMatrix4x4 FMatrix4x4::Scale(FVector3d const& Scale)
+FMatrix4x4 FMatrix4x4::Scale(FVector3d const& Rhs)
 {
 	return FMatrix4x4
 	{
 		Private::TMatrix<float, 4, 4>
 		{
-			Private::TVector<float, 4>{Scale[0],0,0,0},
-			Private::TVector<float, 4>{0,Scale[1],0,0},
-			Private::TVector<float, 4>{0,0,Scale[2],0},
+			Private::TVector<float, 4>{Rhs[0],0,0,0},
+			Private::TVector<float, 4>{0,Rhs[1],0,0},
+			Private::TVector<float, 4>{0,0,Rhs[2],0},
 			Private::TVector<float, 4>{0,0,0,1}
 		}
 	};

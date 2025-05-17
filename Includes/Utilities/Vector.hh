@@ -161,6 +161,8 @@ struct FVector3d
 	FVector3d(float X, float Y, float Z);
 	FVector3d(float In);
 
+	FVector3d& operator+=(FVector3d const& Rhs);
+
 	float const& operator[](std::size_t Index) const;
 	float& operator[](std::size_t Index);
 

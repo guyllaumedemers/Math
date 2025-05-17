@@ -20,6 +20,8 @@
 
 #include "Utilities/Quaternion.hh"
 
+FQuaternion const FQuaternion::Zero;
+
 FMatrix4x4 FQuaternion::ToMatrix(FQuaternion const& In)
 {
 	return FMatrix4x4();

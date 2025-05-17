@@ -59,6 +59,14 @@ FVector3d::FVector3d(float In)
 	this->Vector[2] = In;
 }
 
+FVector3d& FVector3d::operator+=(FVector3d const& Rhs)
+{
+	this->Vector[0] += Rhs[0];
+	this->Vector[1] += Rhs[1];
+	this->Vector[2] += Rhs[2];
+	return *this;
+}
+
 float const& FVector3d::operator[](std::size_t Index) const
 {
 	return Vector[Index];

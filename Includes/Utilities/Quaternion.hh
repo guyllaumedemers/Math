@@ -32,4 +32,6 @@ struct FQuaternion
 
 	static FMatrix4x4 ToMatrix(FQuaternion const&);
 	static FVector4d ToVector(FVector4d const&);
+
+	FQuaternion static const Zero;
 };

@@ -295,16 +295,16 @@ namespace Private
 struct FMatrix4x4
 {
 	FMatrix4x4() = default;
-	FMatrix4x4(FMatrix4x4 const&) = default;
-	FMatrix4x4(FMatrix4x4&&) = default;
-	FMatrix4x4& operator=(FMatrix4x4 const&) = default;
+	FMatrix4x4(FMatrix4x4 const& Rhs) = default;
+	FMatrix4x4(FMatrix4x4&& Rhs) = default;
+	FMatrix4x4& operator=(FMatrix4x4 const& Rhs) = default;
 
-	explicit FMatrix4x4(Private::TMatrix<float, 4, 4> const& Matrix);
+	explicit FMatrix4x4(Private::TMatrix<float, 4, 4> const& Rhs);
 
-	FMatrix4x4 operator*(float const In) const;
-	FMatrix4x4 operator*(FMatrix4x4 const& In) const;
-	FMatrix4x4& operator*=(FMatrix4x4 const& In);
-	FVector4d operator*(FVector4d const& In) const;
+	FMatrix4x4 operator*(float const Rhs) const;
+	FMatrix4x4 operator*(FMatrix4x4 const& Rhs) const;
+	FMatrix4x4& operator*=(FMatrix4x4 const& Rhs);
+	FVector4d operator*(FVector4d const& Rhs) const;
 
 	FMatrix4x4 Adjugate() const;
 	float Determinant() const;
@@ -312,9 +312,9 @@ struct FMatrix4x4
 	// custom matrix function exposing target mutation applied in vector space
 	static FMatrix4x4 Zero();
 	static FMatrix4x4 Identity();
-	static FMatrix4x4 Translate(FVector3d const& Translate);
-	static FMatrix4x4 Rotate(FVector3d const& Rotate);
-	static FMatrix4x4 Scale(FVector3d const& Scale);
+	static FMatrix4x4 Translate(FVector3d const& Rhs);
+	static FMatrix4x4 Rotate(FVector3d const& Rhs);
+	static FMatrix4x4 Scale(FVector3d const& Rhs);
 
 	Private::TMatrix<float, 4, 4> Matrix{};
 };

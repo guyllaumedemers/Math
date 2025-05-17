@@ -95,7 +95,7 @@ void UDemoExpression::Init()
 	// @gdemers adding missing explicit call to  default constructor of the newly allocated resource.
 	new (DemoCube) FObject;
 
-	//DemoCube->Transform *= FTransform(FVector3d(5.f), FQuaternion(), FVector3d(1.f));
+	DemoCube->Transform.Position += FVector3d{ 0.f, -5.f, 0.f };
 
 	{
 		std::stringstream ss;
