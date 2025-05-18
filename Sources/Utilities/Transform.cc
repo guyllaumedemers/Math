@@ -36,7 +36,7 @@ FTransform::FTransform(FVector3d const& aPosition,
 {
 }
 
-FMatrix4x4 const FTransform::getModelMatrix() const
+FMatrix4x4 const FTransform::ModelMatrix() const
 {
 	// TODO @gdemers add missing support for rotation
 	//return FMatrix4x4::Scale(Scale) * FQuaternion::ToMatrix(Rotation) * FMatrix4x4::Translate(Position);
@@ -59,14 +59,11 @@ FMatrix4x4 const FTransform::OrthoNormal() const
 
 FMatrix4x4 const FTransform::Inverse() const
 {
-	FMatrix4x4 const& Matrix = getModelMatrix();
+	FMatrix4x4 const& Matrix = ModelMatrix();
 
 	float const Determinant = Matrix.Determinant();
 	if (FMath::IsNearlyZero(Determinant))
 	{
-		// TODO determine if assertion is the correct approach as in some case, we may want to actually return and continue
-		// the execution
-		//assert(false);
 		return FMatrix4x4::Zero();
 	}
 	else

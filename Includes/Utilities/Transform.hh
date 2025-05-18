@@ -35,7 +35,7 @@ struct FTransform
 
 	explicit FTransform(FVector3d const& aPosition, FQuaternion const& aRotation, FVector3d const& aScale);
 
-	FMatrix4x4 const getModelMatrix() const;
+	FMatrix4x4 const ModelMatrix() const;
 	FMatrix4x4 const OrthoNormal() const;
 	FMatrix4x4 const Inverse() const;
 

@@ -81,7 +81,7 @@ FMatrix4x4 const FCamera::ModelViewMatrix(FTransform const& Object) const
 	// will create a new matrix that illustrate the object transforms in regard to the camera coordinate space.
 	// note : this doesn't change the world position of our initial object, or of the camera, this simply provide a new set of information useful for calculating vertex
 	// positions in regard to a coordinate space.
-	return this->Transform.Inverse() * Object.getModelMatrix();
+	return this->Transform.Inverse() * Object.ModelMatrix();
 }
 
 FMatrix4x4 const FCamera::OrthographicProjection() const
