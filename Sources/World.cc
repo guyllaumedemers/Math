@@ -36,7 +36,7 @@ void FWorld::DrawImGui()
 {
 	ImGui::Begin("Tool");
 
-	ImGui::Text("Camera");
+	ImGui::Text("World");
 	ImGui::Separator();
 
 	ImGui::NewLine();
@@ -80,6 +80,11 @@ void FWorld::DrawImGui()
 			far = 10;
 		}
 	}
+
+	ImGui::NewLine();
+
+	ImGui::Text("Camera");
+	ImGui::Separator();
 
 	ImGui::NewLine();
 

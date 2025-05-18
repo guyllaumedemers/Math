@@ -75,6 +75,11 @@ FCamera::FCamera(FTransform const& Transform, FAxisAlignBoundingBox const& ViewV
 
 FMatrix4x4 const FCamera::ModelViewMatrix(FTransform const& Object) const
 {
+	// @gdemers both object and camera model matrix are in the same coordinate space (world). to be able to retrieve the vertices information
+	// of our object in regard to the camera origin (and not the world), we have to inverse the camera model matrix. doing so will remove any translation, rotation
+	// and scale and put the camera model matrix at the origin of the world. matrix multiplication between the returned inverse matrix and the object model matrix
+	// will create a new matrix that illustrate the object transforms in regard to the camera coordinate space.
+	// note : this doesn't change the world position of our initial object, or of the camera, this simply provide a new set of information useful for calculating projection math.
 	return this->Transform.Inverse() * Object.getModelMatrix();
 }
 
