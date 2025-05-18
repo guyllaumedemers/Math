@@ -71,6 +71,6 @@ FMatrix4x4 const FTransform::Inverse() const
 	}
 	else
 	{
-		return Matrix.Adjugate() * (1.f / Matrix.Determinant());
+		return Matrix.Adjugate() * (1.f / Determinant);
 	}
 }
