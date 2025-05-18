@@ -79,7 +79,8 @@ FMatrix4x4 const FCamera::ModelViewMatrix(FTransform const& Object) const
 	// of our object in regard to the camera origin (and not the world), we have to inverse the camera model matrix. doing so will remove any translation, rotation
 	// and scale and put the camera model matrix at the origin of the world. matrix multiplication between the returned inverse matrix and the object model matrix
 	// will create a new matrix that illustrate the object transforms in regard to the camera coordinate space.
-	// note : this doesn't change the world position of our initial object, or of the camera, this simply provide a new set of information useful for calculating projection math.
+	// note : this doesn't change the world position of our initial object, or of the camera, this simply provide a new set of information useful for calculating vertex
+	// positions in regard to a coordinate space.
 	return this->Transform.Inverse() * Object.getModelMatrix();
 }
 
