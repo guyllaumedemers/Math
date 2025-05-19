@@ -157,6 +157,12 @@ void FImGuiBuilder::Scale(FImGuiProperties const& Properties,
 	ImGui::Text(Properties.Title);
 	ImGui::Separator();
 
+	bool static bCanLinkScale = true;
+	if (bCanLinkScale)
+	{
+		OutTransform.Scale[2] = OutTransform.Scale[1] = OutTransform.Scale[0];
+	}
+
 	{
 		ImGui::BeginGroup();
 
@@ -184,10 +190,19 @@ void FImGuiBuilder::Scale(FImGuiProperties const& Properties,
 		ImGui::EndGroup();
 	}
 
-	static const char* const ResetTitle = "Reset Scale";
-	if (ImGui::Button(ResetTitle, { ImGui::GetContentRegionAvail().x , 0 }))
 	{
-		OutTransform.Scale = FVector3d::One;
+		ImGui::BeginGroup();
+
+		static const char* const ResetTitle = "Reset Scale";
+		if (ImGui::Button(ResetTitle, ImVec2{ ImGui::GetContentRegionAvail().x , 0 }))
+		{
+			OutTransform.Scale = FVector3d::One;
+		}
+
+		static const char* const LinkTitle = "Link";
+		ImGui::Checkbox(LinkTitle, &bCanLinkScale);
+
+		ImGui::EndGroup();
 	}
 
 	ImGui::NewLine();
