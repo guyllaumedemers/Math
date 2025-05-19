@@ -30,13 +30,15 @@ FMatrix4x4 const FEulerRotation::EulerRotation() const
 
 FMatrix4x4 const FEulerRotation::RotateX(float const Angle)
 {
+	float const cos = FMath::Cos(Angle);
+	float const sin = FMath::Sin(Angle);
 	return FMatrix4x4
 	{
 		Private::TMatrix<float, 4, 4>
 		{
 			Private::TVector<float, 4>{1,0,0,0},
-			Private::TVector<float, 4>{0,FMath::Cos(Angle),-FMath::Sin(Angle),0},
-			Private::TVector<float, 4>{0,FMath::Sin(Angle),FMath::Cos(Angle),0},
+			Private::TVector<float, 4>{0,cos,-sin,0},
+			Private::TVector<float, 4>{0,sin,cos,0},
 			Private::TVector<float, 4>{0,0,0,1}
 		}
 	};
@@ -44,13 +46,15 @@ FMatrix4x4 const FEulerRotation::RotateX(float const Angle)
 
 FMatrix4x4 const FEulerRotation::RotateY(float const Angle)
 {
+	float const cos = FMath::Cos(Angle);
+	float const sin = FMath::Sin(Angle);
 	return FMatrix4x4
 	{
 		Private::TMatrix<float, 4, 4>
 		{
-			Private::TVector<float, 4>{FMath::Cos(Angle),0,FMath::Sin(Angle),0},
+			Private::TVector<float, 4>{cos,0,sin,0},
 			Private::TVector<float, 4>{0,1,0,0},
-			Private::TVector<float, 4>{-FMath::Sin(Angle),0,FMath::Cos(Angle),0},
+			Private::TVector<float, 4>{-sin,0,cos,0},
 			Private::TVector<float, 4>{0,0,0,1}
 		}
 	};
@@ -58,12 +62,14 @@ FMatrix4x4 const FEulerRotation::RotateY(float const Angle)
 
 FMatrix4x4 const FEulerRotation::RotateZ(float const Angle)
 {
+	float const cos = FMath::Cos(Angle);
+	float const sin = FMath::Sin(Angle);
 	return FMatrix4x4
 	{
 		Private::TMatrix<float, 4, 4>
 		{
-			Private::TVector<float, 4>{FMath::Cos(Angle),-FMath::Sin(Angle),0,0},
-			Private::TVector<float, 4>{FMath::Sin(Angle),FMath::Cos(Angle),0,0},
+			Private::TVector<float, 4>{cos,-sin,0,0},
+			Private::TVector<float, 4>{sin,cos,0,0},
 			Private::TVector<float, 4>{0,0,1,0},
 			Private::TVector<float, 4>{0,0,0,1}
 		}
