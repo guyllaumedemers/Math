@@ -24,6 +24,7 @@
 
 #include "Memory.hh"
 #include "Concept/DemoExpression.hh"
+#include "Concept/ImGui/ImGuiBuilder.hh"
 
 extern FArenaAllocator gArenaAllocator;
 
@@ -39,102 +40,22 @@ void FWorld::DrawImGui()
 	ImGui::Text("World");
 	ImGui::Separator();
 
-	ImGui::NewLine();
-
 	{
-		ImGui::Text("Axis-Aligned Bounding Box");
-		ImGui::Separator();
-
-		ImGui::BeginGroup();
-
-		static char const* const lTitle = "left";
-		static char const* const rTitle = "right";
-		static char const* const bTitle = "bottom";
-		static char const* const tTitle = "top";
-		static char const* const nTitle = "near";
-		static char const* const fTitle = "far";
-		int static left = Camera.ViewVolume.Left;
-		int static right = Camera.ViewVolume.Right;
-		int static bottom = Camera.ViewVolume.Bottom;
-		int static top = Camera.ViewVolume.Top;
-		int static near = Camera.ViewVolume.Near;
-		int static far = Camera.ViewVolume.Far;
-		if (ImGui::InputInt(lTitle, &left)) { Camera.ViewVolume.Left = left; };
-		if (ImGui::InputInt(rTitle, &right)) { Camera.ViewVolume.Right = right; };
-		if (ImGui::InputInt(bTitle, &bottom)) { Camera.ViewVolume.Bottom = bottom; };
-		if (ImGui::InputInt(tTitle, &top)) { Camera.ViewVolume.Top = top; };
-		if (ImGui::InputInt(nTitle, &near)) { Camera.ViewVolume.Near = near; };
-		if (ImGui::InputInt(fTitle, &far)) { Camera.ViewVolume.Far = far; };
-
-		ImGui::EndGroup();
-
-		static const char* const ResetTitle = "Reset AABB";
-		if (ImGui::Button(ResetTitle, { ImGui::GetContentRegionAvail().x , 0 }))
-		{
-			Camera.ViewVolume = FAxisAlignBoundingBox(-10, 10, -10, 10, -10, 10);
-			left = -10;
-			right = 10;
-			bottom = -10;
-			top = 10;
-			near = -10;
-			far = 10;
-		}
+		auto const static AABBProperties = FImGuiProperties("Axis-Aligned Bounding Box", 0, 1920.f);
+		FImGuiBuilder::Builder.AxisAlignedBoundingBox(AABBProperties, Camera.ViewVolume);
 	}
-
-	ImGui::NewLine();
 
 	ImGui::Text("Camera");
 	ImGui::Separator();
 
-	ImGui::NewLine();
+	{
+		auto const static TranslationProperties = FImGuiProperties("Translation", -100.f, 100.f);
+		FImGuiBuilder::Builder.Translation(TranslationProperties, Camera.Transform);
+	}
 
 	{
-		ImGui::Text("Translation");
-		ImGui::Separator();
-
-		int static xValue = 0;
-		int static yValue = 0;
-		int static zValue = 0;
-
-		{
-			ImGui::BeginGroup();
-
-			static char const* const xTitle = "X";
-			int const static xMin = -10;
-			int const static xMax = 10;
-			if (ImGui::SliderInt(xTitle, &xValue, xMin, xMax)) { Camera.Transform.Position[0] = xValue; }
-
-			ImGui::EndGroup();
-		}
-
-		{
-			ImGui::BeginGroup();
-
-			static char const* const yTitle = "Y";
-			int const static yMin = -10;
-			int const static yMax = 10;
-			if (ImGui::SliderInt(yTitle, &yValue, yMin, yMax)) { Camera.Transform.Position[1] = yValue; }
-
-			ImGui::EndGroup();
-		}
-
-		{
-			ImGui::BeginGroup();
-
-			static char const* const zTitle = "Z";
-			int const static zMin = -10;
-			int const static zMax = 10;
-			if (ImGui::SliderInt(zTitle, &zValue, zMin, zMax)) { Camera.Transform.Position[2] = zValue; }
-
-			ImGui::EndGroup();
-		}
-
-		static const char* const ResetTitle = "Reset Translation";
-		if (ImGui::Button(ResetTitle, { ImGui::GetContentRegionAvail().x , 0 }))
-		{
-			Camera.Transform.Position = FVector3d::Zero;
-			xValue = yValue = zValue = 0;
-		}
+		auto const static RotationProperties = FImGuiProperties("Rotation", 0, 360.f);
+		FImGuiBuilder::Builder.Rotation(RotationProperties, Camera.Transform);
 	}
 
 	ImGui::End();

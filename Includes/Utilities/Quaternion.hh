@@ -30,6 +30,9 @@ struct FQuaternion
 	FQuaternion(FQuaternion&& Rhs) = default;
 	FQuaternion& operator=(FQuaternion const& Rhs) = default;
 
+	float const& operator[](std::size_t const Rhs) const;
+	float& operator[](std::size_t const Rhs);
+
 	static FMatrix4x4 const ToMatrix(FQuaternion const& Rhs);
 	static FVector4d const ToVector(FVector4d const& Rhs);
 

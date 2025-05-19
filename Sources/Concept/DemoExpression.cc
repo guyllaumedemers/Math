@@ -33,6 +33,7 @@
 #include "Utilities/Matrix.hh"
 #include "Utilities/Transform.hh"
 #include "Utilities/Viewport.hh"
+#include "Concept/ImGui/ImGuiBuilder.hh"
 #include "../Utilities/Private/OpenGlUtils.hh"
 
 extern FArenaAllocator gArenaAllocator;
@@ -81,97 +82,14 @@ void UDemoExpression::ImGuiDraw()
 	ImGui::Text("Cube");
 	ImGui::Separator();
 
-	ImGui::NewLine();
-
-	ImGui::Text("Translation");
-	ImGui::Separator();
-
-	int static xValue = 0;
-	int static yValue = 0;
-	int static zValue = 0;
-
 	{
-		ImGui::BeginGroup();
-
-		static char const* const xTitle = "X";
-		int const static xMin = -10;
-		int const static xMax = 10;
-		if (ImGui::SliderInt(xTitle, &xValue, xMin, xMax)) { DemoCube->Transform.Position[0] = xValue; }
-
-		ImGui::EndGroup();
+		auto const static TranslationProperties = FImGuiProperties("Translation", -100.f, 100.f);
+		FImGuiBuilder::Builder.Translation(TranslationProperties, DemoCube->Transform);
 	}
 
 	{
-		ImGui::BeginGroup();
-
-		static char const* const yTitle = "Y";
-		int const static yMin = -10;
-		int const static yMax = 10;
-		if (ImGui::SliderInt(yTitle, &yValue, yMin, yMax)) { DemoCube->Transform.Position[1] = yValue; }
-
-		ImGui::EndGroup();
-	}
-
-	{
-		ImGui::BeginGroup();
-
-		static char const* const zTitle = "Z";
-		int const static zMin = -10;
-		int const static zMax = 10;
-		if (ImGui::SliderInt(zTitle, &zValue, zMin, zMax)) { DemoCube->Transform.Position[2] = zValue; }
-
-		ImGui::EndGroup();
-	}
-
-	static const char* const ResetTitle = "Reset";
-	if (ImGui::Button(ResetTitle, { ImGui::GetContentRegionAvail().x , 0 }))
-	{
-		DemoCube->Transform.Position = FVector3d::Zero;
-		xValue = yValue = zValue = 0;
-	}
-
-	ImGui::NewLine();
-
-	ImGui::Text("Rotation");
-	ImGui::Separator();
-
-	int static xRotValue = 0;
-	int static yRotValue = 0;
-	int static zRotValue = 0;
-	int const static RotMin = 0;
-	int const static RotMax = 360;
-
-	{
-		ImGui::BeginGroup();
-
-		static char const* const xRotTitle = "RotX";
-		if (ImGui::SliderInt(xRotTitle, &xRotValue, RotMin, RotMax)) {}
-
-		ImGui::EndGroup();
-	}
-
-	{
-		ImGui::BeginGroup();
-
-		static char const* const yRotTitle = "RotY";
-		if (ImGui::SliderInt(yRotTitle, &yRotValue, RotMin, RotMax)) {}
-
-		ImGui::EndGroup();
-	}
-
-	{
-		ImGui::BeginGroup();
-
-		static char const* const zRotTitle = "RotZ";
-		if (ImGui::SliderInt(zRotTitle, &zRotValue, RotMin, RotMax)) {}
-
-		ImGui::EndGroup();
-	}
-
-	static const char* const ResetRotTitle = "Reset Rotation";
-	if (ImGui::Button(ResetRotTitle, { ImGui::GetContentRegionAvail().x , 0 }))
-	{
-		xRotValue = yRotValue = zRotValue = 0;
+		auto const static RotationProperties = FImGuiProperties("Rotation", 0, 360.f);
+		FImGuiBuilder::Builder.Rotation(RotationProperties, DemoCube->Transform);
 	}
 
 	ImGui::End();

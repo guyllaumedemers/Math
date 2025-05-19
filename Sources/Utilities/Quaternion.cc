@@ -20,7 +20,20 @@
 
 #include "Utilities/Quaternion.hh"
 
+// static
 FQuaternion const FQuaternion::Zero;
+
+float const& FQuaternion::operator[](std::size_t const Rhs) const
+{
+	static float Temp = 0.f;
+	return Temp;
+}
+
+float& FQuaternion::operator[](std::size_t const Rhs)
+{
+	static float Temp = 0.f;
+	return Temp;
+}
 
 FMatrix4x4 const FQuaternion::ToMatrix(FQuaternion const& Rhs)
 {

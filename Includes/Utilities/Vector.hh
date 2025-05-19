@@ -145,6 +145,9 @@ struct FVector2d
 	FVector2d(float const X, float const Y);
 	FVector2d(float const Rhs);
 
+	float const& operator[](std::size_t const Rhs) const;
+	float& operator[](std::size_t const Rhs);
+
 	FVector2d const static Zero;
 	FVector2d const static One;
 	Private::TVector<float, 2> Vector{};

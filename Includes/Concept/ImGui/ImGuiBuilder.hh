@@ -20,8 +20,30 @@
 
 #pragma once
 
+struct FAxisAlignBoundingBox;
+struct FTransform;
+
+// @gdemers wrapping struct that encapsulate properties that define the imgui layout.
+struct FImGuiProperties
+{
+	FImGuiProperties() = default;
+
+	explicit FImGuiProperties(char const* const PropertyTitle,
+		float const Min,
+		float const Max);
+
+	char const* const Title = "";
+	float const MinValue = 0.f;
+	float const MaxValue = 0.f;
+};
+
 // class that handle building tools with imgui
 struct FImGuiBuilder
 {
+	void AxisAlignedBoundingBox(FImGuiProperties const& Properties, FAxisAlignBoundingBox& OutViewVolume);
+	void Translation(FImGuiProperties const& Properties, FTransform& OutTransform);
+	void Rotation(FImGuiProperties const& Properties, FTransform& OutTransform);
+	void Scale(FImGuiProperties const& Properties, FTransform& OutTransform);
+
 	FImGuiBuilder static Builder;
 };

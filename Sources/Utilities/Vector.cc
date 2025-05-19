@@ -36,6 +36,16 @@ FVector2d::FVector2d(float const Rhs) :
 {
 }
 
+float const& FVector2d::operator[](std::size_t const Rhs) const
+{
+	return Vector[Rhs];
+}
+
+float& FVector2d::operator[](std::size_t const Rhs)
+{
+	return Vector[Rhs];
+}
+
 FVector3d::FVector3d(FVector2d const& Rhs) :
 	Vector(Private::TVector<float, 3>{Rhs.Vector[0], Rhs.Vector[1], 1.f})
 {
