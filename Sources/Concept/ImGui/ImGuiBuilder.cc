@@ -73,6 +73,12 @@ void FImGuiBuilder::Translation(FImGuiProperties const& Properties,
 	ImGui::Text(Properties.Title);
 	ImGui::Separator();
 
+	bool static bCanLinkScale = false;
+	if (bCanLinkScale)
+	{
+		OutTransform.Position[2] = OutTransform.Position[1] = OutTransform.Position[0];
+	}
+
 	{
 		ImGui::BeginGroup();
 
@@ -100,10 +106,19 @@ void FImGuiBuilder::Translation(FImGuiProperties const& Properties,
 		ImGui::EndGroup();
 	}
 
-	static const char* const ResetTitle = "Reset Translation";
-	if (ImGui::Button(ResetTitle, { ImGui::GetContentRegionAvail().x , 0 }))
 	{
-		OutTransform.Position = FVector3d::Zero;
+		ImGui::BeginGroup();
+
+		static const char* const ResetTitle = "Reset Position";
+		if (ImGui::Button(ResetTitle, ImVec2{ ImGui::GetContentRegionAvail().x , 0 }))
+		{
+			OutTransform.Position = FVector3d::Zero;
+		}
+
+		static const char* const LinkTitle = "Link Position";
+		ImGui::Checkbox(LinkTitle, &bCanLinkScale);
+
+		ImGui::EndGroup();
 	}
 
 	ImGui::NewLine();
@@ -114,6 +129,12 @@ void FImGuiBuilder::Rotation(FImGuiProperties const& Properties,
 {
 	ImGui::Text(Properties.Title);
 	ImGui::Separator();
+
+	bool static bCanLinkScale = false;
+	if (bCanLinkScale)
+	{
+		OutTransform.Rotation[2] = OutTransform.Rotation[1] = OutTransform.Rotation[0];
+	}
 
 	{
 		ImGui::BeginGroup();
@@ -142,10 +163,19 @@ void FImGuiBuilder::Rotation(FImGuiProperties const& Properties,
 		ImGui::EndGroup();
 	}
 
-	static const char* const ResetTitle = "Reset Rotation";
-	if (ImGui::Button(ResetTitle, { ImGui::GetContentRegionAvail().x , 0 }))
 	{
-		OutTransform.Rotation = FQuaternion::Zero;
+		ImGui::BeginGroup();
+
+		static const char* const ResetTitle = "Reset Rotation";
+		if (ImGui::Button(ResetTitle, ImVec2{ ImGui::GetContentRegionAvail().x , 0 }))
+		{
+			OutTransform.Rotation = FQuaternion::Zero;
+		}
+
+		static const char* const LinkTitle = "Link Rotation";
+		ImGui::Checkbox(LinkTitle, &bCanLinkScale);
+
+		ImGui::EndGroup();
 	}
 
 	ImGui::NewLine();
@@ -199,7 +229,7 @@ void FImGuiBuilder::Scale(FImGuiProperties const& Properties,
 			OutTransform.Scale = FVector3d::One;
 		}
 
-		static const char* const LinkTitle = "Link";
+		static const char* const LinkTitle = "Link Scale";
 		ImGui::Checkbox(LinkTitle, &bCanLinkScale);
 
 		ImGui::EndGroup();
