@@ -63,7 +63,7 @@ void FImGuiBuilder::AxisAlignedBoundingBox(FImGuiProperties const& Properties,
 	static const char* const ResetTitle = "Reset AABB";
 	if (ImGui::Button(ResetTitle, { ImGui::GetContentRegionAvail().x , 0 }))
 	{
-		OutViewVolume = FAxisAlignBoundingBox(-10, 10, -10, 10, -10, 10);
+		OutViewVolume = FAxisAlignBoundingBox(-10.f, 10.f, -10.f, 10.f, -10.f, 10.f);
 	}
 }
 

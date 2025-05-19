@@ -28,5 +28,5 @@ class IDrawable
 public:
 	virtual ~IDrawable() = default;
 	virtual void ApplicationDraw(FViewport const& Viewport, FCamera const& Camera) = 0;
-	virtual void ImGuiDraw() = 0;
+	virtual void ImGuiDraw(FCamera* const Camera) = 0;
 };

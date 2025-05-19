@@ -73,25 +73,44 @@ void UDemoExpression::ApplicationDraw(FViewport const& Viewport, FCamera const& 
 	}
 }
 
-void UDemoExpression::ImGuiDraw()
+void UDemoExpression::ImGuiDraw(FCamera* const Camera)
 {
 	assert(DemoCube != nullptr);
 
 	ImGui::Begin("Demo");
+	ImGui::BeginTabBar("UDemoExpression Tab");
 
-	ImGui::Text("Cube");
-	ImGui::Separator();
+	if (ImGui::BeginTabItem("World"))
+	{
+		auto const static AABBProperties = FImGuiProperties("Axis-Aligned Bounding Box", 0, 1920.f);
+		FImGuiBuilder::Builder.AxisAlignedBoundingBox(AABBProperties, Camera->ViewVolume);
 
+		ImGui::EndTabItem();
+	}
+
+	if (ImGui::BeginTabItem("Camera"))
+	{
+		auto const static TranslationProperties = FImGuiProperties("Translation", -100.f, 100.f);
+		FImGuiBuilder::Builder.Translation(TranslationProperties, Camera->Transform);
+
+		auto const static RotationProperties = FImGuiProperties("Rotation", 0, 360.f);
+		FImGuiBuilder::Builder.Rotation(RotationProperties, Camera->Transform);
+
+		ImGui::EndTabItem();
+	}
+
+	if (ImGui::BeginTabItem("Cube"))
 	{
 		auto const static TranslationProperties = FImGuiProperties("Translation", -100.f, 100.f);
 		FImGuiBuilder::Builder.Translation(TranslationProperties, DemoCube->Transform);
-	}
 
-	{
 		auto const static RotationProperties = FImGuiProperties("Rotation", 0, 360.f);
 		FImGuiBuilder::Builder.Rotation(RotationProperties, DemoCube->Transform);
+
+		ImGui::EndTabItem();
 	}
 
+	ImGui::EndTabBar();
 	ImGui::End();
 }
 

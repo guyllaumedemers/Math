@@ -46,5 +46,5 @@ public:
 	virtual std::size_t const Size() const override { return sizeof(UCrossProduct); };
 	virtual void Tick() override;
 	virtual void ApplicationDraw(FViewport const& Viewport, FCamera const& Camera) override;
-	virtual void ImGuiDraw() override;
+	virtual void ImGuiDraw(FCamera* const Camera) override;
 };

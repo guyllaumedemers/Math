@@ -29,6 +29,6 @@ void UDotProduct::ApplicationDraw(FViewport const& Viewport, FCamera const& Came
 	// TODO Open a new ImGui window context for layout specific to this demo
 }
 
-void UDotProduct::ImGuiDraw()
+void UDotProduct::ImGuiDraw(FCamera* const Camera)
 {
 }

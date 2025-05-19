@@ -36,6 +36,6 @@ void FGrid::ApplicationDraw(FViewport const& Viewport, FCamera const& Camera)
 {
 }
 
-void FGrid::ImGuiDraw()
+void FGrid::ImGuiDraw(FCamera* const Camera)
 {
 }

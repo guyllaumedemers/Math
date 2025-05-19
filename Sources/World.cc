@@ -20,11 +20,8 @@
 
 #include "World.hh"
 
-#include "imgui.h"
-
 #include "Memory.hh"
 #include "Concept/DemoExpression.hh"
-#include "Concept/ImGui/ImGuiBuilder.hh"
 
 extern FArenaAllocator gArenaAllocator;
 
@@ -35,32 +32,7 @@ void FWorld::Draw()
 
 void FWorld::DrawImGui()
 {
-	ImGui::Begin("Tool");
-
-	ImGui::Text("World");
-	ImGui::Separator();
-
-	{
-		auto const static AABBProperties = FImGuiProperties("Axis-Aligned Bounding Box", 0, 1920.f);
-		FImGuiBuilder::Builder.AxisAlignedBoundingBox(AABBProperties, Camera.ViewVolume);
-	}
-
-	ImGui::Text("Camera");
-	ImGui::Separator();
-
-	{
-		auto const static TranslationProperties = FImGuiProperties("Translation", -100.f, 100.f);
-		FImGuiBuilder::Builder.Translation(TranslationProperties, Camera.Transform);
-	}
-
-	{
-		auto const static RotationProperties = FImGuiProperties("Rotation", 0, 360.f);
-		FImGuiBuilder::Builder.Rotation(RotationProperties, Camera.Transform);
-	}
-
-	ImGui::End();
-
-	WorldContext.ImGuiDraw();
+	WorldContext.ImGuiDraw(&Camera);
 }
 
 void FWorld::Tick()
@@ -68,28 +40,28 @@ void FWorld::Tick()
 	WorldContext.Tick();
 }
 
-FWorld FWorld::Factory(IBatchResource&& BatchResource)
+FWorld FWorld::Factory(IBatchResource&& Rhs)
 {
-	return FWorldContext{ std::move(BatchResource) };
+	return FWorldContext{ std::move(Rhs) };
 }
 
-FWorld::FWorld(FWorldContext&& WorldContext)
+FWorld::FWorld(FWorldContext&& Rhs)
 {
 	// move operation doesn't invalidate correctly resources, an overload of the move assignment is required
-	this->WorldContext = std::move(WorldContext);
+	this->WorldContext = std::move(Rhs);
 }
 
-FWorld::FWorldContext& FWorld::FWorldContext::operator=(FWorld::FWorldContext&& WorldContext)
+FWorld::FWorldContext& FWorld::FWorldContext::operator=(FWorld::FWorldContext&& Rhs)
 {
-	this->Handle = std::move(WorldContext.Handle);
-	WorldContext.Handle = {};
+	this->Handle = std::move(Rhs.Handle);
+	Rhs.Handle = {};
 	return *this;
 }
 
-FWorld::FWorldContext::FWorldContext(IBatchResource&& BatchResource)
+FWorld::FWorldContext::FWorldContext(IBatchResource&& Rhs)
 {
 	uint32_t static RefCount = 0;
-	Handle.MemoryBlock = FMemory::Malloc({ &gArenaAllocator, BatchResource.Size() }, &BatchResource);
+	Handle.MemoryBlock = FMemory::Malloc({ &gArenaAllocator, Rhs.Size() }, &Rhs);
 	Handle.HandleId = ++RefCount;
 
 	// TODO find better architecture to support init an expression
@@ -121,12 +93,12 @@ void FWorld::FWorldContext::ApplicationDraw(FViewport const& Viewport, FCamera c
 	Payload->ApplicationDraw(Viewport, Camera);
 }
 
-void FWorld::FWorldContext::ImGuiDraw()
+void FWorld::FWorldContext::ImGuiDraw(FCamera* const Camera)
 {
 	if (Handle.MemoryBlock.Payload == nullptr) { return; }
 	auto* const Payload = static_cast<UDemoExpression*>(Handle.MemoryBlock.Payload);
 	assert(!!Payload);
-	Payload->ImGuiDraw();
+	Payload->ImGuiDraw(Camera);
 }
 
 void FWorld::FWorldContext::Tick()

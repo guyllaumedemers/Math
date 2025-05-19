@@ -32,17 +32,17 @@ class FWorld
 {
 public:
 	FWorld() = default;
-	FWorld(FWorld const&) = default;
-	FWorld(FWorld&&) = default;
-	FWorld& operator=(FWorld const&) = default;
-	FWorld& operator=(FWorld&&) = default;
+	FWorld(FWorld const& Rhs) = default;
+	FWorld(FWorld&& Rhs) = default;
+	FWorld& operator=(FWorld const& Rhs) = default;
+	FWorld& operator=(FWorld&& Rhs) = default;
 
 	void Draw();
 	void DrawImGui();
 	void Tick();
 
 	// factory
-	static FWorld Factory(IBatchResource&&);
+	static FWorld Factory(IBatchResource&& Rhs);
 
 protected:
 	// context object for a simulation
@@ -51,16 +51,16 @@ protected:
 		public ITickable
 	{
 		FWorldContext() = default;
-		FWorldContext(FWorldContext const&) = delete;
-		FWorldContext(FWorldContext&&) = default;
-		FWorldContext& operator=(FWorldContext const&) = delete;
-		FWorldContext& operator=(FWorldContext&& WorldContext);
+		FWorldContext(FWorldContext const& Rhs) = delete;
+		FWorldContext(FWorldContext&& Rhs) = default;
+		FWorldContext& operator=(FWorldContext const& Rhs) = delete;
+		FWorldContext& operator=(FWorldContext&& Rhs);
 
 		FWorldContext(IBatchResource&&);
 		~FWorldContext();
 
-		virtual void ApplicationDraw(struct FViewport const&, struct FCamera const&) override;
-		virtual void ImGuiDraw() override;
+		virtual void ApplicationDraw(FViewport const& Viewport, FCamera const& Camera) override;
+		virtual void ImGuiDraw(FCamera* const Camera) override;
 		virtual void Tick() override;
 
 		// resources handle
@@ -88,5 +88,5 @@ protected:
 	// also, note that the scaling will result in the reciprocal of the range * 2.
 	// example : [-10,10] = 20. reciprocal: 1/20, times 2; 2/20 or 1/10, which is how much we scale our world point by.
 	// Pw(x) = 5; 5 * 1/10 = 5/10; Ps(s) = 0.5 which is within the bounds of our cannonical view [-1,1]. 
-	FCamera Camera = FCamera{ FTransform::Default, FAxisAlignBoundingBox{-10, 10, -10, 10, -10, 10}, 45 };
+	FCamera Camera = FCamera{ FTransform::Default, FAxisAlignBoundingBox(-10.f, 10.f, -10.f, 10.f, -10.f, 10.f), 45 };
 };

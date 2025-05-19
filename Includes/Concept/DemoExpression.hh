@@ -42,16 +42,11 @@ public:
 	UDemoExpression& operator=(UDemoExpression&& Rhs) = default;
 	virtual std::size_t const Size() const override;
 	virtual void ApplicationDraw(FViewport const& Viewport, FCamera const& Camera) override;
-	virtual void ImGuiDraw() override;
+	virtual void ImGuiDraw(FCamera* const Camera) override;
 	virtual void Tick() override;
 
 	void Init();
 	void Cleanup();
-
-protected:
-	bool bIsOrthographic = false;
-	bool bIs3d = false;
-	bool bDisplayGrid = false;
 
 private:
 	FObject* DemoCube = nullptr;

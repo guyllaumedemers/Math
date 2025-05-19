@@ -28,6 +28,6 @@ void UCrossProduct::ApplicationDraw(FViewport const& Viewport, FCamera const& Ca
 {
 }
 
-void UCrossProduct::ImGuiDraw()
+void UCrossProduct::ImGuiDraw(FCamera* const Camera)
 {
 }

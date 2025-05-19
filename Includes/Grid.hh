@@ -35,7 +35,7 @@ struct FGrid :
 
 	virtual std::size_t const Size() const;
 	virtual void ApplicationDraw(FViewport const& Viewport, FCamera const& Camera) override;
-	virtual void ImGuiDraw() override;
+	virtual void ImGuiDraw(FCamera* const Camera) override;
 
 protected:
 	FTransform Transform = FTransform::Default;

@@ -29,6 +29,6 @@ void UVectorProjection::ApplicationDraw(FViewport const& Viewport, FCamera const
 	// TODO Open a new ImGui window context for layout specific to this demo
 }
 
-void UVectorProjection::ImGuiDraw()
+void UVectorProjection::ImGuiDraw(FCamera* const Camera)
 {
 }
