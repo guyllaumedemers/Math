@@ -60,7 +60,7 @@ void FImGuiBuilder::AxisAlignedBoundingBox(FImGuiProperties const& Properties,
 
 	ImGui::EndGroup();
 
-	static const char* const ResetTitle = "Reset AABB";
+	static const char* const ResetTitle = "Reset";
 	if (ImGui::Button(ResetTitle, { ImGui::GetContentRegionAvail().x , 0 }))
 	{
 		OutViewVolume = FAxisAlignBoundingBox(-10.f, 10.f, -10.f, 10.f, -10.f, 10.f);
@@ -76,7 +76,7 @@ void FImGuiBuilder::Translation(FImGuiProperties const& Properties,
 	{
 		ImGui::BeginGroup();
 
-		static char const* const xTitle = "X";
+		static char const* const xTitle = "tX";
 		ImGui::SliderFloat(xTitle, &OutTransform.Position[0], Properties.MinValue, Properties.MaxValue);
 
 		ImGui::EndGroup();
@@ -85,7 +85,7 @@ void FImGuiBuilder::Translation(FImGuiProperties const& Properties,
 	{
 		ImGui::BeginGroup();
 
-		static char const* const yTitle = "Y";
+		static char const* const yTitle = "tY";
 		ImGui::SliderFloat(yTitle, &OutTransform.Position[1], Properties.MinValue, Properties.MaxValue);
 
 		ImGui::EndGroup();
@@ -94,13 +94,13 @@ void FImGuiBuilder::Translation(FImGuiProperties const& Properties,
 	{
 		ImGui::BeginGroup();
 
-		static char const* const zTitle = "Z";
+		static char const* const zTitle = "tZ";
 		ImGui::SliderFloat(zTitle, &OutTransform.Position[2], Properties.MinValue, Properties.MaxValue);
 
 		ImGui::EndGroup();
 	}
 
-	static const char* const ResetTitle = "Reset";
+	static const char* const ResetTitle = "Reset Translation";
 	if (ImGui::Button(ResetTitle, { ImGui::GetContentRegionAvail().x , 0 }))
 	{
 		OutTransform.Position = FVector3d::Zero;
@@ -118,7 +118,7 @@ void FImGuiBuilder::Rotation(FImGuiProperties const& Properties,
 	{
 		ImGui::BeginGroup();
 
-		static char const* const xTitle = "RotX";
+		static char const* const xTitle = "rX";
 		ImGui::SliderFloat(xTitle, &OutTransform.Rotation[0], Properties.MinValue, Properties.MaxValue);
 
 		ImGui::EndGroup();
@@ -127,7 +127,7 @@ void FImGuiBuilder::Rotation(FImGuiProperties const& Properties,
 	{
 		ImGui::BeginGroup();
 
-		static char const* const yTitle = "RotY";
+		static char const* const yTitle = "rY";
 		ImGui::SliderFloat(yTitle, &OutTransform.Rotation[1], Properties.MinValue, Properties.MaxValue);
 
 		ImGui::EndGroup();
@@ -136,7 +136,7 @@ void FImGuiBuilder::Rotation(FImGuiProperties const& Properties,
 	{
 		ImGui::BeginGroup();
 
-		static char const* const zTitle = "RotZ";
+		static char const* const zTitle = "rZ";
 		ImGui::SliderFloat(zTitle, &OutTransform.Rotation[2], Properties.MinValue, Properties.MaxValue);
 
 		ImGui::EndGroup();
@@ -154,4 +154,41 @@ void FImGuiBuilder::Rotation(FImGuiProperties const& Properties,
 void FImGuiBuilder::Scale(FImGuiProperties const& Properties,
 	FTransform& OutTransform)
 {
+	ImGui::Text(Properties.Title);
+	ImGui::Separator();
+
+	{
+		ImGui::BeginGroup();
+
+		static char const* const xTitle = "sX";
+		ImGui::SliderFloat(xTitle, &OutTransform.Scale[0], Properties.MinValue, Properties.MaxValue);
+
+		ImGui::EndGroup();
+	}
+
+	{
+		ImGui::BeginGroup();
+
+		static char const* const yTitle = "sY";
+		ImGui::SliderFloat(yTitle, &OutTransform.Scale[1], Properties.MinValue, Properties.MaxValue);
+
+		ImGui::EndGroup();
+	}
+
+	{
+		ImGui::BeginGroup();
+
+		static char const* const zTitle = "sZ";
+		ImGui::SliderFloat(zTitle, &OutTransform.Scale[2], Properties.MinValue, Properties.MaxValue);
+
+		ImGui::EndGroup();
+	}
+
+	static const char* const ResetTitle = "Reset Scale";
+	if (ImGui::Button(ResetTitle, { ImGui::GetContentRegionAvail().x , 0 }))
+	{
+		OutTransform.Scale = FVector3d::One;
+	}
+
+	ImGui::NewLine();
 }

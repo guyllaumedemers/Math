@@ -78,11 +78,11 @@ void UDemoExpression::ImGuiDraw(FCamera* const Camera)
 	assert(DemoCube != nullptr);
 
 	ImGui::Begin("Demo");
-	ImGui::BeginTabBar("UDemoExpression Tab");
+	ImGui::BeginTabBar("Tab");
 
 	if (ImGui::BeginTabItem("World"))
 	{
-		auto const static AABBProperties = FImGuiProperties("Axis-Aligned Bounding Box", 0, 1920.f);
+		auto const static AABBProperties = FImGuiProperties("Axis-Aligned Bounding Box", 0.f, 1920.f);
 		FImGuiBuilder::Builder.AxisAlignedBoundingBox(AABBProperties, Camera->ViewVolume);
 
 		ImGui::EndTabItem();
@@ -93,7 +93,7 @@ void UDemoExpression::ImGuiDraw(FCamera* const Camera)
 		auto const static TranslationProperties = FImGuiProperties("Translation", -100.f, 100.f);
 		FImGuiBuilder::Builder.Translation(TranslationProperties, Camera->Transform);
 
-		auto const static RotationProperties = FImGuiProperties("Rotation", 0, 360.f);
+		auto const static RotationProperties = FImGuiProperties("Rotation", 0.f, 360.f);
 		FImGuiBuilder::Builder.Rotation(RotationProperties, Camera->Transform);
 
 		ImGui::EndTabItem();
@@ -104,8 +104,11 @@ void UDemoExpression::ImGuiDraw(FCamera* const Camera)
 		auto const static TranslationProperties = FImGuiProperties("Translation", -100.f, 100.f);
 		FImGuiBuilder::Builder.Translation(TranslationProperties, DemoCube->Transform);
 
-		auto const static RotationProperties = FImGuiProperties("Rotation", 0, 360.f);
+		auto const static RotationProperties = FImGuiProperties("Rotation", 0.f, 360.f);
 		FImGuiBuilder::Builder.Rotation(RotationProperties, DemoCube->Transform);
+
+		auto const static ScaleProperties = FImGuiProperties("Scale", -10.f, 10.f);
+		FImGuiBuilder::Builder.Scale(ScaleProperties, DemoCube->Transform);
 
 		ImGui::EndTabItem();
 	}
