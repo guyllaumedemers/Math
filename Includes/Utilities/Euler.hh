@@ -23,6 +23,9 @@
 #include "Math.hh"
 #include "Matrix.hh"
 
+// @gdemers building intuition for understanding rotation in R2/R3.
+// https://www.youtube.com/watch?v=lPWfIq5DzqI&ab_channel=KhanAcademy (deriving rotation matrix from the identity matrix and trigonometry)
+// https://www.youtube.com/watch?v=R0EQg9vgbQw&ab_channel=KhanAcademy (angle sum identity)
 struct FEulerRotation
 {
 	FMatrix4x4 const EulerRotation() const;

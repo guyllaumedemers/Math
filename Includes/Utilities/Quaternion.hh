@@ -23,9 +23,10 @@
 #include "Matrix.hh"
 #include "Vector.hh"
 
-// @gdemers building intuition for understanding rotation in R2/R3.
-// https://www.youtube.com/watch?v=lPWfIq5DzqI&ab_channel=KhanAcademy (deriving rotation matrix from the identity matrix and trigonometry)
-// https://www.youtube.com/watch?v=R0EQg9vgbQw&ab_channel=KhanAcademy (angle sum identity)
+// @gdemers brief recap on quaternion
+// q = a + xi + yj + zk
+// https://www.youtube.com/watch?v=jlskQDR8-bY&ab_channel=Mathoma (defining quaternions)
+// https://en.wikipedia.org/wiki/Complex_number (introduction to complex numbers, i^2 = j^2 = k^2 = -1)
 struct FQuaternion
 {
 	FQuaternion() = default;
