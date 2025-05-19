@@ -25,22 +25,10 @@ FQuaternion const FQuaternion::Zero;
 
 float const& FQuaternion::operator[](std::size_t const Rhs) const
 {
-	static float Temp = 0.f;
-	return Temp;
+	return Quaternion[Rhs];
 }
 
 float& FQuaternion::operator[](std::size_t const Rhs)
 {
-	static float Temp = 0.f;
-	return Temp;
-}
-
-FMatrix4x4 const FQuaternion::ToMatrix(FQuaternion const& Rhs)
-{
-	return FMatrix4x4();
-}
-
-FVector4d const FQuaternion::ToVector(FVector4d const& Rhs)
-{
-	return FVector4d();
+	return Quaternion[Rhs];
 }

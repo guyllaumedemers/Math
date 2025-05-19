@@ -119,7 +119,7 @@ void FImGuiBuilder::Rotation(FImGuiProperties const& Properties,
 		ImGui::BeginGroup();
 
 		static char const* const xTitle = "RotX";
-		if (ImGui::SliderFloat(xTitle, &OutTransform.Rotation[0], Properties.MinValue, Properties.MaxValue)) { /*TODO*/ }
+		ImGui::SliderFloat(xTitle, &OutTransform.Rotation[0], Properties.MinValue, Properties.MaxValue);
 
 		ImGui::EndGroup();
 	}
@@ -128,7 +128,7 @@ void FImGuiBuilder::Rotation(FImGuiProperties const& Properties,
 		ImGui::BeginGroup();
 
 		static char const* const yTitle = "RotY";
-		if (ImGui::SliderFloat(yTitle, &OutTransform.Rotation[1], Properties.MinValue, Properties.MaxValue)) { /*TODO*/ }
+		ImGui::SliderFloat(yTitle, &OutTransform.Rotation[1], Properties.MinValue, Properties.MaxValue);
 
 		ImGui::EndGroup();
 	}
@@ -137,7 +137,7 @@ void FImGuiBuilder::Rotation(FImGuiProperties const& Properties,
 		ImGui::BeginGroup();
 
 		static char const* const zTitle = "RotZ";
-		if (ImGui::SliderFloat(zTitle, &OutTransform.Rotation[2], Properties.MinValue, Properties.MaxValue)) { /*TODO*/ }
+		ImGui::SliderFloat(zTitle, &OutTransform.Rotation[2], Properties.MinValue, Properties.MaxValue);
 
 		ImGui::EndGroup();
 	}
