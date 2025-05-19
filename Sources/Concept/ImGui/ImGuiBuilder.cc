@@ -133,14 +133,14 @@ void FImGuiBuilder::Rotation(FImGuiProperties const& Properties,
 	bool static bCanLinkScale = false;
 	if (bCanLinkScale)
 	{
-		OutTransform.Rotation[2] = OutTransform.Rotation[1] = OutTransform.Rotation[0];
+		OutTransform.EulerRotation[2] = OutTransform.EulerRotation[1] = OutTransform.EulerRotation[0];
 	}
 
 	{
 		ImGui::BeginGroup();
 
 		static char const* const xTitle = "rX";
-		ImGui::SliderFloat(xTitle, &OutTransform.Rotation[0], Properties.MinValue, Properties.MaxValue);
+		ImGui::SliderFloat(xTitle, &OutTransform.EulerRotation[0], Properties.MinValue, Properties.MaxValue);
 
 		ImGui::EndGroup();
 	}
@@ -149,7 +149,7 @@ void FImGuiBuilder::Rotation(FImGuiProperties const& Properties,
 		ImGui::BeginGroup();
 
 		static char const* const yTitle = "rY";
-		ImGui::SliderFloat(yTitle, &OutTransform.Rotation[1], Properties.MinValue, Properties.MaxValue);
+		ImGui::SliderFloat(yTitle, &OutTransform.EulerRotation[1], Properties.MinValue, Properties.MaxValue);
 
 		ImGui::EndGroup();
 	}
@@ -158,7 +158,7 @@ void FImGuiBuilder::Rotation(FImGuiProperties const& Properties,
 		ImGui::BeginGroup();
 
 		static char const* const zTitle = "rZ";
-		ImGui::SliderFloat(zTitle, &OutTransform.Rotation[2], Properties.MinValue, Properties.MaxValue);
+		ImGui::SliderFloat(zTitle, &OutTransform.EulerRotation[2], Properties.MinValue, Properties.MaxValue);
 
 		ImGui::EndGroup();
 	}
@@ -169,7 +169,7 @@ void FImGuiBuilder::Rotation(FImGuiProperties const& Properties,
 		static const char* const ResetTitle = "Reset Rotation";
 		if (ImGui::Button(ResetTitle, ImVec2{ ImGui::GetContentRegionAvail().x , 0 }))
 		{
-			OutTransform.Rotation = FQuaternion::Zero;
+			OutTransform.EulerRotation = FEulerRotation::Zero;
 		}
 
 		static const char* const LinkTitle = "Link Rotation";

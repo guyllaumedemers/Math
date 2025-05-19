@@ -22,6 +22,7 @@
 
 #include <assert.h>
 
+#include "Euler.hh"
 #include "Matrix.hh"
 #include "Quaternion.hh"
 #include "Vector.hh"
@@ -39,6 +40,9 @@ struct FTransform
 	FMatrix4x4 const OrthoNormal() const;
 	FMatrix4x4 const Inverse() const;
 
+	// @gdemers temp solution until i implement correctly quaternions. also may become useful to run comparison
+	// when showcasing gimbal lock.
+	FEulerRotation EulerRotation = FEulerRotation::Zero;
 	// @gdemers cache properties as such and rebuild matrix based on data.
 	// note : it wouldnt be possible to cache a single matrix and update property fields. matrix multiplication
 	// prevents it.

@@ -68,7 +68,7 @@ FMatrix4x4 const& FMatrix4x4::Zero()
 
 FMatrix4x4 const& FMatrix4x4::Identity()
 {
-	auto const static  IdentityMatrix = FMatrix4x4
+	auto const static IdentityMatrix = FMatrix4x4
 	{
 		Private::TMatrix<float, 4, 4>
 		{

@@ -18,31 +18,23 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 
-#include "Utilities/Math.hh"
+#pragma once
 
-bool FMath::IsNearlyZero(float const In)
-{
-	// TODO do proper zero check
-	return In == 0.f;
-}
+#include "Math.hh"
+#include "Matrix.hh"
 
-float FMath::Floor(float const In)
+struct FEulerRotation
 {
-	// TODO @gdemers handle floor properly
-	return (int32_t)In;
-}
+	FMatrix4x4 const EulerRotation() const;
 
-float FMath::Sin(float const Degree)
-{
-	return std::sin(Degree * RADIAN);
-}
+	static FMatrix4x4 const RotateX(float const Angle);
+	static FMatrix4x4 const RotateY(float const Angle);
+	static FMatrix4x4 const RotateZ(float const Angle);
 
-float FMath::Cos(float const Degree)
-{
-	return std::cos(Degree * RADIAN);
-}
+	float const& operator[](std::size_t const Rhs) const;
+	float& operator[](std::size_t const Rhs);
 
-float FMath::Tan(float const Degree)
-{
-	return std::tan(Degree * RADIAN);
-}
+	static FEulerRotation Zero;
+
+	FVector3d EulerAngles = FVector3d::Zero;
+};

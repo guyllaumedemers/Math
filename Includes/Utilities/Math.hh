@@ -21,7 +21,10 @@
 #pragma once
 
 #ifndef M_PI
-#define M_PI 3.141592653589793238463
+float constexpr static Pi = 3.141592653589793238463f;
+#define M_PI Pi
+float constexpr static AngleToRad = (M_PI / 180.f);
+#define RADIAN AngleToRad
 #endif
 
 #include <array>
@@ -33,6 +36,10 @@ struct FMath
 	static bool IsNearlyZero(float const In);
 
 	static float Floor(float const In);
+
+	static float Sin(float const Degree);
+
+	static float Cos(float const Degree);
 
 	static float Tan(float const Degree);
 

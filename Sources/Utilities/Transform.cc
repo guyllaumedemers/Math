@@ -38,9 +38,9 @@ FTransform::FTransform(FVector3d const& aPosition,
 
 FMatrix4x4 const FTransform::ModelMatrix() const
 {
-	// TODO @gdemers add missing support for rotation
-	//return FMatrix4x4::Scale(Scale) * FQuaternion::ToMatrix(Rotation) * FMatrix4x4::Translate(Position);
-	return FMatrix4x4::Scale(Scale) * FMatrix4x4::Translate(Position);
+	// TODO @gdemers add missing support for rotation using quaternion.
+	// we should be able to branch based on the imgui property between euler angles and quaternion.
+	return FMatrix4x4::Scale(Scale) * EulerRotation.EulerRotation() * FMatrix4x4::Translate(Position);
 }
 
 FMatrix4x4 const FTransform::OrthoNormal() const
