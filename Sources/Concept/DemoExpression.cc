@@ -54,10 +54,10 @@ void UDemoExpression::ApplicationDraw(FViewport const& Viewport, FCamera const& 
 	FMatrix4x4 const ModelViewMatrix = Camera.ModelViewMatrix(DemoCube->Transform);
 
 	static char const* const ProjMat = "projMat";
-	static char const* const MVMat = "modelviewMat";
+	static char const* const ModelViewMat = "modelviewMat";
 	FOpenGlUtils::UseProgram(ShaderProgramId);
 	FOpenGlUtils::SetUniformMat4(ShaderProgramId, ProjectionMatrix, ProjMat);
-	FOpenGlUtils::SetUniformMat4(ShaderProgramId, ModelViewMatrix, MVMat);
+	FOpenGlUtils::SetUniformMat4(ShaderProgramId, ModelViewMatrix, ModelViewMat);
 
 	for (std::size_t i = 0; i < DemoCube->NumMeshes; ++i)
 	{
@@ -128,6 +128,50 @@ void UDemoExpression::ImGuiDraw()
 	{
 		DemoCube->Transform.Position = FVector3d::Zero;
 		xValue = yValue = zValue = 0;
+	}
+
+	ImGui::NewLine();
+
+	ImGui::Text("Rotation");
+	ImGui::Separator();
+
+	int static xRotValue = 0;
+	int static yRotValue = 0;
+	int static zRotValue = 0;
+	int const static RotMin = 0;
+	int const static RotMax = 360;
+
+	{
+		ImGui::BeginGroup();
+
+		static char const* const xRotTitle = "RotX";
+		if (ImGui::SliderInt(xRotTitle, &xRotValue, RotMin, RotMax)) {}
+
+		ImGui::EndGroup();
+	}
+
+	{
+		ImGui::BeginGroup();
+
+		static char const* const yRotTitle = "RotY";
+		if (ImGui::SliderInt(yRotTitle, &yRotValue, RotMin, RotMax)) {}
+
+		ImGui::EndGroup();
+	}
+
+	{
+		ImGui::BeginGroup();
+
+		static char const* const zRotTitle = "RotZ";
+		if (ImGui::SliderInt(zRotTitle, &zRotValue, RotMin, RotMax)) {}
+
+		ImGui::EndGroup();
+	}
+
+	static const char* const ResetRotTitle = "Reset Rotation";
+	if (ImGui::Button(ResetRotTitle, { ImGui::GetContentRegionAvail().x , 0 }))
+	{
+		xRotValue = yRotValue = zRotValue = 0;
 	}
 
 	ImGui::End();
