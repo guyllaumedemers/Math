@@ -107,18 +107,14 @@ void FOpenGlUtils::UseProgram(GLuint ShaderProgramId)
 	glUseProgram(ShaderProgramId);
 }
 
-void FOpenGlUtils::PushProjectionMatrix(GLuint ShaderProgramId,
-	FMatrix4x4 const& ProjectionMatrix)
+void FOpenGlUtils::SetUniformMat4(GLuint ShaderProgramId, FMatrix4x4 const& ProjectionMatrix, char const* const Location)
 {
-	GLint Location = glGetUniformLocation(ShaderProgramId, "projMat");
-	glUniformMatrix4fv(Location, 1, GL_TRUE, &ProjectionMatrix.Matrix.RowsCols[0][0]);
-}
-
-void FOpenGlUtils::PushModelViewMatrix(GLuint ShaderProgramId,
-	FMatrix4x4 const& ModelViewMatrix)
-{
-	GLint Location = glGetUniformLocation(ShaderProgramId, "modelviewMat");
-	glUniformMatrix4fv(Location, 1, GL_TRUE, &ModelViewMatrix.Matrix.RowsCols[0][0]);
+	GLint LocationIndex = glGetUniformLocation(ShaderProgramId, Location);
+	// @gdemers note to self : this math library has been setup using row major form while opengl use
+	// column major form. (notice how the translation handling done in FCamera.cc is in the 4th column and not the 4th row)
+	// glUniformMatrix4fv require the matrix to be transposed from row major form to column major form in order for any translation
+	// feature to be properly handled.
+	glUniformMatrix4fv(LocationIndex, 1, GL_TRUE, &ProjectionMatrix.Matrix.RowsCols[0][0]);
 }
 
 void FOpenGlUtils::DrawObject(GLuint VAO,

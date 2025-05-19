@@ -53,11 +53,9 @@ struct FOpenGlUtils
 
 	static void UseProgram(GLuint ShaderProgramId);
 
-	static void PushProjectionMatrix(GLuint ShaderProgramId,
-		FMatrix4x4 const& ProjectionMatrix);
-
-	static void PushModelViewMatrix(GLuint ShaderProgramId,
-		FMatrix4x4 const& ModelViewMatrix);
+	static void SetUniformMat4(GLuint ShaderProgramId,
+		FMatrix4x4 const& ProjectionMatrix,
+		char const* const Location);
 
 	static void DrawObject(GLuint VAO,
 		GLsizei Count);

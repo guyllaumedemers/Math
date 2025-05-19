@@ -53,9 +53,11 @@ void UDemoExpression::ApplicationDraw(FViewport const& Viewport, FCamera const& 
 	FMatrix4x4 const ProjectionMatrix = Camera.OrthographicProjection();/*project points in camera space and normalize the AABB (+Pw) for clipping*/
 	FMatrix4x4 const ModelViewMatrix = Camera.ModelViewMatrix(DemoCube->Transform);
 
+	static char const* const ProjMat = "projMat";
+	static char const* const MVMat = "modelviewMat";
 	FOpenGlUtils::UseProgram(ShaderProgramId);
-	FOpenGlUtils::PushProjectionMatrix(ShaderProgramId, ProjectionMatrix);
-	FOpenGlUtils::PushModelViewMatrix(ShaderProgramId, ModelViewMatrix);
+	FOpenGlUtils::SetUniformMat4(ShaderProgramId, ProjectionMatrix, ProjMat);
+	FOpenGlUtils::SetUniformMat4(ShaderProgramId, ModelViewMatrix, MVMat);
 
 	for (std::size_t i = 0; i < DemoCube->NumMeshes; ++i)
 	{
