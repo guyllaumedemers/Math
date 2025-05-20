@@ -28,12 +28,12 @@ struct FAxisAlignBoundingBox
 {
 	FAxisAlignBoundingBox() = default;
 
-	explicit FAxisAlignBoundingBox(float const Left,
-		float const Right,
-		float const Bottom,
-		float const Top,
-		float const Near,
-		float const Far);
+	explicit FAxisAlignBoundingBox(float const aLeft,
+		float const aRight,
+		float const aBottom,
+		float const aTop,
+		float const aNear,
+		float const aFar);
 
 	FMatrix4x4 const CanonicalViewVolume() const;
 
@@ -49,7 +49,11 @@ struct FCamera
 	FCamera(FCamera&& Rhs) = default;
 	FCamera& operator=(FCamera const& Rhs) = default;
 
-	explicit FCamera(FTransform const& Transform, FAxisAlignBoundingBox const& ViewVolume, float const FieldOfView);
+	explicit FCamera(FTransform const& aTransform,
+		FAxisAlignBoundingBox const& aViewVolume,
+		float const aFieldOfView,
+		float const aFocalLength,
+		float const aFilmGateRatio);
 
 	FMatrix4x4 const ModelViewMatrix(FTransform const& Object) const;
 	FMatrix4x4 const OrthographicProjection() const;

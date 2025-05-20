@@ -51,7 +51,7 @@ void UDemoExpression::ApplicationDraw(FViewport const& Viewport, FCamera const& 
 
 	// @gdemers update opengl state-machine with the program id we target.
 	GLuint const ShaderProgramId = DemoCube->ShaderProgramID;
-	FMatrix4x4 const ProjectionMatrix = Camera.OrthographicProjection();/*project points in camera space and normalize the AABB (+Pw) for clipping*/
+	FMatrix4x4 const ProjectionMatrix = Camera.PerspectiveProjection();/*project points in camera space and normalize the AABB (+Pw) for clipping*/
 	FMatrix4x4 const ModelViewMatrix = Camera.ModelViewMatrix(DemoCube->Transform);
 
 	static char const* const ProjMat = "projMat";

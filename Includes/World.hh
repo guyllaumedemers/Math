@@ -82,11 +82,5 @@ protected:
 	FViewport Viewport = FViewport::Default;
 
 	// user point of view
-	// @gdemers
-	// note : AABB, if two bounds cancel each other, then it's sitting at the origin for this axis.
-	// scaling still happen, but the view volume doesn't have to execute translation.
-	// also, note that the scaling will result in the reciprocal of the range * 2.
-	// example : [-10,10] = 20. reciprocal: 1/20, times 2; 2/20 or 1/10, which is how much we scale our world point by.
-	// Pw(x) = 5; 5 * 1/10 = 5/10; Ps(s) = 0.5 which is within the bounds of our cannonical view [-1,1]. 
-	FCamera Camera = FCamera{ FTransform::Default, FAxisAlignBoundingBox(-10.f, 10.f, -10.f, 10.f, -10.f, 10.f), 45 };
+	FCamera Camera = FCamera::Default;
 };

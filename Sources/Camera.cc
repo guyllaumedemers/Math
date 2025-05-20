@@ -20,27 +20,34 @@
 
 #include "Camera.hh"
 
-// static
+// @gdemers
+// note : AABB, if two bounds cancel each other, then it's sitting at the origin for this axis.
+// scaling still happen, but the view volume doesn't have to execute translation.
+// also, note that the scaling will result in the reciprocal of the range * 2.
+// example : [-10,10] = 20. reciprocal: 1/20, times 2; 2/20 or 1/10, which is how much we scale our world point by.
+// Pw(x) = 5; 5 * 1/10 = 5/10; Ps(s) = 0.5 which is within the bounds of our cannonical view [-1,1].
 FCamera const FCamera::Default = FCamera
 {
 	FTransform{ FVector3d(0.f), FQuaternion(), FVector3d(1.f)},
-	FAxisAlignBoundingBox(),
-	0.f
+	FAxisAlignBoundingBox(-10.f, 10.f, -10.f, 10.f, -10.f, 10.f),
+	45.f,
+	1.f,
+	1.f
 };
 
-FAxisAlignBoundingBox::FAxisAlignBoundingBox(float const Left,
-	float const Right,
-	float const Bottom,
-	float const Top,
-	float const Near,
-	float const Far)
+FAxisAlignBoundingBox::FAxisAlignBoundingBox(float const aLeft,
+	float const aRight,
+	float const aBottom,
+	float const aTop,
+	float const aNear,
+	float const aFar) :
+	Left(aLeft),
+	Right(aRight),
+	Bottom(aBottom),
+	Top(aTop),
+	Near(aNear),
+	Far(aFar)
 {
-	this->Left = Left;
-	this->Right = Right;
-	this->Bottom = Bottom;
-	this->Top = Top;
-	this->Near = Near;
-	this->Far = Far;
 }
 
 FMatrix4x4 const FAxisAlignBoundingBox::CanonicalViewVolume() const
@@ -60,17 +67,23 @@ FMatrix4x4 const FAxisAlignBoundingBox::CanonicalViewVolume() const
 		{
 			Private::TVector<float, 4>{X,0,0,Xt},
 			Private::TVector<float, 4>{0,Y,0,Yt},
-			Private::TVector<float, 4>{0,0,Z,Zt},
+			Private::TVector<float, 4>{0,0,Zt,Z},
 			Private::TVector<float, 4>{0,0,0,1}
 		}
 	};
 }
 
-FCamera::FCamera(FTransform const& Transform, FAxisAlignBoundingBox const& ViewVolume, float const FieldOfView)
+FCamera::FCamera(FTransform const& aTransform,
+	FAxisAlignBoundingBox const& aViewVolume,
+	float const aFieldOfView,
+	float const aFocalLength,
+	float const aFilmGateRatio) :
+	Transform(aTransform),
+	ViewVolume(aViewVolume),
+	FieldOfView(aFieldOfView),
+	FocalLength(aFocalLength),
+	FilmGateRatio(aFilmGateRatio)
 {
-	this->Transform = Transform;
-	this->ViewVolume = ViewVolume;
-	this->FieldOfView = FieldOfView;
 }
 
 FMatrix4x4 const FCamera::ModelViewMatrix(FTransform const& Object) const
