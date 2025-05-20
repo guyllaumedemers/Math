@@ -67,7 +67,7 @@ FMatrix4x4 const FAxisAlignBoundingBox::CanonicalViewVolume() const
 		{
 			Private::TVector<float, 4>{X,0,0,Xt},
 			Private::TVector<float, 4>{0,Y,0,Yt},
-			Private::TVector<float, 4>{0,0,Zt,Z},
+			Private::TVector<float, 4>{0,0,Z,Zt},
 			Private::TVector<float, 4>{0,0,0,1}
 		}
 	};
