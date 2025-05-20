@@ -33,6 +33,7 @@ struct FTransform
 	FTransform(FTransform const& Rhs) = default;
 	FTransform(FTransform&& Rhs) = default;
 	FTransform& operator=(FTransform const& Rhs) = default;
+	FTransform& operator=(FTransform&& Rhs) = default;
 
 	explicit FTransform(FVector3d const& aPosition, FQuaternion const& aRotation, FVector3d const& aScale);
 
@@ -40,12 +41,7 @@ struct FTransform
 	FMatrix4x4 const OrthoNormal() const;
 	FMatrix4x4 const Inverse() const;
 
-	// @gdemers temp solution until i implement correctly quaternions. also may become useful to run comparison
-	// when showcasing gimbal lock.
 	FEulerRotation EulerRotation = FEulerRotation::Zero;
-	// @gdemers cache properties as such and rebuild matrix based on data.
-	// note : it wouldnt be possible to cache a single matrix and update property fields. matrix multiplication
-	// prevents it.
 	FQuaternion Rotation = FQuaternion::Zero;
 	FVector3d Position = FVector3d::Zero;
 	FVector3d Scale = FVector3d::Zero;

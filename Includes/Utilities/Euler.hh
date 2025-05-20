@@ -28,16 +28,22 @@
 // https://www.youtube.com/watch?v=R0EQg9vgbQw&ab_channel=KhanAcademy (angle sum identity)
 struct FEulerRotation
 {
-	FMatrix4x4 const EulerRotation() const;
+	FEulerRotation() = default;
+	FEulerRotation(FEulerRotation const& Rhs) = default;
+	FEulerRotation(FEulerRotation&& Rhs) = default;
+	FEulerRotation& operator=(FEulerRotation const& Rhs) = default;
+	FEulerRotation& operator=(FEulerRotation&& Rhs) = default;
 
 	static FMatrix4x4 const RotateX(float const Angle);
 	static FMatrix4x4 const RotateY(float const Angle);
 	static FMatrix4x4 const RotateZ(float const Angle);
 
+	FMatrix4x4 const EulerRotation() const;
+
 	float const& operator[](std::size_t const Rhs) const;
 	float& operator[](std::size_t const Rhs);
 
-	static FEulerRotation Zero;
+	FEulerRotation const static Zero;
 
 	FVector3d EulerAngles = FVector3d::Zero;
 };

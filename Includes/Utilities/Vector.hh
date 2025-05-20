@@ -141,9 +141,10 @@ struct FVector2d
 	FVector2d(FVector2d const& Rhs) = default;
 	FVector2d(FVector2d&& Rhs) = default;
 	FVector2d& operator=(FVector2d const& Rhs) = default;
+	FVector2d& operator=(FVector2d&& Rhs) = default;
 
-	FVector2d(float const X, float const Y);
-	FVector2d(float const Rhs);
+	explicit FVector2d(float const X, float const Y);
+	explicit FVector2d(float const Rhs);
 
 	float const& operator[](std::size_t const Rhs) const;
 	float& operator[](std::size_t const Rhs);
@@ -159,11 +160,12 @@ struct FVector3d
 	FVector3d(FVector3d const& Rhs) = default;
 	FVector3d(FVector3d&& Rhs) = default;
 	FVector3d& operator=(FVector3d const& Rhs) = default;
+	FVector3d& operator=(FVector3d&& Rhs) = default;
 
 	explicit FVector3d(FVector2d const& Rhs);
 	explicit FVector3d(Private::TVector<float, 3> const& Rhs);
-	FVector3d(float const X, float const Y, float const Z);
-	FVector3d(float const Rhs);
+	explicit FVector3d(float const X, float const Y, float const Z);
+	explicit FVector3d(float const Rhs);
 
 	FVector3d const operator+(FVector3d const& Rhs) const;
 	FVector3d& operator+=(FVector3d const& Rhs);
@@ -182,15 +184,19 @@ struct FVector4d
 	FVector4d(FVector4d const& Rhs) = default;
 	FVector4d(FVector4d&& Rhs) = default;
 	FVector4d& operator=(FVector4d const& Rhs) = default;
+	FVector4d& operator=(FVector4d&& Rhs) = default;
 
+	explicit FVector4d(FVector3d const& Rhs);
 	explicit FVector4d(Private::TVector<float, 4> const& Rhs);
-	FVector4d(float const X, float const Y, float const Z, float const W);
-	FVector4d(FVector3d const& Rhs);
+	explicit FVector4d(float const X, float const Y, float const Z, float const W);
+	explicit FVector4d(float const Rhs);
 
 	FVector4d const operator*(float const Rhs) const;
 
 	float const& operator[](std::size_t const Rhs) const;
 	float& operator[](std::size_t const Rhs);
 
+	FVector4d const static Zero;
+	FVector4d const static One;
 	Private::TVector<float, 4> Vector{};
 };

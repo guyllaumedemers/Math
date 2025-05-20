@@ -25,6 +25,8 @@ FVector2d const FVector2d::Zero = FVector2d(0.f);
 FVector2d const FVector2d::One = FVector2d(1.f);
 FVector3d const FVector3d::Zero = FVector3d(0.f);
 FVector3d const FVector3d::One = FVector3d(1.f);
+FVector4d const FVector4d::Zero = FVector4d(0.f);
+FVector4d const FVector4d::One = FVector4d(1.f);
 
 FVector2d::FVector2d(float const X, float const Y) :
 	Vector(Private::TVector<float, 2>{X, Y})
@@ -89,6 +91,11 @@ float& FVector3d::operator[](std::size_t const Rhs)
 	return Vector[Rhs];
 }
 
+FVector4d::FVector4d(FVector3d const& Rhs) :
+	Vector(Private::TVector<float, 4>{Rhs.Vector[0], Rhs.Vector[1], Rhs.Vector[2], 1.f})
+{
+}
+
 FVector4d::FVector4d(Private::TVector<float, 4> const& Rhs) :
 	Vector(Rhs)
 {
@@ -99,8 +106,7 @@ FVector4d::FVector4d(float const X, float const Y, float const Z, float const W)
 {
 }
 
-FVector4d::FVector4d(FVector3d const& Rhs) :
-	Vector(Private::TVector<float, 4>{Rhs.Vector[0], Rhs.Vector[1], Rhs.Vector[2], 1.f})
+FVector4d::FVector4d(float const Rhs)
 {
 }
 

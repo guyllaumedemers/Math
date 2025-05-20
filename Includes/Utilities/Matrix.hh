@@ -298,6 +298,7 @@ struct FMatrix4x4
 	FMatrix4x4(FMatrix4x4 const& Rhs) = default;
 	FMatrix4x4(FMatrix4x4&& Rhs) = default;
 	FMatrix4x4& operator=(FMatrix4x4 const& Rhs) = default;
+	FMatrix4x4& operator=(FMatrix4x4&& Rhs) = default;
 
 	explicit FMatrix4x4(Private::TMatrix<float, 4, 4> const& Rhs);
 

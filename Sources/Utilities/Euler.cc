@@ -21,12 +21,7 @@
 #include "Utilities/Euler.hh"
 
 // static
-FEulerRotation FEulerRotation::Zero;
-
-FMatrix4x4 const FEulerRotation::EulerRotation() const
-{
-	return FEulerRotation::RotateZ(EulerAngles[2]) * FEulerRotation::RotateY(EulerAngles[1]) * FEulerRotation::RotateX(EulerAngles[0]);
-}
+FEulerRotation const FEulerRotation::Zero;
 
 FMatrix4x4 const FEulerRotation::RotateX(float const Angle)
 {
@@ -74,6 +69,11 @@ FMatrix4x4 const FEulerRotation::RotateZ(float const Angle)
 			Private::TVector<float, 4>{0,0,0,1}
 		}
 	};
+}
+
+FMatrix4x4 const FEulerRotation::EulerRotation() const
+{
+	return FEulerRotation::RotateZ(EulerAngles[2]) * FEulerRotation::RotateY(EulerAngles[1]) * FEulerRotation::RotateX(EulerAngles[0]);
 }
 
 float const& FEulerRotation::operator[](std::size_t const Rhs) const
