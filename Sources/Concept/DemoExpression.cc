@@ -90,21 +90,23 @@ void UDemoExpression::ImGuiDraw(FCamera* const Camera)
 
 	if (ImGui::BeginTabItem("Camera"))
 	{
-		auto const static TranslationProperties = FImGuiProperties("Translation", -100.f, 100.f);
+		auto const static TranslationProperties = FImGuiProperties("Translation", -10, 10);
 		FImGuiBuilder::Builder.Translation(TranslationProperties, Camera->Transform);
 
-		auto const static RotationProperties = FImGuiProperties("Rotation", 0.f, 360.f);
+		auto const static RotationProperties = FImGuiProperties("Rotation", -360.f, 360.f);
 		FImGuiBuilder::Builder.Rotation(RotationProperties, Camera->Transform);
+
+		ImGui::SliderFloat("Focal Length", &Camera->FocalLength, 1.f, 1000.f);
 
 		ImGui::EndTabItem();
 	}
 
 	if (ImGui::BeginTabItem("Cube"))
 	{
-		auto const static TranslationProperties = FImGuiProperties("Translation", -100.f, 100.f);
+		auto const static TranslationProperties = FImGuiProperties("Translation", -10.f, 10.f);
 		FImGuiBuilder::Builder.Translation(TranslationProperties, DemoCube->Transform);
 
-		auto const static RotationProperties = FImGuiProperties("Rotation", 0.f, 360.f);
+		auto const static RotationProperties = FImGuiProperties("Rotation", -360.f, 360.f);
 		FImGuiBuilder::Builder.Rotation(RotationProperties, DemoCube->Transform);
 
 		auto const static ScaleProperties = FImGuiProperties("Scale", -10.f, 10.f);

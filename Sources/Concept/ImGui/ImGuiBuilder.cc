@@ -63,7 +63,7 @@ void FImGuiBuilder::AxisAlignedBoundingBox(FImGuiProperties const& Properties,
 	static const char* const ResetTitle = "Reset";
 	if (ImGui::Button(ResetTitle, { ImGui::GetContentRegionAvail().x , 0 }))
 	{
-		OutViewVolume = FAxisAlignBoundingBox(-10.f, 10.f, -10.f, 10.f, -10.f, 10.f);
+		OutViewVolume = FAxisAlignBoundingBox(0.f, 960.f, 0.f, 600.f, 0.1f, 100.f);
 	}
 }
 
@@ -83,7 +83,7 @@ void FImGuiBuilder::Translation(FImGuiProperties const& Properties,
 		ImGui::BeginGroup();
 
 		static char const* const xTitle = "tX";
-		ImGui::SliderFloat(xTitle, &OutTransform.Position[0], Properties.MinValue, Properties.MaxValue);
+		ImGui::InputFloat(xTitle, &OutTransform.Position[0], Properties.MinValue, Properties.MaxValue);
 
 		ImGui::EndGroup();
 	}
@@ -92,7 +92,7 @@ void FImGuiBuilder::Translation(FImGuiProperties const& Properties,
 		ImGui::BeginGroup();
 
 		static char const* const yTitle = "tY";
-		ImGui::SliderFloat(yTitle, &OutTransform.Position[1], Properties.MinValue, Properties.MaxValue);
+		ImGui::InputFloat(yTitle, &OutTransform.Position[1], Properties.MinValue, Properties.MaxValue);
 
 		ImGui::EndGroup();
 	}
@@ -101,7 +101,7 @@ void FImGuiBuilder::Translation(FImGuiProperties const& Properties,
 		ImGui::BeginGroup();
 
 		static char const* const zTitle = "tZ";
-		ImGui::SliderFloat(zTitle, &OutTransform.Position[2], Properties.MinValue, Properties.MaxValue);
+		ImGui::InputFloat(zTitle, &OutTransform.Position[2], Properties.MinValue, Properties.MaxValue);
 
 		ImGui::EndGroup();
 	}
@@ -197,7 +197,7 @@ void FImGuiBuilder::Scale(FImGuiProperties const& Properties,
 		ImGui::BeginGroup();
 
 		static char const* const xTitle = "sX";
-		ImGui::SliderFloat(xTitle, &OutTransform.Scale[0], Properties.MinValue, Properties.MaxValue);
+		ImGui::InputFloat(xTitle, &OutTransform.Scale[0], Properties.MinValue, Properties.MaxValue);
 
 		ImGui::EndGroup();
 	}
@@ -206,7 +206,7 @@ void FImGuiBuilder::Scale(FImGuiProperties const& Properties,
 		ImGui::BeginGroup();
 
 		static char const* const yTitle = "sY";
-		ImGui::SliderFloat(yTitle, &OutTransform.Scale[1], Properties.MinValue, Properties.MaxValue);
+		ImGui::InputFloat(yTitle, &OutTransform.Scale[1], Properties.MinValue, Properties.MaxValue);
 
 		ImGui::EndGroup();
 	}
@@ -215,7 +215,7 @@ void FImGuiBuilder::Scale(FImGuiProperties const& Properties,
 		ImGui::BeginGroup();
 
 		static char const* const zTitle = "sZ";
-		ImGui::SliderFloat(zTitle, &OutTransform.Scale[2], Properties.MinValue, Properties.MaxValue);
+		ImGui::InputFloat(zTitle, &OutTransform.Scale[2], Properties.MinValue, Properties.MaxValue);
 
 		ImGui::EndGroup();
 	}
